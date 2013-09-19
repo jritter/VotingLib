@@ -1,5 +1,6 @@
 package ch.bfh.evoting.votinglib.entities;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,12 +8,22 @@ import java.util.List;
  * @author Philémon von Bergen
  *
  */
-public class Poll {
-	
+public class Poll implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String question;
 	private List<Option> options;
 	private long startTime;
+	private boolean isTerminated;
+	
+	/**
+	 * Construct an empty Poll object
+	 */
+	public Poll(){}
 	
 	/**
 	 * Constructs a poll object
@@ -20,12 +31,14 @@ public class Poll {
 	 * @param question text of the poll's question
 	 * @param startTime time when the poll has begun
 	 * @param options list of the possible options for the voter
+	 * @param isTerminated true if Poll is terminated
 	 */
-	public Poll(int id, String question, long startTime, List<Option> options){
+	public Poll(int id, String question, long startTime, List<Option> options, boolean isTerminated){
 		this.id = id;
 		this.question = question;
 		this.startTime = startTime;
 		this.options = options;
+		this.isTerminated = isTerminated;
 	}
 	
 	/**
@@ -90,6 +103,22 @@ public class Poll {
 	 */
 	public void setStartTime(long startTime) {
 		this.startTime = startTime;
+	}
+	
+	/**
+	 * Ask if poll is terminated
+	 * @return true if Poll is terminated else otherwise
+	 */
+	public boolean isTerminated() {
+		return isTerminated;
+	}
+
+	/**
+	 * Set if poll is terminated
+	 * @param isTerminated true if Poll is terminated else otherwise
+	 */
+	public void setTerminated(boolean isTerminated) {
+		this.isTerminated = isTerminated;
 	}
 	
 }

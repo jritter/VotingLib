@@ -13,6 +13,11 @@ public class Option {
 	private int id;
 	
 	/**
+	 * Create an empty Option object
+	 */
+	public Option(){}
+	
+	/**
 	 * Constructs an Option object
 	 * @param text text of the option
 	 * @param votes number of votes this option has received
