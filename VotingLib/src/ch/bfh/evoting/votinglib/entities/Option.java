@@ -1,11 +1,13 @@
 package ch.bfh.evoting.votinglib.entities;
 
+import java.io.Serializable;
+
 /**
  * Class representing an option that can be chosen for a poll
  * @author Philémon von Bergen
  *
  */
-public class Option {
+public class Option implements Serializable {
 
 	private String text;
 	private int votes;
