@@ -4,5 +4,7 @@
     <string name="app_name">VotingLib</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-
+	<string name="network_password">Network Password</string>
+    <string name="network_wlan_key">WLAN Key</string>
+    <string name="join">Join</string>
 </resources>
