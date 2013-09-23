@@ -6,14 +6,14 @@
     android:weightSum="1.0" >
 
     <ImageView
-        android:id="@+id/result_lib_result_img"
+        android:id="@+id/poll_img"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:src="@drawable/poll" />
     
     
     <TextView
-            android:id="@+id/result_lib_poll_list_question"
+            android:id="@+id/poll_question"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"

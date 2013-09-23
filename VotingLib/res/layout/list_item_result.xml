@@ -7,7 +7,7 @@
     android:weightSum="1.0">
     
     <TextView
-            android:id="@+id/result_lib_option"
+            android:id="@+id/result_option"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.65"
@@ -20,7 +20,7 @@
     </TextView>
         
     <TextView
-            android:id="@+id/result_lib_received_votes"
+            android:id="@+id/result_received_votes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
@@ -29,7 +29,7 @@
     </TextView>
     
     <TextView
-            android:id="@+id/result_lib_percentage"
+            android:id="@+id/result_percentage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.15"
@@ -37,40 +37,4 @@
             android:gravity="center" >
     </TextView>
 
-</LinearLayout> 
-<!--
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="25dp" >
-
-    <TextView
-        android:id="@+id/result_lib_percentage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/result_lib_percentage"
-        android:gravity="right"
-        android:textSize="20sp" >
-    </TextView>
-
-    <TextView
-        android:id="@+id/result_lib_received_votes"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:gravity="left"
-        android:textSize="20sp" >
-    </TextView>
-
-    <TextView
-        android:id="@+id/result_lib_option"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/result_lib_percentage"
-        android:ellipsize="end"
-        android:gravity="left"
-        android:singleLine="true"
-        android:textSize="20sp"
-        android:textStyle="" >
-    </TextView>
-
-</RelativeLayout>-->
+</LinearLayout>

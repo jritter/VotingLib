@@ -1,5 +1,8 @@
 package ch.bfh.evoting.votinglib;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import ch.bfh.evoting.votinglib.entities.DatabaseException;
 import ch.bfh.evoting.votinglib.entities.Poll;
 import ch.bfh.evoting.votinglib.entities.Utility;
@@ -30,7 +33,7 @@ public class DisplayResultActivity extends ListActivity {
 
 		final Context context = this.getApplicationContext();
 
-		Button btnClose = (Button) this.findViewById(R.id.result_lib_display_result_close_button);
+		Button btnClose = (Button) this.findViewById(R.id.display_result_close_button);
 		btnClose.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
@@ -46,15 +49,18 @@ public class DisplayResultActivity extends ListActivity {
 			pollId = -1;
 		}
 
-		TextView question = (TextView)findViewById(R.id.result_lib_display_result_question);
+		TextView question = (TextView)findViewById(R.id.poll_question);
 		question.setText(poll.getQuestion());
 
-//		TextView nbr_voters = (TextView)findViewById(R.id.result_lib_display_result_voters);
-//		nbr_voters.setText(getString(R.string.result_lib_display_result_nbr_voters) + ": " + String.valueOf(poll.getNumberOfVoters()));
-
-		setListAdapter(new ResultListAdapter(this, R.layout.list_item_result, poll.getOptions()));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date resultdate = new Date(poll.getStartTime());
+        
+		TextView poll_time = (TextView)findViewById(R.id.poll_start_time);
+		poll_time.setText(getString(R.string.poll_start_time) + ": " + sdf.format(resultdate));
+		
+		setListAdapter(new OptionListAdapter(this, R.layout.list_item_result, poll.getOptions()));
 		Utility.setListViewHeightBasedOnChildren(this.getListView());
-		((ScrollView)this.findViewById(R.id.result_lib_display_result_scrollview)).smoothScrollTo(0, 0);
+		((ScrollView)this.findViewById(R.id.scrollview)).smoothScrollTo(0, 0);
 		
 		if(saveToDbNeeded){
 			try {
@@ -88,8 +94,8 @@ public class DisplayResultActivity extends ListActivity {
 		if(item.getItemId()==R.id.action_delete) {
 			if(this.pollId!=-1){
 				AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-				alertDialog.setTitle(R.string.results_app_display_delete_confirm_title);
-				alertDialog.setMessage(getString(R.string.results_app_display_delete_confirm_text));
+				alertDialog.setTitle(R.string.delete_poll_confirm_title);
+				alertDialog.setMessage(getString(R.string.delete_poll_confirm_text));
 				alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog,	int which) {
 						PollDbHelper.getInstance(ctx).deletePoll(pollId);

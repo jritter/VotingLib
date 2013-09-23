@@ -16,12 +16,12 @@ import android.widget.TextView;
  * List adapter to show the result as a list
  * @author von Bergen Philémon
  */
-public class ResultListAdapter extends ArrayAdapter<Option> {
+public class OptionListAdapter extends ArrayAdapter<Option> {
 
 	private Context context;
 	private List<Option> values;
 
-	public ResultListAdapter(Context context,
+	public OptionListAdapter(Context context,
 			int textViewResourceId, List<Option> objects) {
 		super(context, textViewResourceId, objects);
 		this.context=context;
@@ -39,17 +39,16 @@ public class ResultListAdapter extends ArrayAdapter<Option> {
 			view = convertView;
 		}
 
-		TextView resultOption =  (TextView)view.findViewById(R.id.result_lib_option);
-		resultOption.setText(this.values.get(position).getText());
+		TextView optionText =  (TextView)view.findViewById(R.id.result_option);
+		optionText.setText(this.values.get(position).getText());
 		
-//		TextView resultVotes =  (TextView)view.findViewById(R.id.result_lib_received_votes);
-//		String text = ""+this.values.get(position).getNumberOfVotes();
-//		resultVotes.setText(text);
+		TextView optionVotes =  (TextView)view.findViewById(R.id.result_received_votes);
+		String text = ""+this.values.get(position).getVotes();
+		optionVotes.setText(text);
 		
-		//TODO
-//		TextView resultPercentage =  (TextView)view.findViewById(R.id.result_lib_percentage);
-//		String textPercentage = ""+this.values.get(position).getPercentage();
-//		resultPercentage.setText(textPercentage);
+		TextView optionPercentage =  (TextView)view.findViewById(R.id.result_percentage);
+		String textPercentage = ""+this.values.get(position).getPercentage();
+		optionPercentage.setText(textPercentage);
 		
 		return view;
 	}

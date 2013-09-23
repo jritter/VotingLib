@@ -9,10 +9,15 @@ import java.io.Serializable;
  */
 public class Option implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String text;
 	private int votes;
 	private int pollId;
 	private int id;
+	private double percentage;
 	
 	/**
 	 * Create an empty Option object
@@ -26,11 +31,12 @@ public class Option implements Serializable {
 	 * @param id id in the database
 	 * @param pollId id of the poll to whom it belongs
 	 */
-	public Option(String text, int votes, int id, int pollId){
+	public Option(String text, int votes, double percentage, int id, int pollId){
 		this.text = text;
 		this.votes = votes;
 		this.id = id;
 		this.pollId = pollId;
+		this.percentage = percentage;
 	}
 	
 	/**
@@ -63,6 +69,22 @@ public class Option implements Serializable {
 	 */
 	public void setVotes(int votes) {
 		this.votes = votes;
+	}
+	
+	/**
+	 * Get the percentage of votes received in comparison of the total number of votes
+	 * @return the percentage of votes received in comparison of the total number of votes (in the form 50,6)
+	 */
+	public double getPercentage() {
+		return percentage;
+	}
+
+	/**
+	 * Set the percentage of votes received in comparison of the total number of votes
+	 * @param percentage the percentage of votes received in comparison of the total number of votes (in the form 50,6)
+	 */
+	public void setPercentage(double percentage) {
+		this.percentage = percentage;
 	}
 	
 	/**

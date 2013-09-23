@@ -35,6 +35,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 	private static final String OPTION_POLL_ID = "poll_id";
 	private static final String OPTION_TEXT = "text";
 	private static final String OPTION_NUMBER_OF_VOTES = "nbr_votes";
+	private static final String OPTION_PERCENTAGE = "percentage";
 	
 	private static PollDbHelper instance;
 
@@ -68,6 +69,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 				+ OPTION_POLL_ID + " INTEGER, "
 				+ OPTION_TEXT + " TEXT, "
 				+ OPTION_NUMBER_OF_VOTES + " INTEGER, "
+				+ OPTION_PERCENTAGE + " REAL, "
 				+ "FOREIGN KEY(" + OPTION_POLL_ID
 				+ ") REFERENCES " + TABLE_NAME_POLLS + "("
 				+ POLL_ID + "));";
@@ -114,6 +116,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 				option.setText(c2.getString(c2.getColumnIndex(OPTION_TEXT)));
 				option.setPollId(c2.getInt(c2.getColumnIndex(OPTION_POLL_ID)));
 				option.setVotes(c2.getInt(c2.getColumnIndex(OPTION_NUMBER_OF_VOTES)));
+				option.setPercentage(c2.getDouble(c2.getColumnIndex(OPTION_PERCENTAGE)));
 				options.add(option);
 				c2.moveToNext();
 			}
@@ -158,6 +161,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 				option.setText(c2.getString(c2.getColumnIndex(OPTION_TEXT)));
 				option.setPollId(c2.getInt(c2.getColumnIndex(OPTION_POLL_ID)));
 				option.setVotes(c2.getInt(c2.getColumnIndex(OPTION_NUMBER_OF_VOTES)));
+				option.setPercentage(c2.getDouble(c2.getColumnIndex(OPTION_PERCENTAGE)));
 				options.add(option);
 				c2.moveToNext();
 			}
@@ -202,6 +206,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 				option.setText(c2.getString(c2.getColumnIndex(OPTION_TEXT)));
 				option.setPollId(c2.getInt(c2.getColumnIndex(OPTION_POLL_ID)));
 				option.setVotes(c2.getInt(c2.getColumnIndex(OPTION_NUMBER_OF_VOTES)));
+				option.setPercentage(c2.getDouble(c2.getColumnIndex(OPTION_PERCENTAGE)));
 				options.add(option);
 				c2.moveToNext();
 			}
@@ -245,6 +250,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 				option.setText(c2.getString(c2.getColumnIndex(OPTION_TEXT)));
 				option.setPollId(c2.getInt(c2.getColumnIndex(OPTION_POLL_ID)));
 				option.setVotes(c2.getInt(c2.getColumnIndex(OPTION_NUMBER_OF_VOTES)));
+				option.setPercentage(c2.getDouble(c2.getColumnIndex(OPTION_PERCENTAGE)));
 				options.add(option);
 				c2.moveToNext();
 			}
@@ -318,6 +324,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 			valuesOption.put(OPTION_POLL_ID, rowId);
 			valuesOption.put(OPTION_TEXT, option.getText());
 			valuesOption.put(OPTION_NUMBER_OF_VOTES, option.getVotes());
+			valuesOption.put(OPTION_PERCENTAGE, option.getPercentage());
 
 			rowId2 = db.insert(TABLE_NAME_OPTIONS, null, valuesOption);
 		}
@@ -343,6 +350,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 			ContentValues valuesOption = new ContentValues();
 			valuesOption.put(OPTION_TEXT, option.getText());
 			valuesOption.put(OPTION_NUMBER_OF_VOTES, option.getVotes());
+			valuesOption.put(OPTION_PERCENTAGE, option.getPercentage());
 
 			db.update(TABLE_NAME_OPTIONS, valuesOption, strFilterOptions, null);
 		}

@@ -10,13 +10,13 @@
     android:paddingTop="@dimen/activity_vertical_margin" >
     
     <TextView
-        android:id="@+id/result_lib_list_polls_title"
+        android:id="@+id/list_polls_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="0.05"
         android:textSize="40sp"
         android:textStyle=""
-        android:text="@string/result_lib_list_polls_title"/>
+        android:text="@string/list_polls_title"/>
     
     <ListView
         android:id="@android:id/list"

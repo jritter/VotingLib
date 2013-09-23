@@ -41,7 +41,7 @@ public class PollListAdapter extends ArrayAdapter<Poll> {
 			view = convertView;
 		}
 
-		TextView poll_question =  (TextView)view.findViewById(R.id.result_lib_poll_list_question);
+		TextView poll_question =  (TextView)view.findViewById(R.id.poll_question);
 		poll_question.setText(this.values.get(position).getQuestion());
 		
 		return view;
