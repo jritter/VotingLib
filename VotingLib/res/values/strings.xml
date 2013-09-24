@@ -18,5 +18,9 @@
     <string name="cast">Cast</string>
     <string name="title_activity_wait_for_votes">WaitForVotesActivity</string>
     <string name="wait_votes">Thanks for voting!\nWaiting for votes...</string>
-
+    <string name="hello_world">Hello world!</string>
+    <string name="network_password">Network Password</string>
+    <string name="network_wlan_key">WLAN Key</string>
+    <string name="join">Join</string>
+    
 </resources>
