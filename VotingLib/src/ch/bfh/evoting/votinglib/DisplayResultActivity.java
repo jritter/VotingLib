@@ -12,6 +12,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -66,7 +67,9 @@ public class DisplayResultActivity extends ListActivity {
 			try {
 				int newPollId = (int)PollDbHelper.getInstance(this).savePoll(poll);
 				this.pollId = newPollId;
+				poll.setId(newPollId);
 			} catch (DatabaseException e) {
+				Log.e(this.getClass().getSimpleName(), "DB error: "+e.getMessage());
 				e.printStackTrace();
 			}
 		}

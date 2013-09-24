@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="25dp"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/participant_img"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/user"
+        android:layout_gravity="left" />
+
+    <TextView
+        android:id="@+id/participant_identification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:gravity="left"
+        android:singleLine="true"
+        android:textSize="20sp"
+        android:textStyle="" >
+    </TextView>
+    
+    <ImageView
+        android:id="@+id/cast_img"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/wait"
+        android:layout_gravity="right" />
+
+</LinearLayout>

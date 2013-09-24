@@ -13,5 +13,10 @@
     <string name="header_option">Option</string>
     <string name="delete_poll_confirm_title">Delete the poll?</string>
     <string name="delete_poll_confirm_text">Do you really want to delete this poll? It won\'t be accessible anymore.</string>
+    <string name="title_activity_vote">VoteActivity</string>
+    <string name="vote_title">Vote</string>
+    <string name="cast">Cast</string>
+    <string name="title_activity_wait_for_votes">WaitForVotesActivity</string>
+    <string name="wait_votes">Thanks for voting!\nWaiting for votes...</string>
 
 </resources>

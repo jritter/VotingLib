@@ -1,23 +1,32 @@
 package ch.bfh.evoting.votinglib.entities;
 
+import java.io.Serializable;
+
 /**
  * Class representing a participant to the poll
  * @author Philémon von Bergen
  *
  */
-public class Participant {
+public class Participant implements Serializable{
 	
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String identification;
 	private String ipAddress;
+	private boolean hasVoted;
 	
 	/**
 	 * Construct a Participant object
 	 * @param identification the identification of the participant
 	 * @param ipAddress the IP address of the participant
 	 */
-	public Participant(String identification, String ipAddress){
+	public Participant(String identification, String ipAddress, boolean hasVoted){
 		this.identification = identification;
 		this.ipAddress = ipAddress;
+		this.hasVoted = hasVoted;
 	}
 	
 	/**
@@ -51,5 +60,22 @@ public class Participant {
 	public void setIpAddress(String ipAddress) {
 		this.ipAddress = ipAddress;
 	}
+	
+	/**
+	 * Indicates if the participant has already cast her ballot
+	 * @return true if casted
+	 */
+	public boolean hasVoted() {
+		return hasVoted;
+	}
+
+	/**
+	 * Set if the participant has already cast her ballot
+	 * @param hasVoted true if casted
+	 */
+	public void setHasVoted(boolean hasVoted) {
+		this.hasVoted = hasVoted;
+	}
+
 	
 }

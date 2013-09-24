@@ -14,28 +14,28 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="ch.bfh.evoting.votinglib.VotingLibMainActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        
-        <activity
             android:name="ch.bfh.evoting.votinglib.ListTerminatedPollsActivity"
             android:label="@string/app_name" >
+
+            <!--
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            -->
         </activity>
         <activity
             android:name="ch.bfh.evoting.votinglib.DisplayResultActivity"
             android:label="@string/app_name" >
-            
+        </activity>
+        <activity
+            android:name="ch.bfh.evoting.votinglib.VoteActivity"
+            android:label="@string/title_activity_vote" >
+        </activity>
+        <activity
+            android:name="ch.bfh.evoting.votinglib.WaitForVotesActivity"
+            android:label="@string/title_activity_wait_for_votes" >
         </activity>
     </application>
 

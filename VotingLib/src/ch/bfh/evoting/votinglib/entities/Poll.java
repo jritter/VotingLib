@@ -17,6 +17,7 @@ public class Poll implements Serializable {
 	private int id;
 	private String question;
 	private List<Option> options;
+	private List<Participant> participants;
 	private long startTime;
 	private boolean isTerminated;
 	
@@ -87,6 +88,23 @@ public class Poll implements Serializable {
 	 */
 	public void setOptions(List<Option> options) {
 		this.options = options;
+	}
+	
+	/**
+	 * Get the participants to the poll
+	 * @return a list of participant objects
+	 */
+	public List<Participant> getParticipants() {
+		return participants;
+	}
+
+	/**
+	 * Set the participants to the poll. 
+	 * Be careful, the participants are not stored in the DB since they are dependent on the network
+	 * @param participants a list of participant objects
+	 */
+	public void setParticipants(List<Participant> participants) {
+		this.participants = participants;
 	}
 
 	/**
