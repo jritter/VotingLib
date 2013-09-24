@@ -11,11 +11,23 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import ch.bfh.evoting.votinglib.entities.Option;
 
+/**
+ * Adapter listing the different vote options that can be chosen in the vote
+ * This class is used in the Android ListView
+ * @author Philémon von Bergen
+ *
+ */
 public class VoteOptionListAdapter extends ArrayAdapter<Option> {
 
 	private Context context;
 	private List<Option> values;
 	
+	/**
+	 * Create an adapter object
+	 * @param context android context
+	 * @param textViewResourceId id of the layout that must be inflated
+	 * @param objects list of options that can be chosen in the vote
+	 */
 	public VoteOptionListAdapter(Context context, int textViewResourceId, List<Option> objects) {
 		super(context, textViewResourceId, objects);
 		this.context=context;

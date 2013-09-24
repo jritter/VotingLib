@@ -5,8 +5,9 @@ import java.util.Date;
 
 import ch.bfh.evoting.votinglib.entities.DatabaseException;
 import ch.bfh.evoting.votinglib.entities.Poll;
-import ch.bfh.evoting.votinglib.entities.Utility;
+import ch.bfh.evoting.votinglib.util.Utility;
 import android.os.Bundle;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
@@ -21,19 +22,23 @@ import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+/**
+ * Activity displaying the results of a poll
+ * @author Philémon von Bergen
+ *
+ */
 public class DisplayResultActivity extends ListActivity {
-
-	public DisplayResultActivity(){}
 
 	private int pollId;
 
+	@SuppressLint("SimpleDateFormat")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_display_result);
 
+		//Create the listener of the button
 		final Context context = this.getApplicationContext();
-
 		Button btnClose = (Button) this.findViewById(R.id.display_result_close_button);
 		btnClose.setOnClickListener(new OnClickListener(){
 			@Override
@@ -42,6 +47,7 @@ public class DisplayResultActivity extends ListActivity {
 			}
 		});
 
+		//Get the data in the intent
 		Poll poll = (Poll)this.getIntent().getSerializableExtra("poll");
 		boolean saveToDbNeeded = this.getIntent().getBooleanExtra("saveToDb", false);
 		if(poll.getId()>=0){
@@ -50,6 +56,7 @@ public class DisplayResultActivity extends ListActivity {
 			pollId = -1;
 		}
 
+		//Set GUI informations
 		TextView question = (TextView)findViewById(R.id.poll_question);
 		question.setText(poll.getQuestion());
 
@@ -59,10 +66,12 @@ public class DisplayResultActivity extends ListActivity {
 		TextView poll_time = (TextView)findViewById(R.id.poll_start_time);
 		poll_time.setText(getString(R.string.poll_start_time) + ": " + sdf.format(resultdate));
 		
+		//Create the list
 		setListAdapter(new OptionListAdapter(this, R.layout.list_item_result, poll.getOptions()));
 		Utility.setListViewHeightBasedOnChildren(this.getListView());
 		((ScrollView)this.findViewById(R.id.scrollview)).smoothScrollTo(0, 0);
 		
+		//Save the poll to the DB if needed
 		if(saveToDbNeeded){
 			try {
 				int newPollId = (int)PollDbHelper.getInstance(this).savePoll(poll);
@@ -94,8 +103,10 @@ public class DisplayResultActivity extends ListActivity {
 		
 		final Context ctx = this.getApplicationContext();
 		
+		//Delete option of the menu
 		if(item.getItemId()==R.id.action_delete) {
 			if(this.pollId!=-1){
+				//Confirmation dialog
 				AlertDialog alertDialog = new AlertDialog.Builder(this).create();
 				alertDialog.setTitle(R.string.delete_poll_confirm_title);
 				alertDialog.setMessage(getString(R.string.delete_poll_confirm_text));

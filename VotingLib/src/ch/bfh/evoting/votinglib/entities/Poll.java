@@ -10,9 +10,6 @@ import java.util.List;
  */
 public class Poll implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private int id;
 	private String question;
@@ -32,13 +29,15 @@ public class Poll implements Serializable {
 	 * @param question text of the poll's question
 	 * @param startTime time when the poll has begun
 	 * @param options list of the possible options for the voter
+	 * @param participants list of participants to the poll
 	 * @param isTerminated true if Poll is terminated
 	 */
-	public Poll(int id, String question, long startTime, List<Option> options, boolean isTerminated){
+	public Poll(int id, String question, long startTime, List<Option> options, List<Participant> participants, boolean isTerminated){
 		this.id = id;
 		this.question = question;
 		this.startTime = startTime;
 		this.options = options;
+		this.participants = participants;
 		this.isTerminated = isTerminated;
 	}
 	

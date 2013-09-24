@@ -13,11 +13,23 @@ import android.widget.TextView;
 import ch.bfh.evoting.votinglib.entities.Option;
 import ch.bfh.evoting.votinglib.entities.Participant;
 
+/**
+ * Adapter listing the participants that already have voted and those who are still voting
+ * This class is used in the Android ListView
+ * @author Philémon von Bergen
+ *
+ */
 public class WaitParticipantListAdapter extends ArrayAdapter<Participant> {
 
 	private Context context;
 	private List<Participant> values;
 	
+	/**
+	 * Create an adapter object
+	 * @param context android context
+	 * @param textViewResourceId id of the layout that must be inflated
+	 * @param objects list of participants that have to be displayed
+	 */
 	public WaitParticipantListAdapter(Context context, int textViewResourceId, List<Participant> objects) {
 		super(context, textViewResourceId, objects);
 		this.context=context;
@@ -36,11 +48,13 @@ public class WaitParticipantListAdapter extends ArrayAdapter<Participant> {
 			view = convertView;
 		}
 		
+		//set the correct image
 		if(this.values.get(position).hasVoted()==true){
 			ImageView iv = (ImageView)view.findViewById(R.id.cast_img);
 			iv.setImageResource(R.drawable.cast);
 		}
 
+		//set the participant identification
 		TextView optionText =  (TextView)view.findViewById(R.id.participant_identification);
 		optionText.setText(this.values.get(position).getIdentification());
 		

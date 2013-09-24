@@ -19,6 +19,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.Menu;
 import android.widget.ProgressBar;
 
+/**
+ * Activity show when the participant has already submitted her vote but other voters are still voting
+ * @author Philémon von Bergen
+ *
+ */
 public class WaitForVotesActivity extends ListActivity {
 
 	private int progressBarMaxValue = 0;
@@ -33,13 +38,16 @@ public class WaitForVotesActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_wait_for_votes);
 
+		//Get data in the intent
 		Intent intent = this.getIntent();
 		poll = (Poll)intent.getSerializableExtra("poll");
 		participants = poll.getParticipants();
 
+		//Create the adapter for the ListView
 		wpAdapter = new WaitParticipantListAdapter(this, R.layout.list_item_participant_wait, participants);
 		this.setListAdapter(wpAdapter);
 		
+		//Initialize the progress bar 
 		progress = 0;
 		pb=(ProgressBar)findViewById(R.id.progress_bar);
 		progressBarMaxValue = pb.getMax();
@@ -74,17 +82,15 @@ public class WaitForVotesActivity extends ListActivity {
 		}.execute();
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.wait_for_votes, menu);
-		return true;
-	}
-
-	public void updateStatus(int progress){
+	/**
+	 * Update the state of the progress bar, change the image of the participants when they have voted
+	 * and start the activity which displays the results
+	 * @param progress
+	 */
+	private void updateStatus(int progress){
+		//update progress bar and participants list
 		this.progress = progress;
 		pb.setProgress(progress);
-		
 		wpAdapter.notifyDataSetChanged();
 		
 		if(this.progress>=100){
@@ -97,11 +103,10 @@ public class WaitForVotesActivity extends ListActivity {
 			
 			poll.setTerminated(true);
 			
-			//go to result lib
+			//start to result activity
 			Intent intent = new Intent(this, DisplayResultActivity.class);
 			intent.putExtra("poll", (Serializable)poll);
 			intent.putExtra("saveToDb", true);
-
 			startActivity(intent);
 		}
 	}

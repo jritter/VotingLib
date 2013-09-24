@@ -8,8 +8,9 @@
         android:id="@+id/participant_img"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:src="@drawable/user"
-        android:layout_gravity="left" />
+        android:layout_gravity="left"
+        android:contentDescription="participant avatar"
+        android:src="@drawable/user" />
 
     <TextView
         android:id="@+id/participant_identification"
@@ -21,12 +22,13 @@
         android:textSize="20sp"
         android:textStyle="" >
     </TextView>
-    
+
     <ImageView
         android:id="@+id/cast_img"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:src="@drawable/wait"
-        android:layout_gravity="right" />
+        android:layout_gravity="right"
+        android:contentDescription="participant state"
+        android:src="@drawable/wait" />
 
 </LinearLayout>

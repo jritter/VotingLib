@@ -89,7 +89,6 @@
                 android:gravity="center_vertical" >
             </ListView>
 
-
             <Button
                 android:id="@+id/display_result_close_button"
                 style="?android:attr/buttonStyleSmall"

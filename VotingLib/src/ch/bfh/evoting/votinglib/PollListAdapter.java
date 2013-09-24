@@ -15,7 +15,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 /**
- * List adapter to show the result as a list
+ * List adapter showing the terminated polls as a list
+ * This class is used in the Android ListView
  * @author von Bergen Philémon
  */
 public class PollListAdapter extends ArrayAdapter<Poll> {
@@ -23,8 +24,13 @@ public class PollListAdapter extends ArrayAdapter<Poll> {
 	private Context context;
 	private List<Poll> values;
 
-	public PollListAdapter(Context context,
-			int textViewResourceId, List<Poll> objects) {
+	/**
+	 * Create an adapter object
+	 * @param context android context
+	 * @param textViewResourceId id of the layout that must be inflated
+	 * @param objects list of polls that have to be listed
+	 */
+	public PollListAdapter(Context context, int textViewResourceId, List<Poll> objects) {
 		super(context, textViewResourceId, objects);
 		this.context=context;
 		this.values=objects;

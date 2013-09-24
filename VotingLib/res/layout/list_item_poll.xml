@@ -9,18 +9,15 @@
         android:id="@+id/poll_img"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:src="@drawable/poll" />
-    
-    
+        android:src="@drawable/poll"
+        android:contentDescription="Poll image" />
+
     <TextView
-            android:id="@+id/poll_question"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:textStyle="" >
-
+        android:id="@+id/poll_question"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textStyle="" >
     </TextView>
-        
-    
 
-</LinearLayout> 
+</LinearLayout>

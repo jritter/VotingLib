@@ -9,10 +9,6 @@ import java.io.Serializable;
  */
 public class Participant implements Serializable{
 	
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private String identification;
 	private String ipAddress;
@@ -22,6 +18,7 @@ public class Participant implements Serializable{
 	 * Construct a Participant object
 	 * @param identification the identification of the participant
 	 * @param ipAddress the IP address of the participant
+	 * @param hasVoted indicated if the participant already has submitted a vote
 	 */
 	public Participant(String identification, String ipAddress, boolean hasVoted){
 		this.identification = identification;

@@ -14,6 +14,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+/**
+ * Helper class to access to the application database
+ * @author Philémon von Bergen
+ *
+ */
 public class PollDbHelper extends SQLiteOpenHelper {
 
 	// Basic DB parameters
@@ -39,11 +44,20 @@ public class PollDbHelper extends SQLiteOpenHelper {
 	
 	private static PollDbHelper instance;
 
+	/**
+	 * Private constructor of this helper
+	 * @param context
+	 */
 	private PollDbHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		
 	}
 
+	/**
+	 * Return the instance of the DB Helper
+	 * @param ctx android context
+	 * @return a DB hepler object
+	 */
 	public static PollDbHelper getInstance(Context ctx) {
 
 		if (instance == null) {
@@ -88,6 +102,10 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 	
+	/**
+	 * Get all non-terminated poll
+	 * @return a list of non terminated polls
+	 */
 	public List<Poll> getAllOpenPolls(){
 		SQLiteDatabase db = getReadableDatabase();
 
@@ -133,6 +151,10 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		return polls;
 	}
 	
+	/**
+	 * Get all terminated polls
+	 * @return a list of terminated polls
+	 */
 	public List<Poll> getAllTerminatedPolls(){
 		SQLiteDatabase db = getReadableDatabase();
 
@@ -178,6 +200,10 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		return polls;
 	}
 
+	/**
+	 * Get all terminated and non-terminated polls
+	 * @return list of all polls
+	 */
 	public List<Poll> getAllPolls(){
 		SQLiteDatabase db = getReadableDatabase();
 
@@ -223,6 +249,11 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		return polls;
 	}
 
+	/**
+	 * Get the poll with the given id
+	 * @param pollId id of the poll wanted
+	 * @return the poll object
+	 */
 	public Poll getPoll(int pollId){
 		SQLiteDatabase db = getReadableDatabase();
 
@@ -266,48 +297,12 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		return poll;
 	}
 	
-	/*public Poll getTerminatedPoll(int pollId){
-		SQLiteDatabase db = getReadableDatabase();
-
-		String sql1 = "SELECT * FROM " + TABLE_NAME_POLLS + " WHERE " + POLL_ID + "=" + pollId + ";";
-		Cursor c1 = db.rawQuery(sql1, null);
-		
-		Poll poll = new Poll();
-
-		c1.moveToFirst();
-		while(!c1.isAfterLast()){
-			poll.setId(c1.getInt(c1.getColumnIndex(POLL_ID)));
-			poll.setQuestion(c1.getString(c1.getColumnIndex(POLL_QUESTION)));
-			poll.setStartTime(c1.getLong(c1.getColumnIndex(POLL_START_TIME)));
-			poll.setTerminated(c1.getInt(c1.getColumnIndex(POLL_IS_TERMINATED)) == 1);
-
-			String sql2 = "SELECT * FROM " + TABLE_NAME_OPTIONS + " WHERE " + OPTION_POLL_ID + "=" + c1.getInt(c1.getColumnIndex(POLL_ID)) + ";";
-			Cursor c2 = db.rawQuery(sql2, null);
-
-			List<Option> options = new ArrayList<Option>();
-
-			c2.moveToFirst();
-			while(!c2.isAfterLast()){
-				Option option = new Option();
-				option.setId(c2.getInt(c2.getColumnIndex(OPTION_ID)));
-				option.setText(c2.getString(c2.getColumnIndex(OPTION_TEXT)));
-				option.setPollId(c2.getInt(c2.getColumnIndex(OPTION_POLL_ID)));
-				option.setVotes(c2.getInt(c2.getColumnIndex(OPTION_NUMBER_OF_VOTES)));
-				options.add(option);
-				c2.moveToNext();
-			}
-			c2.close();
-
-			poll.setOptions(options);
-			
-			c1.moveToNext();
-		}
-
-		c1.close();
-		db.close();
-		return poll;
-	}*/
-
+	/**
+	 * Save a poll into the database
+	 * @param poll the poll to save
+	 * @return the id of the row where the poll has been inserted
+	 * @throws DatabaseException thrown when an error occured inserting the record in the db
+	 */
 	public long savePoll(Poll poll) throws DatabaseException{
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues valuesPoll = new ContentValues();
@@ -336,7 +331,12 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		return rowId;
 	}
 	
-	public long updatePoll(int pollId, Poll poll){
+	/**
+	 * Update an already existing poll in the DB
+	 * @param pollId id of the poll to update
+	 * @param poll the poll object containing the data to update
+	 */
+	public void updatePoll(int pollId, Poll poll){
 		SQLiteDatabase db = getWritableDatabase();
 		String strFilter = POLL_ID + "=" + pollId;
 		ContentValues valuesPoll = new ContentValues();
@@ -356,9 +356,12 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		}
 		
 		db.close();
-		return rowId;
 	}
 
+	/**
+	 * Get the number of open polls in the database
+	 * @return the number of open polls in the database
+	 */
 	public int getNumberOfOpenPolls(){
 		String countQuery = "SELECT  * FROM " + TABLE_NAME_POLLS + " WHERE "+ POLL_IS_TERMINATED +"=0 ORDER BY ID ASC;";
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -370,6 +373,10 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		return count;
 	}
 	
+	/**
+	 * Get the number of terminated poll in the database
+	 * @return the number of terminated poll in the database
+	 */
 	public int getNumberOfTerminatedPolls(){
 		String countQuery = "SELECT  * FROM " + TABLE_NAME_POLLS + " WHERE "+ POLL_IS_TERMINATED +"=1 ORDER BY ID ASC;";
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -381,6 +388,10 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		return count;
 	}
 	
+	/**
+	 * Get the total number of poll
+	 * @return the total number of poll
+	 */
 	public int getNumberOfPolls(){
 		String countQuery = "SELECT  * FROM " + TABLE_NAME_POLLS + " ORDER BY ID ASC;";
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -392,6 +403,11 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		return count;
 	}
 
+	/**
+	 * Get the number of option for the given poll
+	 * @param pollId id of the poll
+	 * @return number of option of this poll
+	 */
 	public int getNumberOfOptionsForPoll(int pollId){
 		String countQuery = "SELECT  * FROM " + TABLE_NAME_OPTIONS + " WHERE " + OPTION_POLL_ID + "=" + pollId + " ORDER BY ID ASC;";
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -403,6 +419,10 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		return count;
 	}
 	
+	/**
+	 * Delete a poll from the db
+	 * @param pollId id of the poll to delete
+	 */
 	public void deletePoll(int pollId){
 		SQLiteDatabase db = this.getWritableDatabase();
 		

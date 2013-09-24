@@ -22,15 +22,15 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:max="100"
-        android:layout_below="@id/wait_votes" />
+        android:layout_below="@id/wait_votes"
+        android:max="100" />
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_below="@id/progress_bar" >
+        android:layout_below="@id/progress_bar"
+        android:gravity="center_vertical" >
     </ListView>
 
 </RelativeLayout>
