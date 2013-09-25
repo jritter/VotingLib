@@ -343,7 +343,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		valuesPoll.put(POLL_QUESTION, poll.getQuestion());
 		valuesPoll.put(POLL_START_TIME, poll.getStartTime());
 		valuesPoll.put(POLL_IS_TERMINATED, poll.isTerminated());
-		long rowId = db.update(TABLE_NAME_POLLS, valuesPoll, strFilter, null);
+		db.update(TABLE_NAME_POLLS, valuesPoll, strFilter, null);
 			
 		for(Option option : poll.getOptions()){
 			String strFilterOptions = OPTION_ID + "=" + option.getId() + " AND " + OPTION_POLL_ID + "=" + pollId;

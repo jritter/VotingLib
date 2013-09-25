@@ -7,10 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import ch.bfh.evoting.votinglib.entities.Option;
 import ch.bfh.evoting.votinglib.entities.Participant;
 
 /**
@@ -48,10 +46,12 @@ public class WaitParticipantListAdapter extends ArrayAdapter<Participant> {
 			view = convertView;
 		}
 		
+		ImageView iv = (ImageView)view.findViewById(R.id.cast_img);
 		//set the correct image
 		if(this.values.get(position).hasVoted()==true){
-			ImageView iv = (ImageView)view.findViewById(R.id.cast_img);
 			iv.setImageResource(R.drawable.cast);
+		} else {
+			iv.setImageResource(R.drawable.wait);
 		}
 
 		//set the participant identification

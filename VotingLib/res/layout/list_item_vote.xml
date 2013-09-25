@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="25dp"
-    android:orientation="horizontal" >
+    android:layout_height="35dp" >
 
     <CheckBox
         android:id="@+id/checkbox_vote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_gravity="left"
-        android:layout_marginRight="10sp"
         android:onClick="handleCheckBoxEvent" />
 
     <TextView
         android:id="@+id/vote_option"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/checkbox_vote"
+        android:paddingTop="3dip"
         android:ellipsize="end"
         android:gravity="left"
         android:singleLine="true"
@@ -23,4 +24,4 @@
         android:textStyle="" >
     </TextView>
 
-</LinearLayout>
+</RelativeLayout>

@@ -68,7 +68,7 @@ public class DisplayResultActivity extends ListActivity {
 		
 		//Create the list
 		setListAdapter(new OptionListAdapter(this, R.layout.list_item_result, poll.getOptions()));
-		Utility.setListViewHeightBasedOnChildren(this.getListView());
+		Utility.setListViewHeightBasedOnChildren(this.getListView(), false);
 		((ScrollView)this.findViewById(R.id.scrollview)).smoothScrollTo(0, 0);
 		
 		//Save the poll to the DB if needed

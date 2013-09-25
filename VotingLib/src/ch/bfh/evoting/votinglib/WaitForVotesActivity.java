@@ -15,9 +15,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.support.v4.content.LocalBroadcastManager;
-import android.view.Menu;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 /**
  * Activity show when the participant has already submitted her vote but other voters are still voting
@@ -30,8 +32,10 @@ public class WaitForVotesActivity extends ListActivity {
 	private Poll poll;
 	private List<Participant> participants;
 	private ProgressBar pb;
-	private int progress;
+	private int numberOfVotes;
 	private WaitParticipantListAdapter wpAdapter;
+	
+	private  TextView castVotes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +52,21 @@ public class WaitForVotesActivity extends ListActivity {
 		this.setListAdapter(wpAdapter);
 		
 		//Initialize the progress bar 
-		progress = 0;
+		numberOfVotes = 0;
 		pb=(ProgressBar)findViewById(R.id.progress_bar);
 		progressBarMaxValue = pb.getMax();
+				
+		castVotes = (TextView)findViewById(R.id.cast_votes);
+		castVotes.setText(getString(R.string.cast_votes, 0, participants.size()));
+		
 		
 		//Register a BroadcastReceiver on participantStateUpdate events
 		LocalBroadcastManager.getInstance(this).registerReceiver(new BroadcastReceiver(){
 
 			@Override
 			public void onReceive(Context arg0, Intent arg1) {
-				updateStatus(progress + progressBarMaxValue/poll.getParticipants().size());
+				numberOfVotes++;
+				updateStatus(numberOfVotes);
 			}
 			
 		}, new IntentFilter(BroadcastIntentTypes.participantStateUpdate));
@@ -68,13 +77,14 @@ public class WaitForVotesActivity extends ListActivity {
 			@Override
 			protected Object doInBackground(Object... arg0) {
 				int pos = 0;
-				while(progress<progressBarMaxValue){
+				while(numberOfVotes<participants.size()){
+					SystemClock.sleep(2000);
 					if(pos<poll.getParticipants().size()){
 						poll.getParticipants().get(pos).setHasVoted(true);
 						pos++;
+						LocalBroadcastManager.getInstance(WaitForVotesActivity.this).sendBroadcast(new Intent(BroadcastIntentTypes.participantStateUpdate));
 					}
-					LocalBroadcastManager.getInstance(WaitForVotesActivity.this).sendBroadcast(new Intent(BroadcastIntentTypes.participantStateUpdate));
-					SystemClock.sleep(1000);
+					
 					
 				}
 				return null;
@@ -87,13 +97,16 @@ public class WaitForVotesActivity extends ListActivity {
 	 * and start the activity which displays the results
 	 * @param progress
 	 */
-	private void updateStatus(int progress){
+	private void updateStatus(int numberOfReceivedVotes){
 		//update progress bar and participants list
-		this.progress = progress;
+		int progress = numberOfReceivedVotes*progressBarMaxValue/poll.getParticipants().size();
+		
 		pb.setProgress(progress);
 		wpAdapter.notifyDataSetChanged();
+		castVotes.setText(getString(R.string.cast_votes, numberOfReceivedVotes, participants.size()));
+
 		
-		if(this.progress>=100){
+		if(progress>=100){
 			//TODO get through compute result and set result
 			List<Option> options = poll.getOptions();
 			for(Option option : options){

@@ -1,22 +1,16 @@
 package ch.bfh.evoting.votinglib;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import ch.bfh.evoting.votinglib.entities.Option;
-import ch.bfh.evoting.votinglib.entities.Participant;
 import ch.bfh.evoting.votinglib.entities.Poll;
-import ch.bfh.evoting.votinglib.util.JavaSerialization;
-import ch.bfh.evoting.votinglib.util.SerializationUtil;
 import ch.bfh.evoting.votinglib.util.Utility;
 
 import android.os.Bundle;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.util.SparseBooleanArray;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -50,7 +44,7 @@ public class VoteActivity extends ListActivity {
 		question = poll.getQuestion();
 
 		//Set the question text
-		TextView questionView = (TextView)findViewById(R.id.poll_question);
+		TextView questionView = (TextView)findViewById(R.id.vote_poll_question);
 		questionView.setText(question);
 
 		//Set a listener on the cast button
@@ -64,7 +58,7 @@ public class VoteActivity extends ListActivity {
 
 		//create the list of vote options
 		this.setListAdapter(new VoteOptionListAdapter(this, R.layout.list_item_vote, options));
-		Utility.setListViewHeightBasedOnChildren(this.getListView());
+		Utility.setListViewHeightBasedOnChildren(this.getListView(), false);
 		((ScrollView)this.findViewById(R.id.scrollview)).smoothScrollTo(0, 0);
 	}
 
