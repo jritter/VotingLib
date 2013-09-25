@@ -71,7 +71,7 @@ public class VoteActivity extends ListActivity {
 
 		//get position of the checkbox
 		int position = Integer.parseInt(cb.getTag().toString());
-		
+
 		//TODO check if allowed
 
 		//Put the element in the list
@@ -80,6 +80,11 @@ public class VoteActivity extends ListActivity {
 		} else {
 			boxChecked.delete(position);
 		}
+	}
+
+	@Override
+	public void onBackPressed() {
+		//do nothing because we don't want that people access to an anterior activity
 	}
 
 	/**

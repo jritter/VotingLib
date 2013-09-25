@@ -91,6 +91,11 @@ public class WaitForVotesActivity extends ListActivity {
 			}
 		}.execute();
 	}
+	
+	@Override
+	public void onBackPressed() {
+		//do nothing because we don't want that people access to an anterior activity
+	}
 
 	/**
 	 * Update the state of the progress bar, change the image of the participants when they have voted

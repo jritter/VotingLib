@@ -30,6 +30,7 @@ import android.widget.TextView;
 public class DisplayResultActivity extends ListActivity {
 
 	private int pollId;
+	private boolean saveToDbNeeded;
 
 	@SuppressLint("SimpleDateFormat")
 	@Override
@@ -49,7 +50,7 @@ public class DisplayResultActivity extends ListActivity {
 
 		//Get the data in the intent
 		Poll poll = (Poll)this.getIntent().getSerializableExtra("poll");
-		boolean saveToDbNeeded = this.getIntent().getBooleanExtra("saveToDb", false);
+		saveToDbNeeded = this.getIntent().getBooleanExtra("saveToDb", false);
 		if(poll.getId()>=0){
 			pollId = poll.getId();
 		} else {
@@ -92,6 +93,14 @@ public class DisplayResultActivity extends ListActivity {
 		return true;
 	}
 
+	@Override
+	public void onBackPressed() {
+		if(!this.saveToDbNeeded){
+			super.onBackPressed();
+		} else {
+			//do nothing we don't want that people reaccess to an old activity
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
