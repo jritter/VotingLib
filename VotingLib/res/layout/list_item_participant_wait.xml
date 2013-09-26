@@ -4,7 +4,7 @@
     android:layout_height="35dp" >
 
     <ImageView
-        android:id="@+id/participant_img"
+        android:id="@+id/imageview_participant_img"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_alignParentLeft="true"
@@ -14,7 +14,7 @@
         android:layout_marginTop="5dip" />
 
     <ImageView
-        android:id="@+id/cast_img"
+        android:id="@+id/imageview_cast_img"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_alignParentRight="true"
@@ -24,11 +24,11 @@
         android:layout_marginTop="5dip" />
 
     <TextView
-        android:id="@+id/participant_identification"
+        android:id="@+id/textview_participant_identification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/cast_img"
-        android:layout_toRightOf="@id/participant_img"
+        android:layout_toLeftOf="@id/imageview_cast_img"
+        android:layout_toRightOf="@id/imageview_participant_img"
         android:ellipsize="end"
         android:gravity="left"
         android:paddingLeft="9dip"

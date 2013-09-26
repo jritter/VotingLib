@@ -7,7 +7,7 @@
     android:weightSum="1.0" >
 
     <TextView
-        android:id="@+id/result_option"
+        android:id="@+id/textview_result_option"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.65"
@@ -19,7 +19,7 @@
     </TextView>
 
     <TextView
-        android:id="@+id/result_received_votes"
+        android:id="@+id/textview_result_received_votes"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.2"
@@ -28,7 +28,7 @@
     </TextView>
 
     <TextView
-        android:id="@+id/result_percentage"
+        android:id="@+id/textview_result_percentage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="0.15"

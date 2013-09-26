@@ -40,10 +40,12 @@ public class Utility {
 				totalHeight += listItem.getMeasuredHeight();
 			}
 			params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+			Log.e("test auto height", "total height " + totalHeight + " count "+listAdapter.getCount());
 		} else {
 			//if item height is fixed in xml layout
 			int itemHeight = listAdapter.getView(0, null, listView).getLayoutParams().height;
 			params.height = (itemHeight*listAdapter.getCount()) + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+			Log.e("test auto height", "item height " + itemHeight + " count "+listAdapter.getCount());
 		}
 		listView.setLayoutParams(params);
 		listView.requestLayout();

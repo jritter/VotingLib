@@ -49,7 +49,7 @@ public class VoteOptionListAdapter extends ArrayAdapter<Option> {
 			view = convertView;
 		}
 
-		TextView optionText =  (TextView)view.findViewById(R.id.vote_option);
+		TextView optionText =  (TextView)view.findViewById(R.id.textview_vote_option);
 		optionText.setText(this.values.get(position).getText());
 		
 		return view;

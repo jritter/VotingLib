@@ -12,10 +12,10 @@
         android:onClick="handleCheckBoxEvent" />
 
     <TextView
-        android:id="@+id/vote_option"
+        android:id="@+id/textview_vote_option"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/checkbox_vote"
+        android:layout_toRightOf="@id/checkbox_vote"
         android:paddingTop="3dip"
         android:ellipsize="end"
         android:gravity="left"

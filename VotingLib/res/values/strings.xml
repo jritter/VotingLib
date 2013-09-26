@@ -16,7 +16,6 @@
     <string name="vote_title">Please vote</string>
     <string name="cast">Cast</string>
     <string name="wait_votes">Thanks for voting!\nWaiting for votes...</string>
-    <string name="hello_world">Hello world!</string>
     <string name="network_password">Network Password</string>
     <string name="network_wlan_key">WLAN Key</string>
     <string name="join">Join</string>
@@ -28,5 +27,6 @@
     <string name="poll_image">Poll image</string>
     <string name="participant_avatar">Participant avatar</string>
     <string name="participant_state">Participant state</string>
-
+    <string name="home">Home</string>
+    
 </resources>

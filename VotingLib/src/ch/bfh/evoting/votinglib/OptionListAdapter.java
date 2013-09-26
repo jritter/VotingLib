@@ -44,14 +44,14 @@ public class OptionListAdapter extends ArrayAdapter<Option> {
 			view = convertView;
 		}
 
-		TextView optionText =  (TextView)view.findViewById(R.id.result_option);
+		TextView optionText =  (TextView)view.findViewById(R.id.textview_result_option);
 		optionText.setText(this.values.get(position).getText());
 
-		TextView optionVotes =  (TextView)view.findViewById(R.id.result_received_votes);
+		TextView optionVotes =  (TextView)view.findViewById(R.id.textview_result_received_votes);
 		String text = ""+this.values.get(position).getVotes();
 		optionVotes.setText(text);
 
-		TextView optionPercentage =  (TextView)view.findViewById(R.id.result_percentage);
+		TextView optionPercentage =  (TextView)view.findViewById(R.id.textview_result_percentage);
 		String textPercentage = ""+this.values.get(position).getPercentage();
 		optionPercentage.setText(textPercentage);
 

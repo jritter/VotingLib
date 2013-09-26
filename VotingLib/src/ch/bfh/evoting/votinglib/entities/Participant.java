@@ -8,22 +8,25 @@ import java.io.Serializable;
  *
  */
 public class Participant implements Serializable{
-	
+
 	private static final long serialVersionUID = 1L;
 	private String identification;
 	private String ipAddress;
 	private boolean hasVoted;
+	private boolean isSelected;
 	
 	/**
 	 * Construct a Participant object
 	 * @param identification the identification of the participant
 	 * @param ipAddress the IP address of the participant
+	 * @param isSelected indicate if the participant in the network is selected as member of the electorate
 	 * @param hasVoted indicated if the participant already has submitted a vote
 	 */
-	public Participant(String identification, String ipAddress, boolean hasVoted){
+	public Participant(String identification, String ipAddress, boolean isSelected, boolean hasVoted){
 		this.identification = identification;
 		this.ipAddress = ipAddress;
 		this.hasVoted = hasVoted;
+		this.isSelected = isSelected;
 	}
 	
 	/**
@@ -74,5 +77,20 @@ public class Participant implements Serializable{
 		this.hasVoted = hasVoted;
 	}
 
+	/**
+	 * Indicate if the participant in the network is selected as member of the electorate
+	 * @return true if she belongs to the electorate
+	 */
+	public boolean isSelected() {
+		return isSelected;
+	}
+
+	/**
+	 * Set if the participant in the network is selected as member of the electorate
+	 * @param isSelected true if she belongs to the electorate
+	 */
+	public void setSelected(boolean isSelected) {
+		this.isSelected = isSelected;
+	}
 	
 }

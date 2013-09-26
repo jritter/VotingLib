@@ -44,11 +44,11 @@ public class VoteActivity extends ListActivity {
 		question = poll.getQuestion();
 
 		//Set the question text
-		TextView questionView = (TextView)findViewById(R.id.vote_poll_question);
+		TextView questionView = (TextView)findViewById(R.id.textview_vote_poll_question);
 		questionView.setText(question);
 
 		//Set a listener on the cast button
-		Button cast = (Button)findViewById(R.id.cast_button);
+		Button cast = (Button)findViewById(R.id.button_cast_button);
 		cast.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {

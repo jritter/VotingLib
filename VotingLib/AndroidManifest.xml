@@ -28,6 +28,7 @@
             android:name="ch.bfh.evoting.votinglib.WaitForVotesActivity"
             android:label="@string/title_activity_wait_for_votes" >
         </activity>
+        
     </application>
 
 </manifest>

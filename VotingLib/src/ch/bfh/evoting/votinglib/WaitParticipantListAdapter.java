@@ -46,7 +46,7 @@ public class WaitParticipantListAdapter extends ArrayAdapter<Participant> {
 			view = convertView;
 		}
 		
-		ImageView iv = (ImageView)view.findViewById(R.id.cast_img);
+		ImageView iv = (ImageView)view.findViewById(R.id.imageview_cast_img);
 		//set the correct image
 		if(this.values.get(position).hasVoted()==true){
 			iv.setImageResource(R.drawable.cast);
@@ -55,7 +55,7 @@ public class WaitParticipantListAdapter extends ArrayAdapter<Participant> {
 		}
 
 		//set the participant identification
-		TextView optionText =  (TextView)view.findViewById(R.id.participant_identification);
+		TextView optionText =  (TextView)view.findViewById(R.id.textview_participant_identification);
 		optionText.setText(this.values.get(position).getIdentification());
 		
 		return view;

@@ -40,7 +40,7 @@ public class DisplayResultActivity extends ListActivity {
 
 		//Create the listener of the button
 		final Context context = this.getApplicationContext();
-		Button btnClose = (Button) this.findViewById(R.id.display_result_close_button);
+		Button btnClose = (Button) this.findViewById(R.id.button_display_result_close_button);
 		btnClose.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
@@ -58,19 +58,19 @@ public class DisplayResultActivity extends ListActivity {
 		}
 
 		//Set GUI informations
-		TextView question = (TextView)findViewById(R.id.poll_question);
+		TextView question = (TextView)findViewById(R.id.textview_poll_question);
 		question.setText(poll.getQuestion());
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date resultdate = new Date(poll.getStartTime());
         
-		TextView poll_time = (TextView)findViewById(R.id.poll_start_time);
+		TextView poll_time = (TextView)findViewById(R.id.textview_poll_start_time);
 		poll_time.setText(getString(R.string.poll_start_time) + ": " + sdf.format(resultdate));
 		
 		//Create the list
 		setListAdapter(new OptionListAdapter(this, R.layout.list_item_result, poll.getOptions()));
 		Utility.setListViewHeightBasedOnChildren(this.getListView(), false);
-		((ScrollView)this.findViewById(R.id.scrollview)).smoothScrollTo(0, 0);
+		((ScrollView)this.findViewById(R.id.scrollview_display_result)).smoothScrollTo(0, 0);
 		
 		//Save the poll to the DB if needed
 		if(saveToDbNeeded){
