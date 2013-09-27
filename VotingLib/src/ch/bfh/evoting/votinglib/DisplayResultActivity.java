@@ -5,7 +5,6 @@ import java.util.Date;
 
 import ch.bfh.evoting.votinglib.entities.DatabaseException;
 import ch.bfh.evoting.votinglib.entities.Poll;
-import ch.bfh.evoting.votinglib.util.Utility;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -14,12 +13,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ScrollView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 /**
@@ -37,6 +37,12 @@ public class DisplayResultActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_display_result);
+		
+		ListView lv = (ListView)findViewById(android.R.id.list);
+		LayoutInflater inflater = this.getLayoutInflater();
+		
+		View header = inflater.inflate(R.layout.result_header, null, false);
+		lv.addHeaderView(header);
 
 		//Create the listener of the button
 		final Context context = this.getApplicationContext();
@@ -58,19 +64,17 @@ public class DisplayResultActivity extends ListActivity {
 		}
 
 		//Set GUI informations
-		TextView question = (TextView)findViewById(R.id.textview_poll_question);
-		question.setText(poll.getQuestion());
+		TextView tvQuestion = (TextView)header.findViewById(R.id.textview_poll_question);
+		tvQuestion.setText(poll.getQuestion());
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         Date resultdate = new Date(poll.getStartTime());
         
-		TextView poll_time = (TextView)findViewById(R.id.textview_poll_start_time);
-		poll_time.setText(getString(R.string.poll_start_time) + ": " + sdf.format(resultdate));
+		TextView tvPollTime = (TextView)header.findViewById(R.id.textview_poll_start_time);
+		tvPollTime.setText(getString(R.string.poll_start_time) + ": " + sdf.format(resultdate));
 		
 		//Create the list
 		setListAdapter(new OptionListAdapter(this, R.layout.list_item_result, poll.getOptions()));
-		Utility.setListViewHeightBasedOnChildren(this.getListView(), false);
-		((ScrollView)this.findViewById(R.id.scrollview_display_result)).smoothScrollTo(0, 0);
 		
 		//Save the poll to the DB if needed
 		if(saveToDbNeeded){

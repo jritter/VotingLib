@@ -28,5 +28,6 @@
     <string name="participant_avatar">Participant avatar</string>
     <string name="participant_state">Participant state</string>
     <string name="home">Home</string>
+        <string name="scroll">Please first have a look at all options</string>
     
 </resources>

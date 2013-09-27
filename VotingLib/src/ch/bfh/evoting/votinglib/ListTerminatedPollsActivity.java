@@ -26,7 +26,7 @@ public class ListTerminatedPollsActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_terminated_polls);
-		
+
 		//get the poll and generate the list
 		List<Poll> polls = PollDbHelper.getInstance(this).getAllTerminatedPolls();
 		setListAdapter(new PollListAdapter(this, R.layout.list_item_poll, polls));
@@ -44,20 +44,25 @@ public class ListTerminatedPollsActivity extends ListActivity {
 				startActivity(intent);
 			}                 
 		});
-		
+
 		Button btnBackHome = (Button) findViewById(R.id.button_back_to_home);
 		btnBackHome.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				// TODO start correct activity: admin or voter
-				Intent i = new Intent("ch.bfh.evoting.voterapp.VoterAppMainActivity");
-				startActivity(i);
+				String packageName = getApplication().getApplicationContext().getPackageName();
+				if(packageName.equals("ch.bfh.evoting.voterapp")){
+					Intent i = new Intent("ch.bfh.evoting.voterapp.VoterAppMainActivity");
+					startActivity(i);
+				} else if (packageName.equals("ch.bfh.evoting.adminapp")){
+					Intent i = new Intent("ch.bfh.evoting.adminapp.AdminAppMainActivity");
+					startActivity(i);
+				}
 			}
 		});
 	}
 
-	
+
 	@Override
 	public void onBackPressed() {
 		//People can go back to calling activity
@@ -82,5 +87,5 @@ public class ListTerminatedPollsActivity extends ListActivity {
 		intent.putExtra("saveToDb", false);
 		startActivity(intent);
 	}
-	
+
 }

@@ -1,8 +1,12 @@
 package ch.bfh.evoting.votinglib.util;
 
 import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -40,14 +44,43 @@ public class Utility {
 				totalHeight += listItem.getMeasuredHeight();
 			}
 			params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-			Log.e("test auto height", "total height " + totalHeight + " count "+listAdapter.getCount());
 		} else {
 			//if item height is fixed in xml layout
 			int itemHeight = listAdapter.getView(0, null, listView).getLayoutParams().height;
 			params.height = (itemHeight*listAdapter.getCount()) + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-			Log.e("test auto height", "item height " + itemHeight + " count "+listAdapter.getCount());
 		}
 		listView.setLayoutParams(params);
 		listView.requestLayout();
+	}
+	
+	/**
+	 * Transform density pixel in pixel
+	 * @param ctx Android context
+	 * @param dp Density pixel to transform to pixels
+	 * @return
+	 * Source: http://stackoverflow.com/questions/5012840/android-specifying-pixel-units-like-sp-px-dp-without-using-xml/5012893#5012893
+	 */
+	public static int dp2px(Context ctx, int dp){
+		DisplayMetrics metrics = ctx.getResources().getDisplayMetrics();
+		float dp2 = (float)dp;
+		//float fpixels = metrics.density * dp2;
+		int pixels = (int) (metrics.density * dp2 + 0.5f);
+		return pixels;
+	}
+	
+	
+	/**
+	 * This method converts device specific pixels to density independent pixels.
+	 * 
+	 * @param px A value in px (pixels) unit. Which we need to convert into db
+	 * @param context Context to get resources and device specific display metrics
+	 * @return A float value to represent dp equivalent to px value
+	 * Source: http://stackoverflow.com/questions/4605527/converting-pixels-to-dp-in-android
+	 */
+	public static float px2dp(Context context, float px){
+	    DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+	    float dp = px / (metrics.densityDpi);
+	    return dp;
+//	    return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, context.getResources().getDisplayMetrics());
 	}
 }

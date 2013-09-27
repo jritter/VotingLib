@@ -1,27 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="35dp" >
+<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/radiobutton_vote"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:checkMark="?android:attr/listChoiceIndicatorSingle"
+    android:checked="true"
+    android:ellipsize="end"
+    android:paddingTop="2dip"
+    android:singleLine="true"
+    android:textSize="20sp"
+    android:textStyle="" >
 
-    <CheckBox
-        android:id="@+id/checkbox_vote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_gravity="left"
-        android:onClick="handleCheckBoxEvent" />
-
-    <TextView
-        android:id="@+id/textview_vote_option"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/checkbox_vote"
-        android:paddingTop="3dip"
-        android:ellipsize="end"
-        android:gravity="left"
-        android:singleLine="true"
-        android:textSize="20sp"
-        android:textStyle="" >
-    </TextView>
-
-</RelativeLayout>
+</CheckedTextView>

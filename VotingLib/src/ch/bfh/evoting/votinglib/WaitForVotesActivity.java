@@ -33,7 +33,7 @@ public class WaitForVotesActivity extends ListActivity {
 	private int numberOfVotes;
 	private WaitParticipantListAdapter wpAdapter;
 
-	private  TextView castVotes;
+	private  TextView tvCastVotes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +54,8 @@ public class WaitForVotesActivity extends ListActivity {
 		pb=(ProgressBar)findViewById(R.id.progress_bar_votes);
 		progressBarMaxValue = pb.getMax();
 
-		castVotes = (TextView)findViewById(R.id.textview_cast_votes);
-		castVotes.setText(getString(R.string.cast_votes, 0, participants.size()));
+		tvCastVotes = (TextView)findViewById(R.id.textview_cast_votes);
+		tvCastVotes.setText(getString(R.string.cast_votes, 0, participants.size()));
 
 
 		//Register a BroadcastReceiver on participantStateUpdate events
@@ -88,7 +88,7 @@ public class WaitForVotesActivity extends ListActivity {
 
 		pb.setProgress(progress);
 		wpAdapter.notifyDataSetChanged();
-		castVotes.setText(getString(R.string.cast_votes, numberOfReceivedVotes, participants.size()));
+		tvCastVotes.setText(getString(R.string.cast_votes, numberOfReceivedVotes, participants.size()));
 
 
 		if(progress>=100){
