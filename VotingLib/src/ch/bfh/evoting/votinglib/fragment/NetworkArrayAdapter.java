@@ -68,10 +68,10 @@ public class NetworkArrayAdapter extends ArrayAdapter<HashMap<String, Object>> {
 		HashMap<String, Object> item = items.get(position);
 		if (item != null) {
 			// extract the views in the layout
-			TextView content = (TextView) view.findViewById(R.id.content);
+			TextView content = (TextView) view.findViewById(R.id.textview_content);
 			TextView description = (TextView) view
-					.findViewById(R.id.description);
-			ImageView icon = (ImageView) view.findViewById(R.id.icon);
+					.findViewById(R.id.textview_description);
+			ImageView icon = (ImageView) view.findViewById(R.id.imageview_icon);
 
 			if (this.getCount() - 1 == position) {
 				// the last item is for the "Create Network" item, so the icon

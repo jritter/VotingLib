@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Generic strings -->
     <string name="app_name">ResultLib</string>
     <string name="action_settings">Settings</string>
     <string name="list_polls_title">Poll archives</string>
@@ -16,8 +17,6 @@
     <string name="vote_title">Please vote</string>
     <string name="cast">Cast</string>
     <string name="wait_votes">Thanks for voting!\nWaiting for votes...</string>
-    <string name="network_password">Network Password</string>
-    <string name="network_wlan_key">WLAN Key</string>
     <string name="join">Join</string>
     <string name="title_activity_wait_for_votes">Waiting...</string>
     <string name="title_activity_vote">Vote</string>
@@ -28,6 +27,21 @@
     <string name="participant_avatar">Participant avatar</string>
     <string name="participant_state">Participant state</string>
     <string name="home">Home</string>
-        <string name="scroll">Please first have a look at all options</string>
+    <string name="scroll">Please first have a look at all options</string>
+    <string name="content">Content</string>
+    <string name="description">Description</string>
+    
+    <!-- Action bar titles -->
+    
+    <!-- Toasts -->
+    
+    <!-- Activity titles -->
+    
+    <!-- Hints in EditText fields -->
+    <string name="hint_network_password">Network Password</string>
+    <string name="hint_network_wlan_key">WLAN Key</string>
+    
+    <!-- Image descriptions -->
+    <string name="description_network">Network</string>
     
 </resources>

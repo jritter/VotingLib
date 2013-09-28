@@ -20,6 +20,8 @@ import android.util.Log;
  *
  */
 public class PollDbHelper extends SQLiteOpenHelper {
+	
+	private static final String TAG = PollDbHelper.class.getSimpleName();
 
 	// Basic DB parameters
 	private static final String DATABASE_NAME = "poll_options.db";
@@ -344,8 +346,11 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		valuesPoll.put(POLL_START_TIME, poll.getStartTime());
 		valuesPoll.put(POLL_IS_TERMINATED, poll.isTerminated());
 		db.update(TABLE_NAME_POLLS, valuesPoll, strFilter, null);
-			
+		
+		Log.d(TAG, "I have " + poll.getOptions().size() + " Options in the update.");
+		
 		for(Option option : poll.getOptions()){
+			
 			String strFilterOptions = OPTION_ID + "=" + option.getId() + " AND " + OPTION_POLL_ID + "=" + pollId;
 			ContentValues valuesOption = new ContentValues();
 			valuesOption.put(OPTION_TEXT, option.getText());

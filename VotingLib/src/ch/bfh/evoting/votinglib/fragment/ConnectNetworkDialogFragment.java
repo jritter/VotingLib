@@ -84,10 +84,10 @@ public class ConnectNetworkDialogFragment extends DialogFragment implements
 		View view = inflater.inflate(R.layout.dialog_join_network, null);
 
 		// extract the controls of the layout
-		txtPassword = (EditText) view.findViewById(R.id.password);
+		txtPassword = (EditText) view.findViewById(R.id.edittext_password);
 		txtPassword.addTextChangedListener(this);
 
-		txtNetworkKey = (EditText) view.findViewById(R.id.networkkey);
+		txtNetworkKey = (EditText) view.findViewById(R.id.edittext_networkkey);
 		txtNetworkKey.addTextChangedListener(this);
 
 		if (!showNetworkKeyField) {

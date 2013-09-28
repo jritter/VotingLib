@@ -7,24 +7,19 @@ import java.util.List;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.ListFragment;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
-import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import ch.bfh.evoting.instacirclelib.wifi.AdhocWifiManager;
 import ch.bfh.evoting.votinglib.R;
 
@@ -47,26 +42,18 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 	private ArrayList<HashMap<String, Object>> arraylist = new ArrayList<HashMap<String, Object>>();
 	private HashMap<String, Object> lastItem = new HashMap<String, Object>();
 
-	private ListView lv;
+	private ListView lvNetworks;
 
-	private SharedPreferences preferences;
 	private List<ScanResult> results;
 	private List<WifiConfiguration> configuredNetworks;
 
 	private ScanResult selectedResult;
 
-	private EditText txtIdentification;
 
 	private WifiManager wifi;
 	private AdhocWifiManager adhoc;
 
 	private BroadcastReceiver wifibroadcastreceiver;
-	private NfcAdapter nfcAdapter;
-	private PendingIntent pendingIntent;
-	private IntentFilter nfcIntentFilter;
-	private IntentFilter[] intentFiltersArray;
-	private boolean nfcAvailable;
-	private Parcelable[] rawMsgs;
 	private int selectedNetId;
 	
 	private DialogFragment dialogFragment;
@@ -110,7 +97,7 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 
 		super.onCreate(savedInstanceState);
 
-		lv = (ListView) this.getListView();
+		lvNetworks = (ListView) this.getListView();
 		
 		// Handling the WiFi
 		wifi = (WifiManager) getActivity().getSystemService(
@@ -123,8 +110,8 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 		adapter = new NetworkArrayAdapter(getActivity(),
 				R.layout.list_item_network, arraylist);
 		adapter.add(lastItem);
-		lv.setAdapter(adapter);
-		lv.setOnItemClickListener(this);
+		lvNetworks.setAdapter(adapter);
+		lvNetworks.setOnItemClickListener(this);
 
 		// defining what happens as soon as scan results arrive
 		wifibroadcastreceiver = new BroadcastReceiver() {
@@ -166,7 +153,7 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 				}
 				arraylist.add(lastItem);
 				adapter.notifyDataSetChanged();
-
+				NetworkListFragment.this.getListView().setSelectionAfterHeaderView();
 			}
 		};
 

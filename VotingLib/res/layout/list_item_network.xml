@@ -4,12 +4,13 @@
     android:layout_height="wrap_content" >
 
     <ImageView
-        android:id="@+id/icon"
+        android:id="@+id/imageview_icon"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_margin="8dp"
         android:background="@android:color/holo_blue_light"
         android:scaleType="center"
+        android:contentDescription="@string/description_network"
         android:src="@drawable/glyphicons_032_wifi_alt" >
 
     </ImageView>
@@ -21,21 +22,20 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/description"
+            android:id="@+id/textview_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description"
-            android:textSize="14dp"
+            android:text="@string/description"
+            android:textSize="14sp"
             android:textStyle="italic" >
-
         </TextView>
         
         <TextView
-            android:id="@+id/content"
+            android:id="@+id/textview_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Content"
-            android:textSize="20dp" >
+            android:text="@string/content"
+            android:textSize="20sp" >
         </TextView>
     </LinearLayout>
 
