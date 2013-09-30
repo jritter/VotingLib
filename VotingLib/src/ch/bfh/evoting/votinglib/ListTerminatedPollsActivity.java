@@ -2,16 +2,17 @@ package ch.bfh.evoting.votinglib;
 
 import java.util.List;
 
+import ch.bfh.evoting.votinglib.adapters.PollListAdapter;
+import ch.bfh.evoting.votinglib.db.PollDbHelper;
 import ch.bfh.evoting.votinglib.entities.Poll;
 
 import android.os.Bundle;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -26,6 +27,7 @@ public class ListTerminatedPollsActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list_terminated_polls);
+		setupActionBar();
 
 		//get the poll and generate the list
 		List<Poll> polls = PollDbHelper.getInstance(this).getAllTerminatedPolls();
@@ -45,23 +47,47 @@ public class ListTerminatedPollsActivity extends ListActivity {
 			}                 
 		});
 
-		Button btnBackHome = (Button) findViewById(R.id.button_back_to_home);
-		btnBackHome.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				String packageName = getApplication().getApplicationContext().getPackageName();
-				if(packageName.equals("ch.bfh.evoting.voterapp")){
-					Intent i = new Intent("ch.bfh.evoting.voterapp.VoterAppMainActivity");
-					startActivity(i);
-				} else if (packageName.equals("ch.bfh.evoting.adminapp")){
-					Intent i = new Intent("ch.bfh.evoting.adminapp.AdminAppMainActivity");
-					startActivity(i);
-				}
-			}
-		});
+//		Button btnBackHome = (Button) findViewById(R.id.button_back_to_home);
+//		btnBackHome.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				String packageName = getApplication().getApplicationContext().getPackageName();
+//				if(packageName.equals("ch.bfh.evoting.voterapp")){
+//					Intent i = new Intent("ch.bfh.evoting.voterapp.VoterAppMainActivity");
+//					startActivity(i);
+//				} else if (packageName.equals("ch.bfh.evoting.adminapp")){
+//					Intent i = new Intent("ch.bfh.evoting.adminapp.AdminAppMainActivity");
+//					startActivity(i);
+//				}
+//			}
+//		});
 	}
 
+	/**
+	 * Set up the {@link android.app.ActionBar}.
+	 */
+	private void setupActionBar() {
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+	}
+
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			String packageName = getApplication().getApplicationContext().getPackageName();
+			if(packageName.equals("ch.bfh.evoting.voterapp")){
+				Intent i = new Intent("ch.bfh.evoting.voterapp.VoterAppMainActivity");
+				startActivity(i);
+			} else if (packageName.equals("ch.bfh.evoting.adminapp")){
+				Intent i = new Intent("ch.bfh.evoting.adminapp.AdminAppMainActivity");
+				startActivity(i);
+			}
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 
 	@Override
 	public void onBackPressed() {

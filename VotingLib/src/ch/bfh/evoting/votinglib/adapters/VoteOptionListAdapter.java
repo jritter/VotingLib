@@ -1,4 +1,4 @@
-package ch.bfh.evoting.votinglib;
+package ch.bfh.evoting.votinglib.adapters;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
+import ch.bfh.evoting.votinglib.R;
 import ch.bfh.evoting.votinglib.entities.Option;
 
 /**
@@ -57,6 +58,7 @@ public class VoteOptionListAdapter extends ArrayAdapter<Option> {
 	@Override
 	public Option getItem (int position)
 	{
+		if(position >= this.getCount() || position < 0) return null;
 		return super.getItem (position);
 	}
 	

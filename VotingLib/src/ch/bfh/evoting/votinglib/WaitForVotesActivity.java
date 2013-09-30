@@ -3,6 +3,7 @@ package ch.bfh.evoting.votinglib;
 import java.io.Serializable;
 import java.util.List;
 
+import ch.bfh.evoting.votinglib.adapters.WaitParticipantListAdapter;
 import ch.bfh.evoting.votinglib.entities.Option;
 import ch.bfh.evoting.votinglib.entities.Participant;
 import ch.bfh.evoting.votinglib.entities.Poll;

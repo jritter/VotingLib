@@ -3,6 +3,7 @@ package ch.bfh.evoting.votinglib;
 import java.io.Serializable;
 import java.util.List;
 
+import ch.bfh.evoting.votinglib.adapters.VoteOptionListAdapter;
 import ch.bfh.evoting.votinglib.entities.Option;
 import ch.bfh.evoting.votinglib.entities.Poll;
 
@@ -36,8 +37,10 @@ public class VoteActivity extends ListActivity {
 	private List<Option> options;
 	private String question;
 	private VoteOptionListAdapter volAdapter;
-	private int selectedPosition;
+	private int selectedPosition = -1;
 	private boolean scrolled = false;
+	private boolean demoScrollDone = false;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,7 @@ public class VoteActivity extends ListActivity {
 		//		View footer = inflater.inflate(R.layout.vote_footer, null, false);
 		//		lv.addFooterView(footer);
 
-		
+
 
 		//Get the data in the intent
 		Intent intent = this.getIntent();
@@ -65,7 +68,7 @@ public class VoteActivity extends ListActivity {
 		//Set the question text
 		TextView tvQuestion = (TextView)/*header.*/findViewById(R.id.textview_vote_poll_question);
 		tvQuestion.setText(question);
-		
+
 
 		//Set a listener on the cast button
 		Button btnCast = (Button)findViewById(R.id.button_cast_button);
@@ -96,67 +99,79 @@ public class VoteActivity extends ListActivity {
 		});
 
 		lv.setOnScrollListener(new OnScrollListener() {
-		    @Override
-		    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-				Log.e("scroll", firstVisibleItem + " "+visibleItemCount+" "+totalItemCount);
 
-		        //Check if the last view is visible
-		        if (++firstVisibleItem + visibleItemCount > totalItemCount) {
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+				//Check if the last view is visible
+				if (++firstVisibleItem + visibleItemCount > totalItemCount && demoScrollDone) {
 					scrolled=true;
-		        }
-		    }
+				}
+			}
 
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {}
 
-			
+
 		});
-		
- 
+
+		//animate scroll
 		new AsyncTask<Object, Object, Object>(){
 
 			@Override
 			protected Object doInBackground(Object... params) {
-				SystemClock.sleep(400);
-				lv.smoothScrollToPositionFromTop(lv.getAdapter().getCount()-1, 0, 2000);
-				SystemClock.sleep(2050);
-				lv.smoothScrollToPositionFromTop(0, 0, 2000);
-				SystemClock.sleep(2050);
-				scrolled = false;
-				return null;
+				SystemClock.sleep(300);
+				Log.e("test scroll", lv.getLastVisiblePosition() + " " + lv.getCount());
+				if(lv.getLastVisiblePosition() < lv.getCount()-2){
+
+					lv.smoothScrollToPositionFromTop(lv.getAdapter().getCount()-1, 0, 1000);
+					SystemClock.sleep(1050);
+					lv.smoothScrollToPositionFromTop(0, 0, 1000);
+					SystemClock.sleep(1050);
+					scrolled = false;
+					demoScrollDone = true;
+					return null;
+				} else {
+					scrolled = true;
+					return null;
+				}
 			}
 
 		}.execute();
-	}
+
+}
 
 
-	@Override
-	public void onBackPressed() {
-		//do nothing because we don't want that people access to an anterior activity
-	}
+@Override
+public void onBackPressed() {
+	//do nothing because we don't want that people access to an anterior activity
+}
 
-	/**
-	 * Method called when cast button is clicked
-	 */
-	private void castBallot(){
+/**
+ * Method called when cast button is clicked
+ */
+private void castBallot(){
 
-		Option selectedOption = volAdapter.getItem(selectedPosition);//volAdapter.getItemSelected();
+	Option selectedOption = volAdapter.getItem(selectedPosition);
 
-		//TODO send vote
+	//TODO send vote
+	if(selectedOption!=null){
 		Log.e("vote", "Voted "+selectedOption.getText());
-
-		//Start activity waiting for other participants to vote
-		//If is admin, returns to admin app wait activity
-		String packageName = getApplication().getApplicationContext().getPackageName();
-		if(packageName.equals("ch.bfh.evoting.adminapp")){
-			Intent i = new Intent("ch.bfh.evoting.adminapp.AdminWaitForVotesActivity");
-			i.putExtra("poll", (Serializable)poll);
-			startActivity(i);
-		} else {
-			Intent intent = new Intent(this, WaitForVotesActivity.class);
-			intent.putExtra("poll", (Serializable)poll);
-			startActivity(intent);
-		}
+	} else {
+		Log.e("vote", "Voted null");
 	}
+
+	//Start activity waiting for other participants to vote
+	//If is admin, returns to admin app wait activity
+	String packageName = getApplication().getApplicationContext().getPackageName();
+	if(packageName.equals("ch.bfh.evoting.adminapp")){
+		Intent i = new Intent("ch.bfh.evoting.adminapp.AdminWaitForVotesActivity");
+		i.putExtra("poll", (Serializable)poll);
+		startActivity(i);
+	} else {
+		Intent intent = new Intent(this, WaitForVotesActivity.class);
+		intent.putExtra("poll", (Serializable)poll);
+		startActivity(intent);
+	}
+}
 
 }

@@ -1,8 +1,10 @@
 
-package ch.bfh.evoting.votinglib;
+package ch.bfh.evoting.votinglib.adapters;
 
 import java.util.List;
 
+import ch.bfh.evoting.votinglib.DisplayResultActivity;
+import ch.bfh.evoting.votinglib.R;
 import ch.bfh.evoting.votinglib.entities.Poll;
 
 import android.content.Context;

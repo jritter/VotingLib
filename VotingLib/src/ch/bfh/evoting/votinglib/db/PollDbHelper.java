@@ -1,4 +1,4 @@
-package ch.bfh.evoting.votinglib;
+package ch.bfh.evoting.votinglib.db;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -303,7 +303,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 	 * Save a poll into the database
 	 * @param poll the poll to save
 	 * @return the id of the row where the poll has been inserted
-	 * @throws DatabaseException thrown when an error occured inserting the record in the db
+	 * @throws DatabaseException thrown when an error occurred inserting the record in the db
 	 */
 	public long savePoll(Poll poll) throws DatabaseException{
 		SQLiteDatabase db = getWritableDatabase();
@@ -337,8 +337,9 @@ public class PollDbHelper extends SQLiteOpenHelper {
 	 * Update an already existing poll in the DB
 	 * @param pollId id of the poll to update
 	 * @param poll the poll object containing the data to update
+	 * @throws DatabaseException thrown when an error occurred inserting the record in the db
 	 */
-	public void updatePoll(int pollId, Poll poll){
+	public void updatePoll(int pollId, Poll poll) throws DatabaseException{
 		SQLiteDatabase db = getWritableDatabase();
 		String strFilter = POLL_ID + "=" + pollId;
 		ContentValues valuesPoll = new ContentValues();
@@ -349,15 +350,23 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		
 		Log.d(TAG, "I have " + poll.getOptions().size() + " Options in the update.");
 		
+		//Delete actual options and put the new options
+		db.delete(TABLE_NAME_OPTIONS, OPTION_POLL_ID + "=" + pollId, null);
+		
+		long rowId2 = -1;
 		for(Option option : poll.getOptions()){
 			
-			String strFilterOptions = OPTION_ID + "=" + option.getId() + " AND " + OPTION_POLL_ID + "=" + pollId;
 			ContentValues valuesOption = new ContentValues();
+			valuesOption.put(OPTION_POLL_ID, pollId);
 			valuesOption.put(OPTION_TEXT, option.getText());
 			valuesOption.put(OPTION_NUMBER_OF_VOTES, option.getVotes());
 			valuesOption.put(OPTION_PERCENTAGE, option.getPercentage());
 
-			db.update(TABLE_NAME_OPTIONS, valuesOption, strFilterOptions, null);
+			rowId2 = db.insert(TABLE_NAME_OPTIONS, null, valuesOption);
+		}
+		
+		if(rowId2 == -1 && poll.getOptions().size()!=0){
+			throw new DatabaseException("Error while saving terminated poll!");
 		}
 		
 		db.close();

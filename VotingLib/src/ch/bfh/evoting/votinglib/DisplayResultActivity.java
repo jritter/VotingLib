@@ -3,6 +3,8 @@ package ch.bfh.evoting.votinglib;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import ch.bfh.evoting.votinglib.adapters.OptionListAdapter;
+import ch.bfh.evoting.votinglib.db.PollDbHelper;
 import ch.bfh.evoting.votinglib.entities.DatabaseException;
 import ch.bfh.evoting.votinglib.entities.Poll;
 import android.os.Bundle;
@@ -17,8 +19,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -37,22 +37,23 @@ public class DisplayResultActivity extends ListActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_display_result);
-		
+		setupActionBar();
+
 		ListView lv = (ListView)findViewById(android.R.id.list);
 		LayoutInflater inflater = this.getLayoutInflater();
-		
+
 		View header = inflater.inflate(R.layout.result_header, null, false);
 		lv.addHeaderView(header);
 
 		//Create the listener of the button
-		final Context context = this.getApplicationContext();
-		Button btnClose = (Button) this.findViewById(R.id.button_display_result_close_button);
-		btnClose.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View arg0) {
-				startActivity(new Intent(context, ListTerminatedPollsActivity.class));
-			}
-		});
+//		final Context context = this.getApplicationContext();
+//		Button btnClose = (Button) this.findViewById(R.id.button_display_result_close_button);
+//		btnClose.setOnClickListener(new OnClickListener(){
+//			@Override
+//			public void onClick(View arg0) {
+//				startActivity(new Intent(context, ListTerminatedPollsActivity.class));
+//			}
+//		});
 
 		//Get the data in the intent
 		Poll poll = (Poll)this.getIntent().getSerializableExtra("poll");
@@ -68,26 +69,37 @@ public class DisplayResultActivity extends ListActivity {
 		tvQuestion.setText(poll.getQuestion());
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        Date resultdate = new Date(poll.getStartTime());
-        
+		Date resultdate = new Date(poll.getStartTime());
+
 		TextView tvPollTime = (TextView)header.findViewById(R.id.textview_poll_start_time);
 		tvPollTime.setText(getString(R.string.poll_start_time) + ": " + sdf.format(resultdate));
-		
+
 		//Create the list
 		setListAdapter(new OptionListAdapter(this, R.layout.list_item_result, poll.getOptions()));
-		
+
 		//Save the poll to the DB if needed
 		if(saveToDbNeeded){
 			try {
-				int newPollId = (int)PollDbHelper.getInstance(this).savePoll(poll);
-				this.pollId = newPollId;
-				poll.setId(newPollId);
+				if(pollId>=0){
+					PollDbHelper.getInstance(this).updatePoll(pollId,poll);
+				} else {
+					int newPollId = (int)PollDbHelper.getInstance(this).savePoll(poll);
+					this.pollId = newPollId;
+					poll.setId(newPollId);
+				}
 			} catch (DatabaseException e) {
 				Log.e(this.getClass().getSimpleName(), "DB error: "+e.getMessage());
 				e.printStackTrace();
 			}
 		}
 
+	}
+	
+	/**
+	 * Set up the {@link android.app.ActionBar}.
+	 */
+	private void setupActionBar() {
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
 	@Override
@@ -113,9 +125,9 @@ public class DisplayResultActivity extends ListActivity {
 	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		
+
 		final Context ctx = this.getApplicationContext();
-		
+
 		//Delete option of the menu
 		if(item.getItemId()==R.id.action_delete) {
 			if(this.pollId!=-1){
@@ -138,6 +150,8 @@ public class DisplayResultActivity extends ListActivity {
 				alertDialog.show();
 			}
 
+		} else if (item.getItemId()==android.R.id.home){
+			startActivity(new Intent(this, ListTerminatedPollsActivity.class));
 		}
 		return true;
 	}

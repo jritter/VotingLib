@@ -1,6 +1,7 @@
-package ch.bfh.evoting.votinglib;
+package ch.bfh.evoting.votinglib.network;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,19 +11,21 @@ import android.database.Cursor;
 import android.support.v4.content.LocalBroadcastManager;
 import ch.bfh.evoting.instacirclelib.Message;
 import ch.bfh.evoting.instacirclelib.db.NetworkDbHelper;
-import ch.bfh.evoting.votinglib.util.JavaSerialization;
+import ch.bfh.evoting.votinglib.AndroidApplication;
+import ch.bfh.evoting.votinglib.entities.Participant;
+import ch.bfh.evoting.votinglib.entities.VoteMessage;
 import ch.bfh.evoting.votinglib.util.SerializationUtil;
 
-public class NetworkInterface {
+public class InstaCircleNetworkInterface implements NetworkInterface {
 	
 	private final SerializationUtil su;
 	private final Context context;
 	private final NetworkDbHelper dbHelper;
 	
-	public NetworkInterface (Context context) {
+	public InstaCircleNetworkInterface (Context context) {
 		this.context = context;
 		
-		su = new SerializationUtil(new JavaSerialization());
+		su = AndroidApplication.getInstance().getSerializationUtil();
 		dbHelper = NetworkDbHelper.getInstance(context);
 		
 		// Listening for arriving messages
@@ -46,16 +49,18 @@ public class NetworkInterface {
 		return dbHelper.getCipherKey();
 	}
 	
-	public ArrayList<String> getConversationParticipants(){
-		ArrayList<String> participants = new ArrayList<String>(); 
+	public List<Participant> getConversationParticipants(){
+		ArrayList<Participant> participants = new ArrayList<Participant>(); 
 		
 		Cursor c = dbHelper.queryParticipants();
 		
 		if (c != null){
 			while(c.moveToNext()){
-				participants.add(c.getString(c.getColumnIndex("identification")));
+				Participant p = new Participant(c.getString(c.getColumnIndex("identification")), c.getString(c.getColumnIndex("ipAddress")), false, false);
+				participants.add(p);
 			}
 		}
+		c.close();
 		
 		return participants;
 	}
@@ -116,4 +121,10 @@ public class NetworkInterface {
 			handleReceivedMessage((Message) intent.getSerializableExtra("message"));
 		}
 	};
+
+	//TODO
+	@Override
+	public String getMyIpAddress() {
+		return "";
+	}
 }

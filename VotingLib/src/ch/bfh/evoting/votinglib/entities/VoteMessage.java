@@ -1,4 +1,4 @@
-package ch.bfh.evoting.votinglib;
+package ch.bfh.evoting.votinglib.entities;
 
 import java.io.Serializable;
 
