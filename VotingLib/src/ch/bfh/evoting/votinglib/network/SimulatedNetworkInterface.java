@@ -29,22 +29,17 @@ public class SimulatedNetworkInterface implements NetworkInterface{
 				mMessageReceiver, new IntentFilter("messageArrived"));
 	}
 	
-	public void connectToNetwork(){
-		
-	}
-	
-	public void createNetwork () {
-		
-	}
-	
+	@Override
 	public String getNetworkName() {
 		return null;
 	}
 	
+	@Override
 	public String getConversationPassword() {
 		return "1234";
 	}
 	
+	@Override
 	public List<Participant> getConversationParticipants(){
 		
 		List<Participant> participants = new ArrayList<Participant>();
@@ -88,6 +83,7 @@ public class SimulatedNetworkInterface implements NetworkInterface{
 	 * @param votemessage The votemessage which should be sent
 	 * @param sender The origin of the message
 	 */
+	@Override
 	public void sendMessage(VoteMessage votemessage, String sender){
 		Message message = new Message(su.serialize(votemessage), Message.MSG_CONTENT, sender);
 		Intent intent = new Intent("messageSend");
@@ -104,6 +100,7 @@ public class SimulatedNetworkInterface implements NetworkInterface{
 	 * @param sender The origin of the message
 	 * @param destinationIPAddress The destination of the message
 	 */
+	@Override
 	public void sendMessage(VoteMessage votemessage, String sender, String destinationIPAddress){
 		Message message = new Message(su.serialize(votemessage), Message.MSG_CONTENT, sender);
 		Intent intent = new Intent("messageSend");
@@ -111,6 +108,12 @@ public class SimulatedNetworkInterface implements NetworkInterface{
 		intent.putExtra("ipAddress", destinationIPAddress);
 		intent.putExtra("broadcast", false);
 		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+	}
+	
+	@Override
+	public String getMyIpAddress() {
+		
+		return "";
 	}
 	
 	/**
@@ -139,9 +142,5 @@ public class SimulatedNetworkInterface implements NetworkInterface{
 		}
 	};
 
-	@Override
-	public String getMyIpAddress() {
-		
-		return "";
-	}
+	
 }

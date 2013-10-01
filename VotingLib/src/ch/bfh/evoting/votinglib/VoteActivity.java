@@ -13,7 +13,6 @@ import android.os.SystemClock;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView.OnScrollListener;
@@ -41,7 +40,6 @@ public class VoteActivity extends ListActivity {
 	private boolean scrolled = false;
 	private boolean demoScrollDone = false;
 
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,15 +47,6 @@ public class VoteActivity extends ListActivity {
 
 
 		final ListView lv = (ListView)findViewById(android.R.id.list);
-		LayoutInflater inflater = this.getLayoutInflater();
-
-		View header = inflater.inflate(R.layout.vote_header, null, false);
-		lv.addHeaderView(header);
-		//Not used anymore, but could be reused: user could not see he has to scroll to see all votes options
-		//		View footer = inflater.inflate(R.layout.vote_footer, null, false);
-		//		lv.addFooterView(footer);
-
-
 
 		//Get the data in the intent
 		Intent intent = this.getIntent();
@@ -66,7 +55,7 @@ public class VoteActivity extends ListActivity {
 		question = poll.getQuestion();
 
 		//Set the question text
-		TextView tvQuestion = (TextView)/*header.*/findViewById(R.id.textview_vote_poll_question);
+		TextView tvQuestion = (TextView)findViewById(R.id.textview_vote_poll_question);
 		tvQuestion.setText(question);
 
 
@@ -138,40 +127,40 @@ public class VoteActivity extends ListActivity {
 
 		}.execute();
 
-}
-
-
-@Override
-public void onBackPressed() {
-	//do nothing because we don't want that people access to an anterior activity
-}
-
-/**
- * Method called when cast button is clicked
- */
-private void castBallot(){
-
-	Option selectedOption = volAdapter.getItem(selectedPosition);
-
-	//TODO send vote
-	if(selectedOption!=null){
-		Log.e("vote", "Voted "+selectedOption.getText());
-	} else {
-		Log.e("vote", "Voted null");
 	}
 
-	//Start activity waiting for other participants to vote
-	//If is admin, returns to admin app wait activity
-	String packageName = getApplication().getApplicationContext().getPackageName();
-	if(packageName.equals("ch.bfh.evoting.adminapp")){
-		Intent i = new Intent("ch.bfh.evoting.adminapp.AdminWaitForVotesActivity");
-		i.putExtra("poll", (Serializable)poll);
-		startActivity(i);
-	} else {
-		Intent intent = new Intent(this, WaitForVotesActivity.class);
-		intent.putExtra("poll", (Serializable)poll);
-		startActivity(intent);
+
+	@Override
+	public void onBackPressed() {
+		//do nothing because we don't want that people access to an anterior activity
 	}
-}
+
+	/**
+	 * Method called when cast button is clicked
+	 */
+	private void castBallot(){
+
+		Option selectedOption = volAdapter.getItem(selectedPosition);
+
+		//TODO send vote
+		if(selectedOption!=null){
+			Log.e("vote", "Voted "+selectedOption.getText());
+		} else {
+			Log.e("vote", "Voted null");
+		}
+
+		//Start activity waiting for other participants to vote
+		//If is admin, returns to admin app wait activity
+		String packageName = getApplication().getApplicationContext().getPackageName();
+		if(packageName.equals("ch.bfh.evoting.adminapp")){
+			Intent i = new Intent("ch.bfh.evoting.adminapp.AdminWaitForVotesActivity");
+			i.putExtra("poll", (Serializable)poll);
+			startActivity(i);
+		} else {
+			Intent intent = new Intent(this, WaitForVotesActivity.class);
+			intent.putExtra("poll", (Serializable)poll);
+			startActivity(intent);
+		}
+	}
 
 }

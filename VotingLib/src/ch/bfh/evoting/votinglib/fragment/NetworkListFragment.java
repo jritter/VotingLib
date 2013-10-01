@@ -217,6 +217,7 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 		} else {
 			// extract the Hashmap assigned to the position which has been
 			// clicked
+			@SuppressWarnings("unchecked")
 			HashMap<String, Object> hash = (HashMap<String, Object>) listview
 					.getAdapter().getItem(position);
 

@@ -1,6 +1,11 @@
 package ch.bfh.evoting.votinglib.network;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import android.content.BroadcastReceiver;
@@ -8,6 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.net.DhcpInfo;
+import android.net.wifi.WifiManager;
 import android.support.v4.content.LocalBroadcastManager;
 import ch.bfh.evoting.instacirclelib.Message;
 import ch.bfh.evoting.instacirclelib.db.NetworkDbHelper;
@@ -16,7 +23,7 @@ import ch.bfh.evoting.votinglib.entities.Participant;
 import ch.bfh.evoting.votinglib.entities.VoteMessage;
 import ch.bfh.evoting.votinglib.util.SerializationUtil;
 
-public class InstaCircleNetworkInterface implements NetworkInterface {
+public class InstaCircleNetworkInterface implements ch.bfh.evoting.votinglib.network.NetworkInterface {
 	
 	private final SerializationUtil su;
 	private final Context context;
@@ -33,22 +40,17 @@ public class InstaCircleNetworkInterface implements NetworkInterface {
 				mMessageReceiver, new IntentFilter("messageArrived"));
 	}
 	
-	public void connectToNetwork(){
-		
-	}
-	
-	public void createNetwork () {
-		
-	}
-	
+	@Override
 	public String getNetworkName() {
 		return null;
 	}
 	
+	@Override
 	public String getConversationPassword() {
 		return dbHelper.getCipherKey();
 	}
 	
+	@Override
 	public List<Participant> getConversationParticipants(){
 		ArrayList<Participant> participants = new ArrayList<Participant>(); 
 		
@@ -71,6 +73,7 @@ public class InstaCircleNetworkInterface implements NetworkInterface {
 	 * @param votemessage The votemessage which should be sent
 	 * @param sender The origin of the message
 	 */
+	@Override
 	public void sendMessage(VoteMessage votemessage, String sender){
 		Message message = new Message(su.serialize(votemessage), Message.MSG_CONTENT, sender);
 		Intent intent = new Intent("messageSend");
@@ -87,6 +90,7 @@ public class InstaCircleNetworkInterface implements NetworkInterface {
 	 * @param sender The origin of the message
 	 * @param destinationIPAddress The destination of the message
 	 */
+	@Override
 	public void sendMessage(VoteMessage votemessage, String sender, String destinationIPAddress){
 		Message message = new Message(su.serialize(votemessage), Message.MSG_CONTENT, sender);
 		Intent intent = new Intent("messageSend");
@@ -122,9 +126,61 @@ public class InstaCircleNetworkInterface implements NetworkInterface {
 		}
 	};
 
-	//TODO
 	@Override
-	public String getMyIpAddress() {
-		return "";
+	public String getMyIpAddress(){
+		return getIPAddress(true);
+	}
+	
+	/**
+	 * Get IP address from first non-localhost interface
+	 * @param ipv4  true=return ipv4, false=return ipv6
+	 * @return  address or empty string
+	 * @author http://stackoverflow.com/questions/6064510/how-to-get-ip-address-of-the-device
+	 */
+	private String getIPAddress(boolean useIPv4) {
+		
+		WifiManager wifiManager = (WifiManager) this.context.getSystemService(Context.WIFI_SERVICE);
+		String ipString = null;
+
+		if(new ch.bfh.evoting.instacirclelib.wifi.WifiAPManager().isWifiAPEnabled(wifiManager)){
+
+			try{
+				for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en
+						.hasMoreElements();) {
+					NetworkInterface intf = en.nextElement();
+					if (intf.getName().contains("wlan")) {
+						for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr
+								.hasMoreElements();) {
+							InetAddress inetAddress = enumIpAddr.nextElement();
+							if (!inetAddress.isLoopbackAddress()
+									&& (inetAddress.getAddress().length == 4)) {
+								ipString = inetAddress.getHostAddress();
+								break;
+							}
+						}
+					}
+				}
+			} catch (SocketException e){
+				e.printStackTrace();
+			}
+		} else {
+
+			WifiManager wifi = (WifiManager) this.context.getSystemService(Context.WIFI_SERVICE);
+			DhcpInfo dhcp = wifi.getDhcpInfo();
+
+			InetAddress found_ip_address = null;
+			int ip = dhcp.ipAddress;
+			byte[] quads = new byte[4];
+			for (int k = 0; k < 4; k++)
+				quads[k] = (byte) (ip >> (k * 8));
+			try {
+				found_ip_address =  InetAddress.getByAddress(quads);
+				ipString = found_ip_address.getHostAddress();
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return ipString;
 	}
 }

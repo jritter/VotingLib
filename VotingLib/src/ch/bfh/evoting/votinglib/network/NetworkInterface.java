@@ -5,15 +5,12 @@ import java.util.List;
 import ch.bfh.evoting.votinglib.entities.Participant;
 import ch.bfh.evoting.votinglib.entities.VoteMessage;
 
-
-
+/**
+ * Interface to the network component
+ * @author Philémon von Bergen
+ *
+ */
 public interface NetworkInterface {
-	
-	
-	
-	public void connectToNetwork();
-	
-	public void createNetwork ();
 	
 	public String getNetworkName();
 	
