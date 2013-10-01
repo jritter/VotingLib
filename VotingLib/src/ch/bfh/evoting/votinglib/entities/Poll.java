@@ -2,6 +2,7 @@ package ch.bfh.evoting.votinglib.entities;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class representing a poll
@@ -11,10 +12,10 @@ import java.util.List;
 public class Poll implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private int id;
+	private int id = -1;
 	private String question;
 	private List<Option> options;
-	private List<Participant> participants;
+	private Map<String,Participant> participants;
 	private long startTime;
 	private boolean isTerminated;
 	
@@ -32,7 +33,7 @@ public class Poll implements Serializable {
 	 * @param participants list of participants to the poll
 	 * @param isTerminated true if Poll is terminated
 	 */
-	public Poll(int id, String question, long startTime, List<Option> options, List<Participant> participants, boolean isTerminated){
+	public Poll(int id, String question, long startTime, List<Option> options, Map<String,Participant> participants, boolean isTerminated){
 		this.id = id;
 		this.question = question;
 		this.startTime = startTime;
@@ -93,7 +94,7 @@ public class Poll implements Serializable {
 	 * Get the participants to the poll
 	 * @return a list of participant objects
 	 */
-	public List<Participant> getParticipants() {
+	public Map<String,Participant> getParticipants() {
 		return participants;
 	}
 
@@ -102,7 +103,7 @@ public class Poll implements Serializable {
 	 * Be careful, the participants are not stored in the DB since they are dependent on the network
 	 * @param participants a list of participant objects
 	 */
-	public void setParticipants(List<Participant> participants) {
+	public void setParticipants(Map<String,Participant> participants) {
 		this.participants = participants;
 	}
 

@@ -6,7 +6,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -51,7 +52,7 @@ public class InstaCircleNetworkInterface implements ch.bfh.evoting.votinglib.net
 	}
 	
 	@Override
-	public List<Participant> getConversationParticipants(){
+	public Map<String,Participant> getConversationParticipants(){
 		ArrayList<Participant> participants = new ArrayList<Participant>(); 
 		
 		Cursor c = dbHelper.queryParticipants();
@@ -64,7 +65,12 @@ public class InstaCircleNetworkInterface implements ch.bfh.evoting.votinglib.net
 		}
 		c.close();
 		
-		return participants;
+		Map<String,Participant> map = new HashMap<String,Participant>();
+		for(Participant p:participants){
+			map.put(p.getIpAddress(), p);
+		}
+		
+		return map;
 	}
 	
 	/**
@@ -74,8 +80,8 @@ public class InstaCircleNetworkInterface implements ch.bfh.evoting.votinglib.net
 	 * @param sender The origin of the message
 	 */
 	@Override
-	public void sendMessage(VoteMessage votemessage, String sender){
-		Message message = new Message(su.serialize(votemessage), Message.MSG_CONTENT, sender);
+	public void sendMessage(VoteMessage votemessage){
+		Message message = new Message(su.serialize(votemessage), Message.MSG_CONTENT, this.getMyIpAddress());
 		Intent intent = new Intent("messageSend");
 		intent.putExtra("message", message);
 		intent.putExtra("broadcast", true);
@@ -91,8 +97,8 @@ public class InstaCircleNetworkInterface implements ch.bfh.evoting.votinglib.net
 	 * @param destinationIPAddress The destination of the message
 	 */
 	@Override
-	public void sendMessage(VoteMessage votemessage, String sender, String destinationIPAddress){
-		Message message = new Message(su.serialize(votemessage), Message.MSG_CONTENT, sender);
+	public void sendMessage(VoteMessage votemessage, String destinationIPAddress){
+		Message message = new Message(su.serialize(votemessage), Message.MSG_CONTENT, this.getMyIpAddress());
 		Intent intent = new Intent("messageSend");
 		intent.putExtra("message", message);
 		intent.putExtra("ipAddress", destinationIPAddress);

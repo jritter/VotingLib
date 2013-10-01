@@ -212,8 +212,9 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 		if (listview.getAdapter().getCount() - 1 == position) {
 			// handling the last item in the list, which is the "Create network"
 			// item
-			//Intent intent = new Intent(this, CreateNetworkActivity.class);
-			//startActivity(intent);
+			//TODO create network
+//			Intent intent = new Intent(this, CreateNetworkActivity.class);
+//			startActivity(intent);
 		} else {
 			// extract the Hashmap assigned to the position which has been
 			// clicked

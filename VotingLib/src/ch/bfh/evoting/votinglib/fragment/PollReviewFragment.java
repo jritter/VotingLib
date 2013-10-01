@@ -14,9 +14,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,7 +87,7 @@ public class PollReviewFragment extends ListFragment {
 		//Create participants table
 		TableLayout participantsTable = (TableLayout)footer.findViewById(R.id.layout_participants);
 
-		for(Participant part : poll.getParticipants()){
+		for(Participant part : poll.getParticipants().values()){
 			TableRow tableRow= new TableRow(this.getActivity());
 			tableRow.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
@@ -111,36 +109,16 @@ public class PollReviewFragment extends ListFragment {
 				public void onReceive(Context context, Intent intent) {
 
 					Intent i = new Intent(PollReviewFragment.this.getActivity(), VoteActivity.class);
+					poll.setStartTime(System.currentTimeMillis());
 					i.putExtra("poll", (Serializable) poll);
 					startActivity(i);
+					LocalBroadcastManager.getInstance(PollReviewFragment.this.getActivity()).unregisterReceiver(this);
 
 				}
-			}, new IntentFilter(BroadcastIntentTypes.goToVote));
+			}, new IntentFilter(BroadcastIntentTypes.startVote));
 		}
-		
-		simulate();
-
+	
 		return v;
-	}
-
-
-	//TODO remove, only for simulation
-	private void simulate(){
-		new AsyncTask<Object, Object, Object>(){
-			@Override
-			protected Object doInBackground(Object... arg0) {
-
-
-				SystemClock.sleep(5000);
-
-				//Send participants
-				Intent intent = new Intent(BroadcastIntentTypes.goToVote);
-				LocalBroadcastManager.getInstance(PollReviewFragment.this.getActivity()).sendBroadcast(intent);
-
-
-				return null;
-			}
-		}.execute();
 	}
 
 }

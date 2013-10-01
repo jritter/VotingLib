@@ -109,7 +109,6 @@ public class VoteActivity extends ListActivity {
 			@Override
 			protected Object doInBackground(Object... params) {
 				SystemClock.sleep(300);
-				Log.e("test scroll", lv.getLastVisiblePosition() + " " + lv.getCount());
 				if(lv.getLastVisiblePosition() < lv.getCount()-2){
 
 					lv.smoothScrollToPositionFromTop(lv.getAdapter().getCount()-1, 0, 1000);

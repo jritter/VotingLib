@@ -45,19 +45,10 @@ public class DisplayResultActivity extends ListActivity {
 		View header = inflater.inflate(R.layout.result_header, null, false);
 		lv.addHeaderView(header);
 
-		//Create the listener of the button
-//		final Context context = this.getApplicationContext();
-//		Button btnClose = (Button) this.findViewById(R.id.button_display_result_close_button);
-//		btnClose.setOnClickListener(new OnClickListener(){
-//			@Override
-//			public void onClick(View arg0) {
-//				startActivity(new Intent(context, ListTerminatedPollsActivity.class));
-//			}
-//		});
-
 		//Get the data in the intent
 		Poll poll = (Poll)this.getIntent().getSerializableExtra("poll");
 		saveToDbNeeded = this.getIntent().getBooleanExtra("saveToDb", false);
+		
 		if(poll.getId()>=0){
 			pollId = poll.getId();
 		} else {
@@ -79,6 +70,7 @@ public class DisplayResultActivity extends ListActivity {
 
 		//Save the poll to the DB if needed
 		if(saveToDbNeeded){
+			Log.e("save to db", "have to save it "+ pollId +" "+ poll.isTerminated());
 			try {
 				if(pollId>=0){
 					PollDbHelper.getInstance(this).updatePoll(pollId,poll);
