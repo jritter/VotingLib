@@ -1,12 +1,14 @@
 package ch.bfh.evoting.votinglib;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 
 import ch.bfh.evoting.votinglib.adapters.OptionListAdapter;
 import ch.bfh.evoting.votinglib.db.PollDbHelper;
 import ch.bfh.evoting.votinglib.entities.DatabaseException;
 import ch.bfh.evoting.votinglib.entities.Poll;
+import ch.bfh.evoting.votinglib.util.OptionsComparator;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -65,12 +67,13 @@ public class DisplayResultActivity extends ListActivity {
 		TextView tvPollTime = (TextView)header.findViewById(R.id.textview_poll_start_time);
 		tvPollTime.setText(getString(R.string.poll_start_time) + ": " + sdf.format(resultdate));
 
+		//Order the options in descending order
+		Collections.sort(poll.getOptions(), new OptionsComparator());
 		//Create the list
 		setListAdapter(new OptionListAdapter(this, R.layout.list_item_result, poll.getOptions()));
 
 		//Save the poll to the DB if needed
 		if(saveToDbNeeded){
-			Log.e("save to db", "have to save it "+ pollId +" "+ poll.isTerminated());
 			try {
 				if(pollId>=0){
 					PollDbHelper.getInstance(this).updatePoll(pollId,poll);

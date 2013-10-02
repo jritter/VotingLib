@@ -19,7 +19,7 @@ public class SimulatedNetworkInterface implements NetworkInterface{
 
 	private final SerializationUtil su;
 	private final Context context;
-	
+
 	private NetworkSimulator ns;
 
 	public SimulatedNetworkInterface (Context context) {
@@ -29,9 +29,15 @@ public class SimulatedNetworkInterface implements NetworkInterface{
 
 		// Listening for arriving messages
 		LocalBroadcastManager.getInstance(context).registerReceiver(
-				mMessageReceiver, new IntentFilter("messageArrived"));
+				messageReceiver, new IntentFilter("messageArrived"));
 
-		 ns = new NetworkSimulator(context);
+		// Subscribing to the participantJoined and participantChangedState events
+		IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction("participantJoined");
+		intentFilter.addAction("participantChangedState");
+		LocalBroadcastManager.getInstance(context).registerReceiver(participantsDiscoverer, intentFilter);
+
+		ns = new NetworkSimulator(context);
 	}
 
 
@@ -108,7 +114,7 @@ public class SimulatedNetworkInterface implements NetworkInterface{
 	private void handleReceivedMessage(Message message) {
 		// Extract the votemessage out of the message
 		VoteMessage voteMessage = (VoteMessage) su.deserialize(message.getMessage());
-		
+
 		Intent messageArrivedIntent;
 		switch(voteMessage.getMessageType()){
 		case VOTE_MESSAGE_ELECTORATE:
@@ -146,10 +152,21 @@ public class SimulatedNetworkInterface implements NetworkInterface{
 	/**
 	 * this broadcast receiver listens for incoming instacircle messages
 	 */
-	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+	private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			handleReceivedMessage((Message) intent.getSerializableExtra("message"));
+		}
+	};
+	
+	/**
+	 * this broadcast receiver listens for incoming instacircle broadcast notifying set of participants has changed
+	 */
+	private BroadcastReceiver participantsDiscoverer = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Intent participantsUpdate = new Intent(BroadcastIntentTypes.participantStateUpdate);
+			LocalBroadcastManager.getInstance(context).sendBroadcast(participantsUpdate);
 		}
 	};
 

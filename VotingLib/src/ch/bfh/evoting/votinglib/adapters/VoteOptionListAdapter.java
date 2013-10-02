@@ -42,16 +42,15 @@ public class VoteOptionListAdapter extends ArrayAdapter<Option> {
 		View view;
 		if (null == convertView) {
 			//when view is created
-			view =  inflater.inflate(R.layout.list_item_vote, parent, false);
-			CheckedTextView ctv = (CheckedTextView)view.findViewById(R.id.radiobutton_vote);
-			ctv.setTag(position);
-			
+			view =  inflater.inflate(R.layout.list_item_vote, parent, false);			
 		} else {
 			view = convertView;
 		}
 
 		CheckedTextView ctv = (CheckedTextView)view.findViewById(R.id.radiobutton_vote);
 		ctv.setText(this.values.get(position).getText());
+		ctv.setTag(position);
+
 		return view;
 	}
 

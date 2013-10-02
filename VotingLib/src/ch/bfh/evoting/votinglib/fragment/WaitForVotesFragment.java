@@ -86,9 +86,10 @@ public class WaitForVotesFragment extends ListFragment {
 			@Override
 			public void onReceive(Context arg0, Intent intent) {
 				String vote = intent.getStringExtra("vote");
+				int i = Integer.parseInt(vote)%poll.getOptions().size();
 				String voter = intent.getStringExtra("voter");
 				if(participants.containsKey(voter)){
-					receivedVotes.put(voter, vote);
+					receivedVotes.put(voter, ""+i);
 					participants.get(voter).setHasVoted(true);
 				}
 				boolean stop = intent.getBooleanExtra("stop", false);
@@ -130,9 +131,11 @@ public class WaitForVotesFragment extends ListFragment {
 		if(progress>=100 || stopOrder){
 			//TODO get through compute result and set result
 			List<Option> options = poll.getOptions();
+			for(String s : receivedVotes.values()){
+				options.get(Integer.parseInt(s)).setVotes(options.get(Integer.parseInt(s)).getVotes()+1);
+			}
 			for(Option option : options){
-				option.setVotes(3);
-				option.setPercentage(33.3);
+				option.setPercentage(option.getVotes()*100/receivedVotes.size());
 			}
 
 			poll.setTerminated(true);
