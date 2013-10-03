@@ -22,6 +22,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import ch.bfh.evoting.instacirclelib.wifi.AdhocWifiManager;
 import ch.bfh.evoting.votinglib.R;
+import ch.bfh.evoting.votinglib.adapters.NetworkArrayAdapter;
 
 /**
  * This class implements the fragment which lists all the messages of the
@@ -58,6 +59,8 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 	
 	private DialogFragment dialogFragment;
 	public static final int DIALOG_FRAGMENT = 1;
+	
+	private boolean hideCreateNetwork = false;
 
 	public interface Callbacks {
 		public void onItemSelected(String id);
@@ -71,7 +74,7 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		hideCreateNetwork = getActivity().getIntent().getBooleanExtra("hideCreateNetwork", false);
 	}
 
 	/*
@@ -91,9 +94,7 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 
 		this.getListView().setTranscriptMode(2);
 
-		// initializing the adapter and assign it to myself
-		// adapter = new NetworkArrayAdapter(getActivity(), cursor);
-		setListAdapter(adapter);
+		
 
 		super.onCreate(savedInstanceState);
 
@@ -105,11 +106,18 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 		wifi.startScan();
 		adhoc = new AdhocWifiManager(wifi);
 
-		lastItem.put("SSID", "Create new network...");
-
+		
 		adapter = new NetworkArrayAdapter(getActivity(),
-				R.layout.list_item_network, arraylist);
-		adapter.add(lastItem);
+				R.layout.list_item_network, arraylist, hideCreateNetwork);
+		
+		// initializing the adapter and assign it to myself
+		// adapter = new NetworkArrayAdapter(getActivity(), cursor);
+		setListAdapter(adapter);
+		
+		if (!hideCreateNetwork){
+			lastItem.put("SSID", "Create new network...");
+			adapter.add(lastItem);
+		}
 		lvNetworks.setAdapter(adapter);
 		lvNetworks.setOnItemClickListener(this);
 
@@ -151,8 +159,12 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 					Log.d(TAG, result.SSID + " known: " + item.get("known")
 							+ " netid " + item.get("netid"));
 				}
-				arraylist.add(lastItem);
+				
+				if (!hideCreateNetwork){
+					adapter.add(lastItem);
+				}
 				adapter.notifyDataSetChanged();
+				
 				NetworkListFragment.this.getListView().setSelectionAfterHeaderView();
 			}
 		};
@@ -209,12 +221,11 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 	public void onItemClick(AdapterView<?> listview, View view, int position,
 			long id) {
 
-		if (listview.getAdapter().getCount() - 1 == position) {
+		if (listview.getAdapter().getCount() - 1 == position && !hideCreateNetwork) {
 			// handling the last item in the list, which is the "Create network"
 			// item
-			//TODO create network
-//			Intent intent = new Intent(this, CreateNetworkActivity.class);
-//			startActivity(intent);
+			//Intent intent = new Intent(getActivity(), CreateNetworkActivity.class);
+			//startActivity(intent);
 		} else {
 			// extract the Hashmap assigned to the position which has been
 			// clicked
