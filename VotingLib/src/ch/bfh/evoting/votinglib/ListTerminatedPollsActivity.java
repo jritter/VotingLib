@@ -2,12 +2,11 @@ package ch.bfh.evoting.votinglib;
 
 import java.util.List;
 
-import ch.bfh.evoting.votinglib.adapters.PollListAdapter;
+import ch.bfh.evoting.votinglib.adapters.PollAdapter;
 import ch.bfh.evoting.votinglib.db.PollDbHelper;
 import ch.bfh.evoting.votinglib.entities.Poll;
-
 import android.os.Bundle;
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.MenuItem;
@@ -21,7 +20,9 @@ import android.widget.ListView;
  * @author Philémon von Bergen
  *
  */
-public class ListTerminatedPollsActivity extends ListActivity {
+public class ListTerminatedPollsActivity extends Activity {
+	
+	private ListView lvPolls;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,14 +32,15 @@ public class ListTerminatedPollsActivity extends ListActivity {
 
 		//get the poll and generate the list
 		List<Poll> polls = PollDbHelper.getInstance(this).getAllTerminatedPolls();
-		setListAdapter(new PollListAdapter(this, R.layout.list_item_poll, polls));
+		
+		lvPolls = (ListView) findViewById(R.id.listview_polls);
+		lvPolls.setAdapter(new PollAdapter(this, R.layout.list_item_poll, polls));
 
 		//create a listener on each line
 		final Context ctx = this;
-		final ListView lv = getListView();
-		lv.setOnItemClickListener(new OnItemClickListener() {
+		lvPolls.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> listview, View view, int position, long id) {
-				Poll poll =(Poll) (lv.getItemAtPosition(position));
+				Poll poll = (Poll) (lvPolls.getItemAtPosition(position));
 
 				Intent intent = new Intent(ctx, DisplayResultActivity.class);
 				intent.putExtra("poll", poll);

@@ -53,5 +53,14 @@
     <string name="participant_state">Participant state</string>
     <string name="tick">Tick</string>
     <string name="poll_image">Poll image</string>
+    
+    
+    <!-- Image descriptions -->
+    <string name="description_poll">Poll</string>
+    <string name="description_add_poll">Add Poll</string>
+    <string name="description_delete_poll">Delete Poll</string>
+    <string name="description_option">Option</string>
+    <string name="description_add_option">Add Option</string>
+    <string name="description_delete_option">Delete Option</string>
 
 </resources>

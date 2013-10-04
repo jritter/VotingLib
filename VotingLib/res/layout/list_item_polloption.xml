@@ -10,11 +10,11 @@
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_margin="8dp"
-        android:background="@color/poll"
-        android:contentDescription="@string/description_poll"
+        android:background="@color/option"
+        android:contentDescription="@string/description_option"
         android:padding="2dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_action_paste" >
+        android:src="@drawable/ic_action_accept" >
 
     </ImageView>
     
@@ -36,7 +36,6 @@
 	        android:textSize="20sp"
 	        android:layout_weight="1" >
 	    </TextView>
-	    
 	
 	    <ImageButton
 	        android:id="@+id/button_deleteoption"
