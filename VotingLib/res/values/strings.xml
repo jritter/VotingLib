@@ -28,6 +28,7 @@
     <string name="delete_poll_confirm_title">Delete the poll?</string>
     <string name="delete_poll_confirm_text">Do you really want to delete this poll? It won\'t be accessible anymore.</string>
     <string name="scroll">Please first have a look at all options</string>
+    <string name="choose_one_option">Please choose one of the given options</string>
     
     <!-- Activity titles -->
     <string name="app_name">VotingLib</string>

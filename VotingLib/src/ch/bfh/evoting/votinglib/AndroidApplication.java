@@ -1,9 +1,12 @@
 package ch.bfh.evoting.votinglib;
 
+import org.apache.log4j.Level;
+
+import ch.bfh.evoting.votinglib.network.InstaCircleNetworkInterface;
 import ch.bfh.evoting.votinglib.network.NetworkInterface;
-import ch.bfh.evoting.votinglib.network.SimulatedNetworkInterface;
 import ch.bfh.evoting.votinglib.util.JavaSerialization;
 import ch.bfh.evoting.votinglib.util.SerializationUtil;
+import ch.bfh.evoting.votinglib.util.Utility;
 import android.app.Application;
 
 /**
@@ -12,6 +15,8 @@ import android.app.Application;
  *
  */
 public class AndroidApplication extends Application {
+
+	public static final Level LEVEL = Level.DEBUG;;
 
 	private static AndroidApplication instance;
 	private SerializationUtil su;
@@ -30,6 +35,7 @@ public class AndroidApplication extends Application {
 		super.onCreate();
 		instance = this;
 		instance.initializeInstance();
+		Utility.initialiseLogging();
 	}
 
 	/**
@@ -37,7 +43,7 @@ public class AndroidApplication extends Application {
 	 */
 	private void initializeInstance() {
          su = new SerializationUtil(new JavaSerialization());
-         ni = new SimulatedNetworkInterface(this.getApplicationContext());
+         ni = new InstaCircleNetworkInterface(this.getApplicationContext());//new SimulatedNetworkInterface(this.getApplicationContext());
     }
 	
 	/**
@@ -55,4 +61,6 @@ public class AndroidApplication extends Application {
 	public NetworkInterface getNetworkInterface(){
 		return ni;
 	}
+	
+	
 }

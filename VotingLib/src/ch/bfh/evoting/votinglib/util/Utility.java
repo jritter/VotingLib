@@ -1,6 +1,9 @@
 package ch.bfh.evoting.votinglib.util;
 
+import ch.bfh.evoting.votinglib.AndroidApplication;
+import de.mindpipe.android.logging.log4j.LogConfigurator;
 import android.content.Context;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +79,21 @@ public class Utility {
 	    DisplayMetrics metrics = context.getResources().getDisplayMetrics();
 	    float dp = px / (metrics.densityDpi);
 	    return dp;
-//	    return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, px, context.getResources().getDisplayMetrics());
+	}
+	
+	/**
+	 * Configure Log4J to also log in LogCat
+	 */
+	public static void initialiseLogging() {
+		final LogConfigurator logConfigurator = new LogConfigurator();
+
+		logConfigurator.setFileName(Environment.getExternalStorageDirectory()
+				+ "/evotingcircle.log");
+		logConfigurator.setRootLevel(AndroidApplication.LEVEL);
+		// max 3 rotated log files
+		logConfigurator.setMaxBackupSize(3);
+		// Max 500ko per file
+		logConfigurator.setMaxFileSize(500000);
+		logConfigurator.configure();
 	}
 }

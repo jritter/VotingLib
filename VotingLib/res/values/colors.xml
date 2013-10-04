@@ -2,5 +2,5 @@
 <resources>
     
         <color name="light_green">@android:color/holo_green_light</color>
-    
+    	<color name="light_orange">@android:color/holo_orange_light</color>
 </resources>

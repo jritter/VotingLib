@@ -33,10 +33,15 @@ import android.widget.TextView;
 public class PollReviewFragment extends ListFragment {
 
 	private Poll poll;
+	private View header;
+	private View footer;
+	private LayoutInflater inflater;
+	private Context ctx;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);	
+		this.ctx = this.getActivity();
 	}
 
 	@Override
@@ -47,15 +52,16 @@ public class PollReviewFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		this.inflater= inflater; 
 		// Inflate the layout for this fragment
 		View v = inflater.inflate(R.layout.fragment_poll_review, container,
 				false);
 
 		ListView lv = (ListView)v.findViewById(android.R.id.list);
 
-		View header = inflater.inflate(R.layout.review_header, null, false);
+		header = inflater.inflate(R.layout.review_header, null, false);
 		lv.addHeaderView(header);
-		View footer = inflater.inflate(R.layout.review_footer, null, false);
+		footer = inflater.inflate(R.layout.review_footer, null, false);
 		lv.addFooterView(footer);
 
 		String[] array = {};
@@ -64,42 +70,7 @@ public class PollReviewFragment extends ListFragment {
 
 		poll = (Poll)getActivity().getIntent().getSerializableExtra("poll");
 
-		TextView tv_question = (TextView) header.findViewById(R.id.textview_poll_question);
-		tv_question.setText(poll.getQuestion());
-
-		//Create options table
-		TableLayout optionsTable = (TableLayout)header.findViewById(R.id.layout_options);
-
-		for(Option op : poll.getOptions()){
-			TableRow tableRow= new TableRow(this.getActivity());
-			tableRow.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-
-			View vItemOption = inflater.inflate(R.layout.list_item_option_poll, null);
-			TextView tv_option = (TextView)vItemOption.findViewById(R.id.textview_poll_option_review);
-			tv_option.setText(op.getText());
-
-			tableRow.addView(vItemOption);
-			tableRow.setBackgroundResource(R.drawable.borders);
-
-			optionsTable.addView(tableRow);
-		}
-
-		//Create participants table
-		TableLayout participantsTable = (TableLayout)footer.findViewById(R.id.layout_participants);
-
-		for(Participant part : poll.getParticipants().values()){
-			TableRow tableRow= new TableRow(this.getActivity());
-			tableRow.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-
-			View vItemParticipant = inflater.inflate(R.layout.list_item_participant_poll, null);
-			TextView tv_option = (TextView)vItemParticipant.findViewById(R.id.textview_participant_identification);
-			tv_option.setText(part.getIdentification());
-
-			tableRow.addView(vItemParticipant);
-			tableRow.setBackgroundResource(R.drawable.borders);
-
-			participantsTable.addView(tableRow);
-		}
+		updateView();
 
 		String packageName = getActivity().getApplication().getApplicationContext().getPackageName();
 		if(!packageName.equals("ch.bfh.evoting.adminapp")){
@@ -117,8 +88,61 @@ public class PollReviewFragment extends ListFragment {
 				}
 			}, new IntentFilter(BroadcastIntentTypes.startVote));
 		}
-	
+
+		//broadcast receiving the poll if it was modified
+		LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(new BroadcastReceiver() {
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+
+				poll = (Poll)intent.getSerializableExtra("poll");
+				//Poll is not in the DB, so reset the id
+				poll.setId(-1);
+				updateView();
+			}
+		}, new IntentFilter(BroadcastIntentTypes.pollToReview));
+
 		return v;
 	}
 
+	private void updateView(){
+		TextView tv_question = (TextView) header.findViewById(R.id.textview_poll_question);
+		tv_question.setText(poll.getQuestion());
+
+		//Create options table
+		TableLayout optionsTable = (TableLayout)header.findViewById(R.id.layout_options);
+		optionsTable.removeAllViews();
+
+		for(Option op : poll.getOptions()){
+			TableRow tableRow= new TableRow(ctx);
+			tableRow.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+
+			View vItemOption = inflater.inflate(R.layout.list_item_option_poll, null);
+			TextView tv_option = (TextView)vItemOption.findViewById(R.id.textview_poll_option_review);
+			tv_option.setText(op.getText());
+
+			tableRow.addView(vItemOption);
+			tableRow.setBackgroundResource(R.drawable.borders);
+
+			optionsTable.addView(tableRow);
+		}
+
+		//Create participants table
+		TableLayout participantsTable = (TableLayout)footer.findViewById(R.id.layout_participants);
+		participantsTable.removeAllViews();
+		
+		for(Participant part : poll.getParticipants().values()){
+			TableRow tableRow= new TableRow(ctx);
+			tableRow.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
+
+			View vItemParticipant = inflater.inflate(R.layout.list_item_participant_poll, null);
+			TextView tv_option = (TextView)vItemParticipant.findViewById(R.id.textview_participant_identification);
+			tv_option.setText(part.getIdentification());
+
+			tableRow.addView(vItemParticipant);
+			tableRow.setBackgroundResource(R.drawable.borders);
+
+			participantsTable.addView(tableRow);
+		}
+	}
 }

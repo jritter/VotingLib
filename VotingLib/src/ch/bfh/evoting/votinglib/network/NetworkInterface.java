@@ -2,6 +2,7 @@ package ch.bfh.evoting.votinglib.network;
 
 import java.util.Map;
 
+import ch.bfh.evoting.instacirclelib.Message;
 import ch.bfh.evoting.votinglib.entities.Participant;
 import ch.bfh.evoting.votinglib.entities.VoteMessage;
 
@@ -35,5 +36,7 @@ public interface NetworkInterface {
 	 * @param destinationIPAddress The destination of the message
 	 */
 	public void sendMessage(VoteMessage votemessage, String destinationIPAddress);	
+
+	public void disconnect();
 }
 

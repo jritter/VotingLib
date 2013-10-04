@@ -46,15 +46,26 @@ public class NetworkSimulator {
 
 			@Override
 			public void run() {
-				int i=0;
 				while(true){
 					SystemClock.sleep(1000);
-					//creation of sender ip
-					int random = (int)(Math.random() * (150-0)) + 0;
-					i=(i+1)%10;
-					String senderAddress = "192.168.1."+i;
+					
+					Poll poll = NetworkSimulator.this.createDummyPoll();
+					
+					//creation of vote and sender ip
+					int random = (int)(Math.random() * (poll.getOptions().size()-0)) + 0;
+					Option vote = poll.getOptions().get(random);
+					int i=0;
+					String senderAddress = "0.0.0.0";
+					for(Participant p:poll.getParticipants().values()){
+						if(i==random){
+							senderAddress = p.getIpAddress();
+							break;
+						} else {
+							i++;
+						}
+					}
 					//creation of vote message
-					VoteMessage vm = new VoteMessage(VoteMessage.Type.VOTE_MESSAGE_VOTE, ""+random, senderAddress, 0);
+					VoteMessage vm = new VoteMessage(VoteMessage.Type.VOTE_MESSAGE_VOTE, vote, senderAddress, 0);
 					String serializedVotingMessage = su.serialize(vm);
 
 					//creation of network message
@@ -272,37 +283,37 @@ public class NetworkSimulator {
 		//Create the option
 		String question = "What do you think very very very long question very very very long question very very very long question very very very long question?";
 		Option yes = new Option();
-		yes.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes");
+		yes.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes 1");
 		Option no = new Option();
-		no.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No");
+		no.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No 2");
 		Option yes1 = new Option();
-		yes1.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes");
+		yes1.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes 3");
 		Option no1 = new Option();
-		no1.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No");
+		no1.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No 4");
 		Option yes2 = new Option();
-		yes2.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes");
+		yes2.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes 5");
 		Option no2 = new Option();
-		no2.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No");
+		no2.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No 6");
 		Option yes3 = new Option();
-		yes3.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes");
+		yes3.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes 7");
 		Option no3 = new Option();
-		no3.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No");
+		no3.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No 8");
 		Option yes4 = new Option();
-		yes4.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes");
+		yes4.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes 9");
 		Option no4 = new Option();
-		no4.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No");
+		no4.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No 10");
 		Option yes5 = new Option();
-		yes5.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes");
+		yes5.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes 11");
 		Option no5 = new Option();
-		no5.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No");
+		no5.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No 12");
 		Option yes6 = new Option();
-		yes6.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes");
+		yes6.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes 13");
 		Option no6 = new Option();
-		no6.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No");
+		no6.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No 14");
 		Option yes7 = new Option();
-		yes7.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes");
+		yes7.setText("Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes 15");
 		Option no7 = new Option();
-		no7.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No");
+		no7.setText("No No No No No No No No No No No No No No No No No No No NoNo No No No No No No No No No No No 16");
 
 		List<Option> options = new ArrayList<Option>();
 		options.add(yes);
@@ -333,7 +344,6 @@ public class NetworkSimulator {
 		participants.get(10).setSelected(true);
 		participants.get(11).setSelected(true);
 		participants.get(13).setSelected(true);
-		participants.get(14).setSelected(true);
 
 		Poll poll = new Poll();
 		poll.setOptions(options);

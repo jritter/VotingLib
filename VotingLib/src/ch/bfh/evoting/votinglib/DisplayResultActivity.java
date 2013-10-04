@@ -46,11 +46,12 @@ public class DisplayResultActivity extends ListActivity {
 
 		View header = inflater.inflate(R.layout.result_header, null, false);
 		lv.addHeaderView(header);
+		
+		AndroidApplication.getInstance().getNetworkInterface().disconnect();
 
 		//Get the data in the intent
 		Poll poll = (Poll)this.getIntent().getSerializableExtra("poll");
 		saveToDbNeeded = this.getIntent().getBooleanExtra("saveToDb", false);
-		
 		if(poll.getId()>=0){
 			pollId = poll.getId();
 		} else {

@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.DialogInterface.OnShowListener;
 import android.os.Bundle;
 import android.text.Editable;
@@ -50,6 +51,9 @@ public class ConnectNetworkDialogFragment extends DialogFragment implements
 	private boolean showNetworkKeyField;
 
 	private AlertDialog dialog;
+	
+	private static final String PREFS_NAME = "network_preferences";
+
 
 	/**
 	 * @param showNetworkKeyField
@@ -95,6 +99,12 @@ public class ConnectNetworkDialogFragment extends DialogFragment implements
 					public void onClick(DialogInterface dialog, int which) {
 						password = txtPassword.getText().toString();
 						networkKey = txtNetworkKey.getText().toString();
+						SharedPreferences preferences = getActivity().getSharedPreferences(PREFS_NAME, 0);
+						SharedPreferences.Editor editor = preferences.edit();
+//						editor.putString("SSID", selectedResult.SSID);
+						editor.putString("password",password);
+//								((ConnectNetworkDialogFragment) dialog).getPassword());
+						editor.commit();
 						getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
 					}
 				});

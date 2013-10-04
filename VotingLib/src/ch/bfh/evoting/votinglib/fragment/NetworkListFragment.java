@@ -153,6 +153,8 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 				}
 				arraylist.add(lastItem);
 				adapter.notifyDataSetChanged();
+				Log.e("EvotingCircle", "Size "+adapter.getCount());
+
 				NetworkListFragment.this.getListView().setSelectionAfterHeaderView();
 			}
 		};
@@ -212,9 +214,18 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 		if (listview.getAdapter().getCount() - 1 == position) {
 			// handling the last item in the list, which is the "Create network"
 			// item
-			//TODO create network
-//			Intent intent = new Intent(this, CreateNetworkActivity.class);
-//			startActivity(intent);
+			
+			//Start activity that creates the hotspot
+			String packageName = getActivity().getApplication().getApplicationContext().getPackageName();
+			if(packageName.equals("ch.bfh.evoting.adminapp")){
+				Intent intent = new Intent("ch.bfh.evoting.adminapp.CreateNetworkActivity");
+				startActivity(intent);
+			} else if(packageName.equals("ch.bfh.evoting.voterapp")){
+				Intent intent = new Intent("ch.bfh.evoting.voterapp.CreateNetworkActivity");
+				startActivity(intent);
+			}
+			
+			
 		} else {
 			// extract the Hashmap assigned to the position which has been
 			// clicked

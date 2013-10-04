@@ -6,12 +6,18 @@ import java.util.List;
 import ch.bfh.evoting.votinglib.adapters.VoteOptionListAdapter;
 import ch.bfh.evoting.votinglib.entities.Option;
 import ch.bfh.evoting.votinglib.entities.Poll;
+import ch.bfh.evoting.votinglib.entities.VoteMessage;
+import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.app.ListActivity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,6 +46,9 @@ public class VoteActivity extends ListActivity {
 	private boolean scrolled = false;
 	private boolean demoScrollDone = false;
 
+	private int votesReceived = 0;
+
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,6 +75,8 @@ public class VoteActivity extends ListActivity {
 			public void onClick(View v) {
 				if(!scrolled){
 					Toast.makeText(VoteActivity.this, getString(R.string.scroll), Toast.LENGTH_SHORT).show();
+				} else if (selectedPosition == -1){
+					Toast.makeText(VoteActivity.this, getString(R.string.choose_one_option), Toast.LENGTH_SHORT).show();
 				} else {
 					castBallot();
 				}
@@ -126,6 +137,27 @@ public class VoteActivity extends ListActivity {
 
 		}.execute();
 
+		//TODO remove only for demo
+		//Register a BroadcastReceiver on new incoming vote events
+		BroadcastReceiver voteReceiver = new BroadcastReceiver(){
+
+			@Override
+			public void onReceive(Context arg0, Intent intent) {
+				Option vote = (Option)intent.getSerializableExtra("vote");
+				for(Option op : poll.getOptions()){
+					if(op.equals(vote)){
+						op.setVotes(op.getVotes()+1);
+					}
+				}
+				String voter = intent.getStringExtra("voter");
+				if(poll.getParticipants().containsKey(voter)){
+					votesReceived++;
+					poll.getParticipants().get(voter).setHasVoted(true);
+				}
+			}
+		};
+		LocalBroadcastManager.getInstance(this).registerReceiver(voteReceiver, new IntentFilter(BroadcastIntentTypes.newVote));
+
 	}
 
 
@@ -141,11 +173,12 @@ public class VoteActivity extends ListActivity {
 
 		Option selectedOption = volAdapter.getItem(selectedPosition);
 
-		//TODO send vote
 		if(selectedOption!=null){
 			Log.e("vote", "Voted "+selectedOption.getText());
+			AndroidApplication.getInstance().getNetworkInterface().sendMessage(new VoteMessage(VoteMessage.Type.VOTE_MESSAGE_VOTE, selectedOption));
 		} else {
 			Log.e("vote", "Voted null");
+			AndroidApplication.getInstance().getNetworkInterface().sendMessage(new VoteMessage(VoteMessage.Type.VOTE_MESSAGE_VOTE, null));
 		}
 
 		//Start activity waiting for other participants to vote
@@ -154,10 +187,14 @@ public class VoteActivity extends ListActivity {
 		if(packageName.equals("ch.bfh.evoting.adminapp")){
 			Intent i = new Intent("ch.bfh.evoting.adminapp.AdminWaitForVotesActivity");
 			i.putExtra("poll", (Serializable)poll);
+			//TODO remove, for demo only
+			i.putExtra("votesReceived", votesReceived);
 			startActivity(i);
 		} else {
 			Intent intent = new Intent(this, WaitForVotesActivity.class);
 			intent.putExtra("poll", (Serializable)poll);
+			//TODO remove, for demo only
+			intent.putExtra("votesReceived", votesReceived);
 			startActivity(intent);
 		}
 	}

@@ -4,11 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:checkMark="?android:attr/listChoiceIndicatorSingle"
-    android:checked="true"
-    android:ellipsize="end"
     android:paddingTop="2dip"
-    android:singleLine="true"
     android:textSize="20sp"
-    android:textStyle="" >
-
+    android:textStyle=""
+    android:gravity="center_vertical" >
 </CheckedTextView>

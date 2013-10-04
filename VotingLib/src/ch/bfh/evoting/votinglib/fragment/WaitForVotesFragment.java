@@ -2,7 +2,6 @@ package ch.bfh.evoting.votinglib.fragment;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +38,8 @@ public class WaitForVotesFragment extends ListFragment {
 	private ProgressBar pb;
 	private WaitParticipantListAdapter wpAdapter;
 	private TextView tvCastVotes;
-	private Map<String, String> receivedVotes = new HashMap<String, String>();
+	private int votesReceived = 0;
+//	private Map<String, String> receivedVotes = new HashMap<String, String>();
 
 	private BroadcastReceiver voteReceiver;
 	private BroadcastReceiver stopReceiver;
@@ -80,20 +80,26 @@ public class WaitForVotesFragment extends ListFragment {
 		tvCastVotes = (TextView)v.findViewById(R.id.textview_cast_votes);
 		tvCastVotes.setText(getString(R.string.cast_votes, 0, participants.size()));
 
+		//TODO for demo only
+		votesReceived += intent.getIntExtra("votesReceived", 0);
+		
 		//Register a BroadcastReceiver on new incoming vote events
-		voteReceiver =new BroadcastReceiver(){
+		voteReceiver = new BroadcastReceiver(){
 
 			@Override
 			public void onReceive(Context arg0, Intent intent) {
-				String vote = intent.getStringExtra("vote");
-				int i = Integer.parseInt(vote)%poll.getOptions().size();
+				Option vote = (Option)intent.getSerializableExtra("vote");
+				for(Option op : poll.getOptions()){
+					if(op.equals(vote)){
+						op.setVotes(op.getVotes()+1);
+					}
+				}
 				String voter = intent.getStringExtra("voter");
 				if(participants.containsKey(voter)){
-					receivedVotes.put(voter, ""+i);
+					votesReceived++;
 					participants.get(voter).setHasVoted(true);
 				}
-				boolean stop = intent.getBooleanExtra("stop", false);
-				updateStatus(receivedVotes.size(), stop);
+				updateStatus(votesReceived, false);
 			}
 
 		};
@@ -104,9 +110,8 @@ public class WaitForVotesFragment extends ListFragment {
 
 			@Override
 			public void onReceive(Context arg0, Intent intent) {
-				updateStatus(receivedVotes.size(), true);
+				updateStatus(votesReceived, true);
 			}
-
 		};
 		LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(stopReceiver, new IntentFilter(BroadcastIntentTypes.stopVote));
 
@@ -129,13 +134,14 @@ public class WaitForVotesFragment extends ListFragment {
 
 
 		if(progress>=100 || stopOrder){
-			//TODO get through compute result and set result
+			//go through compute result and set percentage result
 			List<Option> options = poll.getOptions();
-			for(String s : receivedVotes.values()){
-				options.get(Integer.parseInt(s)).setVotes(options.get(Integer.parseInt(s)).getVotes()+1);
-			}
 			for(Option option : options){
-				option.setPercentage(option.getVotes()*100/receivedVotes.size());
+				if(numberOfReceivedVotes!=0){
+					option.setPercentage(option.getVotes()*100/numberOfReceivedVotes);
+				} else {
+					option.setPercentage(0);
+				}
 			}
 
 			poll.setTerminated(true);
