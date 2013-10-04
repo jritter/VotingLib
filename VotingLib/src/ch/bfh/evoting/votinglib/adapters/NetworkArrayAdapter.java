@@ -1,5 +1,5 @@
 
-package ch.bfh.evoting.votinglib.fragment;
+package ch.bfh.evoting.votinglib.adapters;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +25,10 @@ public class NetworkArrayAdapter extends ArrayAdapter<HashMap<String, Object>> {
 	private ArrayList<HashMap<String, Object>> items;
 	private Context context;
 	private String capabilities;
+	
+	private boolean hideCreateNetwork = false;
 
+	
 	/**
 	 * @param context
 	 *            The context from which it has been created
@@ -40,6 +43,28 @@ public class NetworkArrayAdapter extends ArrayAdapter<HashMap<String, Object>> {
 		this.context = context;
 		this.items = items;
 	}
+	
+	
+	/**
+	 * @param context
+	 *            The context from which it has been created
+	 * @param textViewResourceId
+	 *            The id of the item layout
+	 * @param items
+	 *            The ArrayList with the values
+	 * @param hideCreateNetwork
+	 * 			  Indicates whether the the last item should have a router icon or not, default is false
+	 */
+	public NetworkArrayAdapter(Context context, int textViewResourceId,
+			ArrayList<HashMap<String, Object>> items, boolean hideCreateNetwork) {
+		super(context, textViewResourceId, items);
+		this.context = context;
+		this.items = items;
+		
+		this.hideCreateNetwork = hideCreateNetwork;
+	}
+	
+	
 
 	/*
 	 * (non-Javadoc)
@@ -64,9 +89,9 @@ public class NetworkArrayAdapter extends ArrayAdapter<HashMap<String, Object>> {
 					.findViewById(R.id.textview_description);
 			ImageView icon = (ImageView) view.findViewById(R.id.imageview_icon);
 
-			if (this.getCount() - 1 == position) {
+			if (this.getCount() - 1 == position && !hideCreateNetwork) {
 				// the last item is for the "Create Network" item, so the icon
-				// needs to be the router
+				// needs to be the router if we don't hide the createnetwork option
 				icon.setImageResource(R.drawable.glyphicons_046_router);
 				icon.setBackgroundColor(context.getResources().getColor(
 						android.R.color.holo_purple));
