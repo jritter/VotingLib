@@ -16,7 +16,9 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
@@ -92,9 +94,7 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 					.getInt(STATE_ACTIVATED_POSITION));
 		}
 
-		this.getListView().setTranscriptMode(2);
-
-		
+		this.getListView().setTranscriptMode(ListView.TRANSCRIPT_MODE_DISABLED);
 
 		super.onCreate(savedInstanceState);
 
@@ -165,7 +165,6 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 				}
 				adapter.notifyDataSetChanged();
 				Log.e("EvotingCircle", "Size "+adapter.getCount());
-				NetworkListFragment.this.getListView().setSelectionAfterHeaderView();
 			}
 		};
 
@@ -295,7 +294,5 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
             break;
 		}
 	}
-	
-	
 
 }

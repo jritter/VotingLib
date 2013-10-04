@@ -117,4 +117,6 @@ public class NetworkArrayAdapter extends ArrayAdapter<HashMap<String, Object>> {
 		}
 		return view;
 	}
+	
+	
 }
