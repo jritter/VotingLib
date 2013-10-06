@@ -17,6 +17,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -119,8 +120,12 @@ public class ConnectNetworkDialogFragment extends DialogFragment implements
 				});
 
 		builder.setTitle("InstaCircle - Network Password");
+		
+		
 
 		dialog = builder.create();
+		
+		
 
 		// always disable the Join button since the key is always empty and
 		// therefore we are not ready to connect yet

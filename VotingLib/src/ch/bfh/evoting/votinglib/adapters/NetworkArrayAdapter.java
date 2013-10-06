@@ -94,13 +94,13 @@ public class NetworkArrayAdapter extends ArrayAdapter<HashMap<String, Object>> {
 				// needs to be the router if we don't hide the createnetwork option
 				icon.setImageResource(R.drawable.glyphicons_046_router);
 				icon.setBackgroundColor(context.getResources().getColor(
-						android.R.color.holo_purple));
+						R.color.hotspot));
 				description.setText("");
 			} else {
 				// set the values of the labels accordingly
 				icon.setImageResource(R.drawable.glyphicons_032_wifi_alt);
 				icon.setBackgroundColor(context.getResources().getColor(
-						android.R.color.holo_blue_light));
+						R.color.network));
 				capabilities = (String) item.get("capabilities");
 				if (capabilities == null) {
 					description.setText("");

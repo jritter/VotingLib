@@ -44,7 +44,7 @@
 	        android:layout_width="48dp"
 	        android:layout_height="48dp"
 	        android:contentDescription="@string/description_delete_poll"
-	        android:src="@android:drawable/ic_menu_delete" />
+	        android:src="@drawable/ic_action_discard" />
 	
 	</LinearLayout>
 </LinearLayout>

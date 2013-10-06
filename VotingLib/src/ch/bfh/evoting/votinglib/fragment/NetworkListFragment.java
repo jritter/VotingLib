@@ -254,6 +254,7 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 				dialogFragment = new ConnectNetworkDialogFragment(false);
 			}
 			dialogFragment.setTargetFragment(this, DIALOG_FRAGMENT);
+			dialogFragment.setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog);
 			dialogFragment.show(getFragmentManager(), TAG);
 
 		}

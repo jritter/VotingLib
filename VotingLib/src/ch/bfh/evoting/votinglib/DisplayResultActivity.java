@@ -98,12 +98,6 @@ public class DisplayResultActivity extends ListActivity {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.display_result, menu);
-		return true;
-	}
 
 	@Override
 	public void onBackPressed() {
@@ -125,28 +119,28 @@ public class DisplayResultActivity extends ListActivity {
 		final Context ctx = this.getApplicationContext();
 
 		//Delete option of the menu
-		if(item.getItemId()==R.id.action_delete) {
-			if(this.pollId!=-1){
-				//Confirmation dialog
-				AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-				alertDialog.setTitle(R.string.delete_poll_confirm_title);
-				alertDialog.setMessage(getString(R.string.delete_poll_confirm_text));
-				alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,	int which) {
-						PollDbHelper.getInstance(ctx).deletePoll(pollId);
-						dialog.dismiss();
-						startActivity(new Intent(ctx, ListTerminatedPollsActivity.class));
-					}
-				});
-				alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,	int which) {
-						dialog.dismiss();
-					}
-				});
-				alertDialog.show();
-			}
+//		if(item.getItemId()==R.id.action_delete) {
+//			if(this.pollId!=-1){
+//				//Confirmation dialog
+//				AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+//				alertDialog.setTitle(R.string.delete_poll_confirm_title);
+//				alertDialog.setMessage(getString(R.string.delete_poll_confirm_text));
+//				alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",new DialogInterface.OnClickListener() {
+//					public void onClick(DialogInterface dialog,	int which) {
+//						PollDbHelper.getInstance(ctx).deletePoll(pollId);
+//						dialog.dismiss();
+//						startActivity(new Intent(ctx, ListTerminatedPollsActivity.class));
+//					}
+//				});
+//				alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+//					public void onClick(DialogInterface dialog,	int which) {
+//						dialog.dismiss();
+//					}
+//				});
+//				alertDialog.show();
+//			}
 
-		} else if (item.getItemId()==android.R.id.home){
+		if (item.getItemId() == android.R.id.home){
 			startActivity(new Intent(this, ListTerminatedPollsActivity.class));
 		}
 		return true;

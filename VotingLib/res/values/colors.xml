@@ -8,5 +8,8 @@
     	<color name="participant">@android:color/holo_orange_light</color>
     	<color name="option">@android:color/holo_orange_light</color>
     	<color name="network">@android:color/holo_orange_light</color>
+    	<color name="hotspot">@android:color/holo_orange_dark</color>
+    	
+    	<color name="background">#40FFBB33</color>
     	
 </resources>
