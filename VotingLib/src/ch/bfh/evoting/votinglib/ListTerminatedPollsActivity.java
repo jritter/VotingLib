@@ -5,10 +5,12 @@ import java.util.List;
 import ch.bfh.evoting.votinglib.adapters.PollAdapter;
 import ch.bfh.evoting.votinglib.db.PollDbHelper;
 import ch.bfh.evoting.votinglib.entities.Poll;
+import ch.bfh.evoting.votinglib.util.HelpDialogFragment;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,7 +23,7 @@ import android.widget.ListView;
  *
  */
 public class ListTerminatedPollsActivity extends Activity {
-	
+
 	private ListView lvPolls;
 
 	@Override
@@ -32,7 +34,7 @@ public class ListTerminatedPollsActivity extends Activity {
 
 		//get the poll and generate the list
 		List<Poll> polls = PollDbHelper.getInstance(this).getAllTerminatedPolls();
-		
+
 		lvPolls = (ListView) findViewById(R.id.listview_polls);
 		lvPolls.setAdapter(new PollAdapter(this, R.layout.list_item_poll, polls));
 
@@ -49,21 +51,21 @@ public class ListTerminatedPollsActivity extends Activity {
 			}                 
 		});
 
-//		Button btnBackHome = (Button) findViewById(R.id.button_back_to_home);
-//		btnBackHome.setOnClickListener(new OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				String packageName = getApplication().getApplicationContext().getPackageName();
-//				if(packageName.equals("ch.bfh.evoting.voterapp")){
-//					Intent i = new Intent("ch.bfh.evoting.voterapp.VoterAppMainActivity");
-//					startActivity(i);
-//				} else if (packageName.equals("ch.bfh.evoting.adminapp")){
-//					Intent i = new Intent("ch.bfh.evoting.adminapp.AdminAppMainActivity");
-//					startActivity(i);
-//				}
-//			}
-//		});
+		//		Button btnBackHome = (Button) findViewById(R.id.button_back_to_home);
+		//		btnBackHome.setOnClickListener(new OnClickListener() {
+		//
+		//			@Override
+		//			public void onClick(View v) {
+		//				String packageName = getApplication().getApplicationContext().getPackageName();
+		//				if(packageName.equals("ch.bfh.evoting.voterapp")){
+		//					Intent i = new Intent("ch.bfh.evoting.voterapp.VoterAppMainActivity");
+		//					startActivity(i);
+		//				} else if (packageName.equals("ch.bfh.evoting.adminapp")){
+		//					Intent i = new Intent("ch.bfh.evoting.adminapp.AdminAppMainActivity");
+		//					startActivity(i);
+		//				}
+		//			}
+		//		});
 	}
 
 	/**
@@ -76,8 +78,7 @@ public class ListTerminatedPollsActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
+		if(item.getItemId() == android.R.id.home){
 			String packageName = getApplication().getApplicationContext().getPackageName();
 			if(packageName.equals("ch.bfh.evoting.voterapp")){
 				Intent i = new Intent("ch.bfh.evoting.voterapp.VoterAppMainActivity");
@@ -87,8 +88,21 @@ public class ListTerminatedPollsActivity extends Activity {
 				startActivity(i);
 			}
 			return true;
+		} else if (item.getItemId() == R.id.help){
+			HelpDialogFragment hdf = HelpDialogFragment.newInstance( getString(R.string.help_title_archive), getString(R.string.help_text_archive) );
+			hdf.show( getFragmentManager( ), "help" );
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.archive, menu);
+		return true;
 	}
 
 	@Override

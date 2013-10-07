@@ -8,6 +8,7 @@ import ch.bfh.evoting.votinglib.entities.Option;
 import ch.bfh.evoting.votinglib.entities.Poll;
 import ch.bfh.evoting.votinglib.entities.VoteMessage;
 import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
+import ch.bfh.evoting.votinglib.util.HelpDialogFragment;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView.OnScrollListener;
@@ -103,6 +106,7 @@ public class VoteActivity extends ListActivity {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				//Check if the last view is visible
+				Log.d("VoteActivity", "Scroll: firstVisible item="+firstVisibleItem+" visibleItemCount="+visibleItemCount+" totalItemCount="+totalItemCount);
 				if (++firstVisibleItem + visibleItemCount > totalItemCount && demoScrollDone) {
 					scrolled=true;
 				}
@@ -121,7 +125,7 @@ public class VoteActivity extends ListActivity {
 			protected Object doInBackground(Object... params) {
 				SystemClock.sleep(300);
 				if(lv.getLastVisiblePosition() < lv.getCount()-2){
-
+					Log.d("VoteActivity", "Doing demo scroll");
 					lv.smoothScrollToPositionFromTop(lv.getAdapter().getCount()-1, 0, 1000);
 					SystemClock.sleep(1050);
 					lv.smoothScrollToPositionFromTop(0, 0, 1000);
@@ -130,6 +134,7 @@ public class VoteActivity extends ListActivity {
 					demoScrollDone = true;
 					return null;
 				} else {
+					Log.d("VoteActivity", "Demo scroll not needed");
 					scrolled = true;
 					return null;
 				}
@@ -197,6 +202,29 @@ public class VoteActivity extends ListActivity {
 			intent.putExtra("votesReceived", votesReceived);
 			startActivity(intent);
 		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		if (item.getItemId() == R.id.help){
+			HelpDialogFragment hdf = HelpDialogFragment.newInstance( getString(R.string.help_title_vote), getString(R.string.help_text_vote) );
+	        hdf.show( getFragmentManager( ), "help" );
+	        return true;
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.vote, menu);
+		return true;
 	}
 
 }

@@ -14,6 +14,12 @@
     <string name="description">Description</string>
     <string name="options">Options:</string>
     <string name="participants">Participants:</string>
+    <string name="network_name">Network name:</string>
+    <string name="network_name">Network name:</string>
+    <string name="network_info">Network informations</string>
+    <string name="network_password">Network password:</string>
+    <string name="not_connected">No network set up</string>
+    <string name="help">Help</string>
     <!--
          <string name="display_result_close">Close</string>
         <string name="home">Home</string>
@@ -29,7 +35,7 @@
     <string name="delete_poll_confirm_text">Do you really want to delete this poll? It won\'t be accessible anymore.</string>
     <string name="scroll">Please first have a look at all options</string>
     <string name="choose_one_option">Please choose one of the given options</string>
-    
+
     <!-- Activity titles -->
     <string name="app_name">VotingLib</string>
     <string name="title_activity_wait_for_votes">Waiting...</string>
@@ -42,6 +48,7 @@
     <string name="display_result_title">Poll results</string>
     <string name="vote_title">Please vote</string>
     <string name="wait_votes">Thanks for voting!\nWaiting for votes...</string>
+    <string name="title_activity_network_ready">Network connection information</string>
 
     <!-- Hints in EditText fields -->
     <string name="hint_network_password">Network Password</string>
@@ -53,8 +60,7 @@
     <string name="participant_state">Participant state</string>
     <string name="tick">Tick</string>
     <string name="poll_image">Poll image</string>
-    
-    
+
     <!-- Image descriptions -->
     <string name="description_poll">Poll</string>
     <string name="description_add_poll">Add Poll</string>
@@ -62,5 +68,20 @@
     <string name="description_option">Option</string>
     <string name="description_add_option">Add Option</string>
     <string name="description_delete_option">Delete Option</string>
+    <string name="description_help">Help</string>
+
+    <!-- Help dialog titles -->
+    <string name="help_title_network_info">Help for network information</string>
+    <string name="help_title_vote">Help for vote</string>
+    <string name="help_title_wait">Help for poll state</string>
+    <string name="help_title_display_results">Help for results</string>
+    <string name="help_title_archive">Help for archive</string>
+
+    <!-- Help dialog texts -->
+    <string name="help_text_network_info">network information</string>
+    <string name="help_text_vote">vote</string>
+    <string name="help_text_wait">poll state</string>
+    <string name="help_text_display_results">display resutls</string>
+    <string name="help_text_archive">archive</string>
 
 </resources>

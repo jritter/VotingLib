@@ -9,13 +9,12 @@ import ch.bfh.evoting.votinglib.adapters.OptionListAdapter;
 import ch.bfh.evoting.votinglib.db.PollDbHelper;
 import ch.bfh.evoting.votinglib.entities.DatabaseException;
 import ch.bfh.evoting.votinglib.entities.Poll;
+import ch.bfh.evoting.votinglib.util.HelpDialogFragment;
 import ch.bfh.evoting.votinglib.util.OptionsComparator;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -63,7 +62,7 @@ public class DisplayResultActivity extends ListActivity {
 		
 		
 		lv.addHeaderView(header);
-		
+
 		AndroidApplication.getInstance().getNetworkInterface().disconnect();
 
 		//Get the data in the intent
@@ -107,7 +106,7 @@ public class DisplayResultActivity extends ListActivity {
 		}  
 
 	}
-	
+
 	/**
 	 * Set up the {@link android.app.ActionBar}.
 	 */
@@ -136,29 +135,47 @@ public class DisplayResultActivity extends ListActivity {
 		final Context ctx = this.getApplicationContext();
 
 		//Delete option of the menu
-//		if(item.getItemId()==R.id.action_delete) {
-//			if(this.pollId!=-1){
-//				//Confirmation dialog
-//				AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-//				alertDialog.setTitle(R.string.delete_poll_confirm_title);
-//				alertDialog.setMessage(getString(R.string.delete_poll_confirm_text));
-//				alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",new DialogInterface.OnClickListener() {
-//					public void onClick(DialogInterface dialog,	int which) {
-//						PollDbHelper.getInstance(ctx).deletePoll(pollId);
-//						dialog.dismiss();
-//						startActivity(new Intent(ctx, ListTerminatedPollsActivity.class));
-//					}
-//				});
-//				alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
-//					public void onClick(DialogInterface dialog,	int which) {
-//						dialog.dismiss();
-//					}
-//				});
-//				alertDialog.show();
-//			}
+		//		if(item.getItemId()==R.id.action_delete) {
+		//			if(this.pollId!=-1){
+		//				//Confirmation dialog
+		//				AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+		//				alertDialog.setTitle(R.string.delete_poll_confirm_title);
+		//				alertDialog.setMessage(getString(R.string.delete_poll_confirm_text));
+		//				alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",new DialogInterface.OnClickListener() {
+		//					public void onClick(DialogInterface dialog,	int which) {
+		//						PollDbHelper.getInstance(ctx).deletePoll(pollId);
+		//						dialog.dismiss();
+		//						startActivity(new Intent(ctx, ListTerminatedPollsActivity.class));
+		//					}
+		//				});
+		//				alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
+		//					public void onClick(DialogInterface dialog,	int which) {
+		//						dialog.dismiss();
+		//					}
+		//				});
+		//				alertDialog.show();
+		//			}
 
 		if (item.getItemId() == android.R.id.home){
-			startActivity(new Intent(this, ListTerminatedPollsActivity.class));
+			String packageName = getApplication().getApplicationContext().getPackageName();
+			//if ending a poll
+			if(saveToDbNeeded){
+				if(packageName.equals("ch.bfh.evoting.voterapp")){
+					Intent i = new Intent("ch.bfh.evoting.voterapp.VoterAppMainActivity");
+					startActivity(i);
+				} else if (packageName.equals("ch.bfh.evoting.adminapp")){
+					Intent i = new Intent("ch.bfh.evoting.adminapp.AdminAppMainActivity");
+					startActivity(i);
+				}
+			} else {
+				//if consulting an archive
+				startActivity(new Intent(this, ListTerminatedPollsActivity.class));
+			}
+			return true;
+		} else if (item.getItemId() == R.id.help){
+			HelpDialogFragment hdf = HelpDialogFragment.newInstance( getString(R.string.help_title_display_results), getString(R.string.help_text_display_results) );
+	        hdf.show( getFragmentManager( ), "help" );
+	        return true;
 		}
 		return true;
 	}
@@ -172,6 +189,13 @@ public class DisplayResultActivity extends ListActivity {
 			data[i] = 360 * (data[i] / total);
 		}
 		return data;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.display_results, menu);
+		return true;
 	}
 	
 	public class MyGraphview extends View {
