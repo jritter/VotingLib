@@ -3,6 +3,7 @@ package ch.bfh.evoting.votinglib;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Random;
 
 import ch.bfh.evoting.votinglib.adapters.OptionListAdapter;
 import ch.bfh.evoting.votinglib.db.PollDbHelper;
@@ -16,11 +17,16 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,6 +39,8 @@ public class DisplayResultActivity extends ListActivity {
 
 	private int pollId;
 	private boolean saveToDbNeeded;
+	
+	private float values[] = { 700, 400, 100, 500,600 };  
 
 	@SuppressLint("SimpleDateFormat")
 	@Override
@@ -45,6 +53,15 @@ public class DisplayResultActivity extends ListActivity {
 		LayoutInflater inflater = this.getLayoutInflater();
 
 		View header = inflater.inflate(R.layout.result_header, null, false);
+		
+		
+		// Displaying the graph
+		LinearLayout layoutGraph = (LinearLayout) header.findViewById(R.id.layout_graph);
+		values = calculateData(values);  
+		MyGraphview graphview = new MyGraphview(this, values);  
+		layoutGraph.addView(graphview);  
+		
+		
 		lv.addHeaderView(header);
 		
 		AndroidApplication.getInstance().getNetworkInterface().disconnect();
@@ -87,7 +104,7 @@ public class DisplayResultActivity extends ListActivity {
 				Log.e(this.getClass().getSimpleName(), "DB error: "+e.getMessage());
 				e.printStackTrace();
 			}
-		}
+		}  
 
 	}
 	
@@ -145,5 +162,52 @@ public class DisplayResultActivity extends ListActivity {
 		}
 		return true;
 	}
+	
+	private float[] calculateData(float[] data) {
+		float total = 0;
+		for (int i = 0; i < data.length; i++) {
+			total += data[i];
+		}
+		for (int i = 0; i < data.length; i++) {
+			data[i] = 360 * (data[i] / total);
+		}
+		return data;
+	}
+	
+	public class MyGraphview extends View {
+		private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		private float[] value_degree;
+		RectF rectf = new RectF(120, 120, 380, 380);
+		float temp = 0;
 
+		public MyGraphview(Context context, float[] values) {
+			super(context);
+			value_degree = new float[values.length];
+			for (int i = 0; i < values.length; i++) {
+				value_degree[i] = values[i];
+			}
+		}
+
+		@Override
+		protected void onDraw(Canvas canvas) {
+			super.onDraw(canvas);
+			Random r;
+			for (int i = 0; i < value_degree.length; i++) {
+				if (i == 0) {
+					r = new Random();
+					int color = Color.argb(100, r.nextInt(256), r.nextInt(256),
+							r.nextInt(256));
+					paint.setColor(color);
+					canvas.drawArc(rectf, 0, value_degree[i], true, paint);
+				} else {
+					temp += value_degree[i - 1];
+					r = new Random();
+					int color = Color.argb(255, r.nextInt(256), r.nextInt(256),
+							r.nextInt(256));
+					paint.setColor(color);
+					canvas.drawArc(rectf, temp, value_degree[i], true, paint);
+				}
+			}
+		}
+	}
 }

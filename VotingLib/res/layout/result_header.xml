@@ -20,12 +20,20 @@
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:textSize="20sp"
         android:textStyle="" />
+    
+    <LinearLayout  
+        android:id="@+id/layout_graph"  
+        android:layout_width="fill_parent"  
+        android:layout_height="fill_parent"
+        android:orientation="horizontal"
+        android:layout_below="@id/textview_poll_question" > 
+    </LinearLayout>  
 
     <LinearLayout
         android:id="@+id/layout_display_result"
         android:layout_width="fill_parent"
         android:layout_height="25dp"
-        android:layout_below="@id/textview_poll_question"
+        android:layout_below="@id/layout_graph"
         android:orientation="horizontal"
         android:weightSum="1.0" >
 
