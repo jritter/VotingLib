@@ -12,12 +12,11 @@
     <string name="cast_votes">Cast votes: %1$d of %2$d</string>
     <string name="content">Content</string>
     <string name="description">Description</string>
-    <string name="options">Options:</string>
-    <string name="participants">Participants:</string>
-    <string name="network_name">Network name:</string>
-    <string name="network_name">Network name:</string>
+    <string name="options">Options</string>
+    <string name="participants">Participants</string>
+    <string name="network_name">Network name</string>
     <string name="network_info">Network informations</string>
-    <string name="network_password">Network password:</string>
+    <string name="network_password_desc">Network password</string>
     <string name="not_connected">No network set up</string>
     <string name="help">Help</string>
     <!--
@@ -42,14 +41,15 @@
     <string name="title_activity_vote">Vote</string>
     <string name="title_activity_list_terminated_polls">Poll Archives</string>
     <string name="title_activity_display_result">Poll Results</string>
+    <string name="title_activity_network_informations">Network informations</string>
 
     <!-- Activity subtitles -->
     <string name="list_polls_title">Poll archives</string>
     <string name="display_result_title">Poll results</string>
     <string name="vote_title">Please vote</string>
     <string name="wait_votes">Thanks for voting!\nWaiting for votes...</string>
-    <string name="title_activity_network_ready">Network connection information</string>
-
+    <string name="title_activity_network_ready">Network connection informations</string>
+    
     <!-- Hints in EditText fields -->
     <string name="hint_network_password">Network Password</string>
     <string name="hint_network_wlan_key">WLAN Key</string>
