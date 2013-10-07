@@ -1,0 +1,70 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NetworkInformationsActivity" >
+
+    <TextView
+        android:id="@+id/textview_network_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:gravity="center_vertical|center_horizontal"
+        android:minHeight="70dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:text="@string/title_activity_network_ready"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/textview_network_info"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin" >
+
+        <TextView
+            android:id="@+id/textview_network_name_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/network_name" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textview_network_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textview_network_name_desc"
+            android:textSize="20sp"
+            android:textStyle=""
+            android:gravity="center" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textview_network_password_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textview_network_name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/network_password" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/textview_network_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textview_network_password_desc"
+            android:textSize="20sp"
+            android:textStyle=""
+            android:gravity="center" >
+        </TextView>
+        
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -12,4 +12,5 @@
     	
     	<color name="background">#40FFBB33</color>
     	
+    	<color name="theme_color">@android:color/holo_red_light</color>
 </resources>
