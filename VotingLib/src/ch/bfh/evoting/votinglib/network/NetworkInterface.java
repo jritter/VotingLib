@@ -12,7 +12,9 @@ import ch.bfh.evoting.votinglib.entities.VoteMessage;
  *
  */
 public interface NetworkInterface {
-	
+		
+	public void joinNetwork(String networkName);
+		
 	public String getNetworkName();
 
 	public String getConversationPassword();

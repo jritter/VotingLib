@@ -14,6 +14,9 @@ import ch.bfh.evoting.votinglib.util.SerializationUtil;
 
 public abstract class AbstractNetworkInterface implements NetworkInterface {
 
+	
+
+
 	protected Context context;
 	protected final SerializationUtil su;
 
@@ -22,7 +25,11 @@ public abstract class AbstractNetworkInterface implements NetworkInterface {
 		this.context = context;
 		su = AndroidApplication.getInstance().getSerializationUtil();		
 	}
+	
 
+	@Override
+	public abstract void joinNetwork(String networkName);
+	
 	@Override
 	public abstract String getNetworkName();
 

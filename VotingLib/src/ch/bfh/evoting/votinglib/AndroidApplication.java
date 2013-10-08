@@ -43,7 +43,7 @@ public class AndroidApplication extends Application {
 	 */
 	private void initializeInstance() {
          su = new SerializationUtil(new JavaSerialization());
-         ni = new InstaCircleNetworkInterface(this.getApplicationContext());//new SimulatedNetworkInterface(this.getApplicationContext());
+         ni = /*new AllJoynNetworkInterface(this.getApplicationContext());//*/ new InstaCircleNetworkInterface(this.getApplicationContext());//new SimulatedNetworkInterface(this.getApplicationContext());
     }
 	
 	/**

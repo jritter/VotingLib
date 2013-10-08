@@ -22,9 +22,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import ch.bfh.evoting.instacirclelib.wifi.AdhocWifiManager;
 import ch.bfh.evoting.votinglib.R;
 import ch.bfh.evoting.votinglib.adapters.NetworkArrayAdapter;
+import ch.bfh.evoting.votinglib.network.wifi.AdhocWifiManager;
 
 /**
  * This class implements the fragment which lists all the messages of the
@@ -164,7 +164,6 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 					adapter.add(lastItem);
 				}
 				adapter.notifyDataSetChanged();
-				Log.e("EvotingCircle", "Size "+adapter.getCount());
 			}
 		};
 

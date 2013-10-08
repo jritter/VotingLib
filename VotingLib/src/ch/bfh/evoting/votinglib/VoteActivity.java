@@ -106,7 +106,8 @@ public class VoteActivity extends ListActivity {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 				//Check if the last view is visible
-				Log.d("VoteActivity", "Scroll: firstVisible item="+firstVisibleItem+" visibleItemCount="+visibleItemCount+" totalItemCount="+totalItemCount);
+				Log.e("VoteActivity", "Scroll: firstVisible item="+firstVisibleItem+" visibleItemCount="+visibleItemCount+" totalItemCount="+totalItemCount);
+				Log.e("VoteActivity", "DemoScrollDone: "+demoScrollDone);
 				if (++firstVisibleItem + visibleItemCount > totalItemCount && demoScrollDone) {
 					scrolled=true;
 				}
