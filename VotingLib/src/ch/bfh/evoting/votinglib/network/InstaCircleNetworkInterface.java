@@ -23,8 +23,11 @@ import android.util.Log;
 import ch.bfh.evoting.instacirclelib.Message;
 import ch.bfh.evoting.instacirclelib.db.NetworkDbHelper;
 import ch.bfh.evoting.instacirclelib.service.NetworkService;
+import ch.bfh.evoting.votinglib.AndroidApplication;
 import ch.bfh.evoting.votinglib.entities.Participant;
 import ch.bfh.evoting.votinglib.entities.VoteMessage;
+import ch.bfh.evoting.votinglib.network.wifi.AdhocWifiManager;
+import ch.bfh.evoting.votinglib.network.wifi.WifiAPManager;
 import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
 
 public class InstaCircleNetworkInterface extends AbstractNetworkInterface {
@@ -48,6 +51,8 @@ public class InstaCircleNetworkInterface extends AbstractNetworkInterface {
 		intentFilter.addAction("participantJoined");
 		intentFilter.addAction("participantChangedState");
 		LocalBroadcastManager.getInstance(context).registerReceiver(participantsDiscoverer, intentFilter);
+		LocalBroadcastManager.getInstance(context).registerReceiver(serviceStopListener, new IntentFilter("NetworkServiceStopped"));
+		
 	}
 
 	@Override
@@ -159,6 +164,23 @@ public class InstaCircleNetworkInterface extends AbstractNetworkInterface {
 			Log.e("InstaCircleNetworkInterface", "Participant State Update received from IC");
 			Intent participantsUpdate = new Intent(BroadcastIntentTypes.participantStateUpdate);
 			LocalBroadcastManager.getInstance(context).sendBroadcast(participantsUpdate);
+		}
+	};
+	
+	/**
+	 * this broadcast receiver listens for incoming instacircle broadcast notifying that network service has been stopped
+	 */
+	private BroadcastReceiver serviceStopListener = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO not possible anymore since moved in VotingLib => find a solution
+			WifiManager wifiman = (WifiManager) AndroidApplication.getInstance().getSystemService(Context.WIFI_SERVICE);
+			new AdhocWifiManager(wifiman)
+			.restoreWifiConfiguration(AndroidApplication.getInstance().getBaseContext());
+			WifiAPManager wifiAP = new WifiAPManager();
+			if (wifiAP.isWifiAPEnabled(wifiman)) {
+				wifiAP.disableHotspot(wifiman, AndroidApplication.getInstance().getBaseContext());
+			}
 		}
 	};
 
