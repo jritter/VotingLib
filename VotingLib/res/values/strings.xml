@@ -19,6 +19,7 @@
     <string name="network_password_desc">Network password</string>
     <string name="not_connected">No network set up</string>
     <string name="help">Help</string>
+    <string name="networks">Networks</string>
     <!--
          <string name="display_result_close">Close</string>
         <string name="home">Home</string>
@@ -49,6 +50,7 @@
     <string name="vote_title">Please vote</string>
     <string name="wait_votes">Thanks for voting!\nWaiting for votes...</string>
     <string name="title_activity_network_ready">Network connection informations</string>
+    <string name="title_activity_choosenetwork">Please Choose the Network you want to use</string>
     
     <!-- Hints in EditText fields -->
     <string name="hint_network_password">Network Password</string>
