@@ -129,6 +129,12 @@ public class SimulatedNetworkInterface extends AbstractNetworkInterface{
 		}
 	};
 
+	@Override
+	public void joinNetwork(String networkName) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 }

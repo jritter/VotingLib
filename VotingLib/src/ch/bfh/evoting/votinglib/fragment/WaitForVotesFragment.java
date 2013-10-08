@@ -126,7 +126,10 @@ public class WaitForVotesFragment extends ListFragment {
 	 */
 	private void updateStatus(int numberOfReceivedVotes, boolean stopOrder){
 		//update progress bar and participants list
-		int progress = numberOfReceivedVotes*progressBarMaxValue/poll.getParticipants().size();
+		int progress = 0;
+		if(poll.getParticipants().size()!=0){
+			progress = numberOfReceivedVotes*progressBarMaxValue/poll.getParticipants().size();
+		}
 
 		pb.setProgress(progress);
 		wpAdapter.notifyDataSetChanged();

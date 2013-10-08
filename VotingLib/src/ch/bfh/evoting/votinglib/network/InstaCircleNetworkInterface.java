@@ -22,11 +22,13 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import ch.bfh.evoting.instacirclelib.Message;
 import ch.bfh.evoting.instacirclelib.db.NetworkDbHelper;
+import ch.bfh.evoting.instacirclelib.service.NetworkService;
 import ch.bfh.evoting.votinglib.entities.Participant;
 import ch.bfh.evoting.votinglib.entities.VoteMessage;
 import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
 
 public class InstaCircleNetworkInterface extends AbstractNetworkInterface {
+
 
 	private static final String PREFS_NAME = "network_preferences";
 
@@ -181,7 +183,7 @@ public class InstaCircleNetworkInterface extends AbstractNetworkInterface {
 		WifiManager wifiManager = (WifiManager) this.context.getSystemService(Context.WIFI_SERVICE);
 		String ipString = null;
 
-		if(new ch.bfh.evoting.instacirclelib.wifi.WifiAPManager().isWifiAPEnabled(wifiManager)){
+		if(new ch.bfh.evoting.votinglib.network.wifi.WifiAPManager().isWifiAPEnabled(wifiManager)){
 
 			try{
 				for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en
@@ -221,5 +223,16 @@ public class InstaCircleNetworkInterface extends AbstractNetworkInterface {
 		}
 
 		return ipString;
+		
 	}
+	
+	@Override
+	public void joinNetwork(String networkName) {
+		Intent intent = new Intent(context, NetworkService.class);
+
+		context.stopService(intent);
+		context.startService(intent);
+		
+	}
+	
 }
