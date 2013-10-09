@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import ch.bfh.evoting.votinglib.R;
 import ch.bfh.evoting.votinglib.entities.Participant;
@@ -48,11 +49,15 @@ public class WaitParticipantListAdapter extends ArrayAdapter<Participant> {
 		}
 		
 		ImageView ivCastImage = (ImageView)view.findViewById(R.id.imageview_cast_img);
+		ProgressBar pgWaitForCast = (ProgressBar)view.findViewById(R.id.progress_bar_waitforcast);
+		
 		//set the correct image
 		if(this.values.get(position).hasVoted()==true){
-			ivCastImage.setImageResource(R.drawable.cast);
+			pgWaitForCast.setVisibility(View.GONE);
+			ivCastImage.setVisibility(View.VISIBLE);
 		} else {
-			ivCastImage.setImageResource(R.drawable.wait);
+			pgWaitForCast.setVisibility(View.VISIBLE);
+			ivCastImage.setVisibility(View.GONE);
 		}
 
 		//set the participant identification

@@ -7,7 +7,7 @@
     <string name="header_votes">Votes</string>
     <string name="header_percentage">%</string>
     <string name="header_option">Option</string>
-    <string name="cast">Cast</string>
+    <string name="cast">Cast Vote</string>
     <string name="join">Join</string>
     <string name="cast_votes">Cast votes: %1$d of %2$d</string>
     <string name="content">Content</string>
@@ -15,7 +15,7 @@
     <string name="options">Options</string>
     <string name="participants">Participants</string>
     <string name="network_name">Network name</string>
-    <string name="network_info">Network informations</string>
+    <string name="network_info">Network information</string>
     <string name="network_password_desc">Network password</string>
     <string name="not_connected">No network set up</string>
     <string name="help">Help</string>
@@ -44,7 +44,7 @@
     <string name="title_activity_vote">Vote</string>
     <string name="title_activity_list_terminated_polls">Poll Archives</string>
     <string name="title_activity_display_result">Poll Results</string>
-    <string name="title_activity_network_informations">Network informations</string>
+    <string name="title_activity_network_informations">Network Information</string>
     <string name="title_activity_create_network">Create a network</string>
     
     <!-- Activity subtitles -->

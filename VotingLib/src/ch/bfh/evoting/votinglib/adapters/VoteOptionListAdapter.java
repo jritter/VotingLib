@@ -5,9 +5,11 @@ import java.util.List;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.CheckedTextView;
+import android.widget.RadioButton;
+import android.widget.TextView;
 import ch.bfh.evoting.votinglib.R;
 import ch.bfh.evoting.votinglib.entities.Option;
 
@@ -36,7 +38,7 @@ public class VoteOptionListAdapter extends ArrayAdapter<Option> {
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(final int position, View convertView, ViewGroup parent) {
 		LayoutInflater inflater = LayoutInflater.from(context);
 
 		View view;
@@ -47,22 +49,45 @@ public class VoteOptionListAdapter extends ArrayAdapter<Option> {
 			view = convertView;
 		}
 
-		CheckedTextView ctv = (CheckedTextView)view.findViewById(R.id.radiobutton_vote);
-		ctv.setText(this.values.get(position).getText());
-		ctv.setTag(position);
+		final RadioButton rbChoice = (RadioButton)view.findViewById(R.id.radiobutton_choice);
+		final TextView tvContent = (TextView) view.findViewById(R.id.textview_content);
+
+		tvContent.setText(this.values.get(position).getText());
+		view.setTag(position);
+		rbChoice.setTag(position);
+
+		if (position == selected) {
+			rbChoice.setChecked(true);
+		} else {
+			rbChoice.setChecked(false);
+		}
+
+		// set the click listener
+		OnClickListener click = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				selected = position;
+				VoteOptionListAdapter.this.notifyDataSetChanged();
+			}
+		};
+
+		view.setOnClickListener(click);
 
 		return view;
 	}
 
 	@Override
-	public Option getItem (int position)
-	{
-		if(position >= this.getCount() || position < 0) return null;
-		return super.getItem (position);
+	public Option getItem(int position) {
+		if (position >= this.getCount() || position < 0)
+			return null;
+		return super.getItem(position);
 	}
-	
+
 	public Option getItemSelected(){
 		return this.values.get(selected);
 	}
-
+	
+	public int getSelectedPosition () {
+		return selected;
+	}
 }

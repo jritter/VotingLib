@@ -5,17 +5,15 @@ import java.util.List;
 
 import ch.bfh.evoting.votinglib.adapters.VoteOptionListAdapter;
 import ch.bfh.evoting.votinglib.entities.Option;
-import ch.bfh.evoting.votinglib.entities.Participant;
 import ch.bfh.evoting.votinglib.entities.Poll;
 import ch.bfh.evoting.votinglib.entities.VoteMessage;
 import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
 import ch.bfh.evoting.votinglib.util.HelpDialogFragment;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
-import android.app.ListActivity;
+import android.app.Activity;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -28,8 +26,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -41,16 +37,17 @@ import android.widget.Toast;
  * @author Philémon von Bergen
  *
  */
-public class VoteActivity extends ListActivity {
+public class VoteActivity extends Activity {
 
 	//TODO remove static when no more needed
 	static private Poll poll;
 	static private List<Option> options;
 	private String question;
 	private VoteOptionListAdapter volAdapter;
-	private int selectedPosition = -1;
 	private boolean scrolled = false;
 	private boolean demoScrollDone = false;
+	
+	private ListView lvChoices;
 
 	static private int votesReceived = 0;
 	static Context ctx;
@@ -63,7 +60,7 @@ public class VoteActivity extends ListActivity {
 
 		ctx=this;
 		
-		final ListView lv = (ListView)findViewById(android.R.id.list);
+		lvChoices = (ListView)findViewById(R.id.listview_choices);
 
 		//Get the data in the intent
 		Intent intent = this.getIntent();
@@ -76,37 +73,13 @@ public class VoteActivity extends ListActivity {
 		tvQuestion.setText(question);
 
 
-		//Set a listener on the cast button
-		Button btnCast = (Button)findViewById(R.id.button_cast_button);
-		btnCast.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v) {
-				if(!scrolled){
-					Toast.makeText(VoteActivity.this, getString(R.string.scroll), Toast.LENGTH_SHORT).show();
-				} else if (selectedPosition == -1){
-					Toast.makeText(VoteActivity.this, getString(R.string.choose_one_option), Toast.LENGTH_SHORT).show();
-				} else {
-					castBallot();
-				}
-			}
-		});
+		
 
 		//create the list of vote options
 		volAdapter = new VoteOptionListAdapter(this, R.layout.list_item_vote, options);
-		this.setListAdapter(volAdapter);
+		lvChoices.setAdapter(volAdapter);
 
-		lv.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,
-					long id) {
-
-				selectedPosition = (Integer)view.getTag();
-
-			}
-		});
-
-		lv.setOnScrollListener(new OnScrollListener() {
+		lvChoices.setOnScrollListener(new OnScrollListener() {
 
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
@@ -123,18 +96,18 @@ public class VoteActivity extends ListActivity {
 
 
 		});
-
+		
 		//animate scroll
 		new AsyncTask<Object, Object, Object>(){
 
 			@Override
 			protected Object doInBackground(Object... params) {
 				SystemClock.sleep(300);
-				if(lv.getLastVisiblePosition() < lv.getCount()-2){
+				if(lvChoices.getLastVisiblePosition() < lvChoices.getCount()-2){
 					Log.d("VoteActivity", "Doing demo scroll");
-					lv.smoothScrollToPositionFromTop(lv.getAdapter().getCount()-1, 0, 1000);
+					lvChoices.smoothScrollToPositionFromTop(lvChoices.getAdapter().getCount()-1, 0, 1000);
 					SystemClock.sleep(1050);
-					lv.smoothScrollToPositionFromTop(0, 0, 1000);
+					lvChoices.smoothScrollToPositionFromTop(0, 0, 1000);
 					SystemClock.sleep(1050);
 					scrolled = false;
 					demoScrollDone = true;
@@ -148,6 +121,22 @@ public class VoteActivity extends ListActivity {
 			}
 
 		}.execute();
+		
+		
+		//Set a listener on the cast button
+		Button btnCast = (Button)findViewById(R.id.button_castvote);
+		btnCast.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				if(!scrolled){
+					Toast.makeText(VoteActivity.this, getString(R.string.scroll), Toast.LENGTH_SHORT).show();
+				} else if (volAdapter.getSelectedPosition() == -1){
+					Toast.makeText(VoteActivity.this, getString(R.string.choose_one_option), Toast.LENGTH_SHORT).show();
+				} else {
+					castBallot();
+				}
+			}
+		});
 
 		this.startService(new Intent(this, VoteService.class));
 	}
@@ -163,7 +152,7 @@ public class VoteActivity extends ListActivity {
 	 */
 	private void castBallot(){
 
-		Option selectedOption = volAdapter.getItem(selectedPosition);
+		Option selectedOption = volAdapter.getItemSelected();
 
 		if(selectedOption!=null){
 			Log.e("vote", "Voted "+selectedOption.getText());
@@ -279,10 +268,5 @@ public class VoteActivity extends ListActivity {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
-		
-
 	}
-
-	
 }
