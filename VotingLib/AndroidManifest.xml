@@ -41,6 +41,10 @@
             android:name="ch.bfh.evoting.votinglib.WaitForVotesActivity"
             android:label="@string/title_activity_wait_for_votes" >
         </activity>
+        <activity
+            android:name="ch.bfh.evoting.votinglib.network.wifi.CreateNetworkActivity"
+            android:label="@string/title_activity_create_network" >
+        </activity>
         
     </application>
 

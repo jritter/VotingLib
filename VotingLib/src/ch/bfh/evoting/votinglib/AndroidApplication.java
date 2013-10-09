@@ -2,12 +2,24 @@ package ch.bfh.evoting.votinglib;
 
 import org.apache.log4j.Level;
 
+import ch.bfh.evoting.votinglib.entities.Option;
+import ch.bfh.evoting.votinglib.network.AllJoynNetworkInterface;
 import ch.bfh.evoting.votinglib.network.InstaCircleNetworkInterface;
 import ch.bfh.evoting.votinglib.network.NetworkInterface;
+import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
 import ch.bfh.evoting.votinglib.util.JavaSerialization;
 import ch.bfh.evoting.votinglib.util.SerializationUtil;
 import ch.bfh.evoting.votinglib.util.Utility;
 import android.app.Application;
+import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Class representing the application. This class is used to do some initializations and to share data.
@@ -42,10 +54,10 @@ public class AndroidApplication extends Application {
 	 * Initialize the Serialization method and the Network Component to use
 	 */
 	private void initializeInstance() {
-         su = new SerializationUtil(new JavaSerialization());
-         ni = /*new AllJoynNetworkInterface(this.getApplicationContext());//*/ new InstaCircleNetworkInterface(this.getApplicationContext());//new SimulatedNetworkInterface(this.getApplicationContext());
-    }
-	
+		su = new SerializationUtil(new JavaSerialization());
+		ni = new AllJoynNetworkInterface(this.getApplicationContext());// new InstaCircleNetworkInterface(this.getApplicationContext());//new SimulatedNetworkInterface(this.getApplicationContext());
+	}
+
 	/**
 	 * Get the serialization helper
 	 * @return the serialization helper
@@ -53,7 +65,7 @@ public class AndroidApplication extends Application {
 	public SerializationUtil getSerializationUtil(){
 		return su;
 	}
-	
+
 	/**
 	 * Get the network component
 	 * @return the network component
@@ -61,6 +73,6 @@ public class AndroidApplication extends Application {
 	public NetworkInterface getNetworkInterface(){
 		return ni;
 	}
-	
+
 	
 }

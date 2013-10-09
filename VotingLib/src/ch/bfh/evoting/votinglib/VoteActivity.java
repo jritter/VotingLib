@@ -5,6 +5,7 @@ import java.util.List;
 
 import ch.bfh.evoting.votinglib.adapters.VoteOptionListAdapter;
 import ch.bfh.evoting.votinglib.entities.Option;
+import ch.bfh.evoting.votinglib.entities.Participant;
 import ch.bfh.evoting.votinglib.entities.Poll;
 import ch.bfh.evoting.votinglib.entities.VoteMessage;
 import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
@@ -12,8 +13,10 @@ import ch.bfh.evoting.votinglib.util.HelpDialogFragment;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.app.ListActivity;
+import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -40,24 +43,26 @@ import android.widget.Toast;
  */
 public class VoteActivity extends ListActivity {
 
-
-	private Poll poll;
-	private List<Option> options;
+	//TODO remove static when no more needed
+	static private Poll poll;
+	static private List<Option> options;
 	private String question;
 	private VoteOptionListAdapter volAdapter;
 	private int selectedPosition = -1;
 	private boolean scrolled = false;
 	private boolean demoScrollDone = false;
 
-	private int votesReceived = 0;
+	static private int votesReceived = 0;
+	static Context ctx;
 
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_vote);
 
-
+		ctx=this;
+		
 		final ListView lv = (ListView)findViewById(android.R.id.list);
 
 		//Get the data in the intent
@@ -136,6 +141,7 @@ public class VoteActivity extends ListActivity {
 					return null;
 				} else {
 					Log.d("VoteActivity", "Demo scroll not needed");
+					demoScrollDone = true;
 					scrolled = true;
 					return null;
 				}
@@ -143,27 +149,7 @@ public class VoteActivity extends ListActivity {
 
 		}.execute();
 
-		//TODO remove only for demo
-		//Register a BroadcastReceiver on new incoming vote events
-		BroadcastReceiver voteReceiver = new BroadcastReceiver(){
-
-			@Override
-			public void onReceive(Context arg0, Intent intent) {
-				Option vote = (Option)intent.getSerializableExtra("vote");
-				for(Option op : poll.getOptions()){
-					if(op.equals(vote)){
-						op.setVotes(op.getVotes()+1);
-					}
-				}
-				String voter = intent.getStringExtra("voter");
-				if(poll.getParticipants().containsKey(voter)){
-					votesReceived++;
-					poll.getParticipants().get(voter).setHasVoted(true);
-				}
-			}
-		};
-		LocalBroadcastManager.getInstance(this).registerReceiver(voteReceiver, new IntentFilter(BroadcastIntentTypes.newVote));
-
+		this.startService(new Intent(this, VoteService.class));
 	}
 
 
@@ -204,7 +190,7 @@ public class VoteActivity extends ListActivity {
 			startActivity(intent);
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -215,17 +201,88 @@ public class VoteActivity extends ListActivity {
 
 		if (item.getItemId() == R.id.help){
 			HelpDialogFragment hdf = HelpDialogFragment.newInstance( getString(R.string.help_title_vote), getString(R.string.help_text_vote) );
-	        hdf.show( getFragmentManager( ), "help" );
-	        return true;
+			hdf.show( getFragmentManager( ), "help" );
+			return true;
 		}
 		return true;
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.vote, menu);
 		return true;
 	}
+	
+	//TODO remove: only for simulation
+	public static class VoteService extends Service{
 
+		boolean doWork = true;
+		BroadcastReceiver voteReceiver;
+		
+		@Override
+		public void onDestroy() {
+			doWork = false;
+			LocalBroadcastManager.getInstance(ctx).unregisterReceiver(voteReceiver);
+			super.onDestroy();
+		}
+
+		@Override
+		public int onStartCommand(Intent intent, int flags, int startId) {
+			voteReceiver = new BroadcastReceiver(){
+
+				@Override
+				public void onReceive(Context arg0, Intent intent) {
+					Option vote = (Option)intent.getSerializableExtra("vote");
+					for(Option op : poll.getOptions()){
+						if(op.equals(vote)){
+							op.setVotes(op.getVotes()+1);
+						}
+					}
+					String voter = intent.getStringExtra("voter");
+					Log.e("Voteactivity", "voter "+voter);
+					for(String s : poll.getParticipants().keySet()){
+						Log.e("Voteactivity", "key "+s);
+						Log.e("Voteactivity", "participant ip "+poll.getParticipants().get(s).getIpAddress());
+					}
+					Log.e("Voteactivity", "is contained "+poll.getParticipants().containsKey(voter));
+					if(poll.getParticipants().containsKey(voter)){
+						votesReceived++;
+						poll.getParticipants().get(voter).setHasVoted(true);
+					}
+					
+					new AsyncTask(){
+
+						@Override
+						protected Object doInBackground(Object... arg0) {
+							while(doWork){
+								Log.e("VoteActivity Async task", "sending "+votesReceived);
+								Intent i = new Intent("UpdateNewVotes");
+								i.putExtra("votes", votesReceived);
+								i.putExtra("options", (Serializable)poll.getOptions());
+								i.putExtra("participants", (Serializable)poll.getParticipants());
+								LocalBroadcastManager.getInstance(ctx).sendBroadcast(i);
+								SystemClock.sleep(1000);
+							}
+							return null;
+						}
+						
+					}.execute();
+				}
+			};
+			LocalBroadcastManager.getInstance(ctx).registerReceiver(voteReceiver, new IntentFilter(BroadcastIntentTypes.newVote));
+			return super.onStartCommand(intent, flags, startId);
+		}
+
+		@Override
+		public IBinder onBind(Intent arg0) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+		
+
+	}
+
+	
 }

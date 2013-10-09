@@ -7,6 +7,7 @@ import java.util.Map;
 
 import ch.bfh.evoting.votinglib.DisplayResultActivity;
 import ch.bfh.evoting.votinglib.R;
+import ch.bfh.evoting.votinglib.VoteActivity.VoteService;
 import ch.bfh.evoting.votinglib.adapters.WaitParticipantListAdapter;
 import ch.bfh.evoting.votinglib.entities.Option;
 import ch.bfh.evoting.votinglib.entities.Participant;
@@ -39,10 +40,9 @@ public class WaitForVotesFragment extends ListFragment {
 	private WaitParticipantListAdapter wpAdapter;
 	private TextView tvCastVotes;
 	private int votesReceived = 0;
-//	private Map<String, String> receivedVotes = new HashMap<String, String>();
 
-	private BroadcastReceiver voteReceiver;
 	private BroadcastReceiver stopReceiver;
+	private BroadcastReceiver updateVoteReceiver;
 
 
 	@Override
@@ -83,28 +83,41 @@ public class WaitForVotesFragment extends ListFragment {
 		//TODO for demo only
 		votesReceived += intent.getIntExtra("votesReceived", 0);
 		
-		//Register a BroadcastReceiver on new incoming vote events
-		voteReceiver = new BroadcastReceiver(){
+//		//Register a BroadcastReceiver on new incoming vote events
+//		voteReceiver = new BroadcastReceiver(){
+//
+//			@Override
+//			public void onReceive(Context arg0, Intent intent) {
+//				Option vote = (Option)intent.getSerializableExtra("vote");
+//				for(Option op : poll.getOptions()){
+//					if(op.equals(vote)){
+//						op.setVotes(op.getVotes()+1);
+//					}
+//				}
+//				String voter = intent.getStringExtra("voter");
+//				if(participants.containsKey(voter)){
+//					votesReceived++;
+//					participants.get(voter).setHasVoted(true);
+//				}
+//				updateStatus(votesReceived, false);
+//			}
+//
+//		};
+//		LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(voteReceiver, new IntentFilter(BroadcastIntentTypes.newVote));
 
+		//Register a BroadcastReceiver on new incoming vote events
+		//TODO see if needed after simulation
+		updateVoteReceiver = new BroadcastReceiver(){
+			@SuppressWarnings("unchecked")
 			@Override
 			public void onReceive(Context arg0, Intent intent) {
-				Option vote = (Option)intent.getSerializableExtra("vote");
-				for(Option op : poll.getOptions()){
-					if(op.equals(vote)){
-						op.setVotes(op.getVotes()+1);
-					}
-				}
-				String voter = intent.getStringExtra("voter");
-				if(participants.containsKey(voter)){
-					votesReceived++;
-					participants.get(voter).setHasVoted(true);
-				}
-				updateStatus(votesReceived, false);
+				poll.setOptions((List<Option>)intent.getSerializableExtra("options"));
+				poll.setParticipants((Map<String,Participant>)intent.getSerializableExtra("participants"));
+				updateStatus(intent.getIntExtra("votes", 0), false);
 			}
-
 		};
-		LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(voteReceiver, new IntentFilter(BroadcastIntentTypes.newVote));
-
+		LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(updateVoteReceiver, new IntentFilter("UpdateNewVotes"));
+		
 		//Register a BroadcastReceiver on stop poll order events
 		stopReceiver = new BroadcastReceiver(){
 
@@ -132,11 +145,14 @@ public class WaitForVotesFragment extends ListFragment {
 		}
 
 		pb.setProgress(progress);
+		wpAdapter.clear();
+		wpAdapter.addAll(poll.getParticipants().values());
 		wpAdapter.notifyDataSetChanged();
 		tvCastVotes.setText(getString(R.string.cast_votes, numberOfReceivedVotes, participants.size()));
 
 
 		if(progress>=100 || stopOrder){
+			this.getActivity().stopService(new Intent(this.getActivity(), VoteService.class));
 			//go through compute result and set percentage result
 			List<Option> options = poll.getOptions();
 			for(Option option : options){
@@ -155,7 +171,7 @@ public class WaitForVotesFragment extends ListFragment {
 			intent.putExtra("saveToDb", true);
 			startActivity(intent);
 			LocalBroadcastManager.getInstance(this.getActivity()).unregisterReceiver(stopReceiver);
-			LocalBroadcastManager.getInstance(this.getActivity()).unregisterReceiver(voteReceiver);
+			LocalBroadcastManager.getInstance(this.getActivity()).unregisterReceiver(updateVoteReceiver);
 		}
 	}
 }

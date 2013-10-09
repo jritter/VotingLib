@@ -17,6 +17,7 @@ import android.content.SharedPreferences;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.util.Base64;
 import android.util.Log;
 import ch.bfh.evoting.instacirclelib.service.NetworkService;
@@ -400,8 +401,9 @@ public class WifiAPManager {
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
 			if (mode) {
+				SystemClock.sleep(500);
 				d.dismiss();
-												
+							
 				AndroidApplication.getInstance().getNetworkInterface().joinNetwork(preferences.getString("password", null));
 				
 			}

@@ -55,8 +55,9 @@ public class SimulatedNetworkInterface extends AbstractNetworkInterface{
 	 * @param sender The origin of the message
 	 */
 	@Override
-	public void sendMessage(VoteMessage votemessage){
+	public boolean sendMessage(VoteMessage votemessage){
 		//Not needed. As this is a simulation, no real message will be sent
+		return true;
 	}
 
 	/**
@@ -68,13 +69,15 @@ public class SimulatedNetworkInterface extends AbstractNetworkInterface{
 	 * @param destinationIPAddress The destination of the message
 	 */
 	@Override
-	public void sendMessage(VoteMessage votemessage, String destinationIPAddress){
+	public boolean sendMessage(VoteMessage votemessage, String destinationIPAddress){
 		//Not needed. As this is a simulation, no real message will be sent
+		return true;
 	}
 	
 	@Override
-	public void disconnect(){
+	public boolean disconnect(){
 		//Not needed. As no real connection was needed
+		return true;
 	}
 
 	@Override
@@ -130,9 +133,9 @@ public class SimulatedNetworkInterface extends AbstractNetworkInterface{
 	};
 
 	@Override
-	public void joinNetwork(String networkName) {
-		// TODO Auto-generated method stub
-		
+	public boolean joinNetwork(String networkName) {
+		//Not needed
+		return true;
 	}
 
 

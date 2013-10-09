@@ -13,7 +13,7 @@ import ch.bfh.evoting.votinglib.entities.VoteMessage;
  */
 public interface NetworkInterface {
 		
-	public void joinNetwork(String networkName);
+	public boolean joinNetwork(String networkName);
 		
 	public String getNetworkName();
 
@@ -28,7 +28,7 @@ public interface NetworkInterface {
 	 * 
 	 * @param votemessage The votemessage which should be sent
 	 */
-	public void sendMessage(VoteMessage votemessage);
+	public boolean sendMessage(VoteMessage votemessage);
 	
 	/**
 	 * This method signature can be used to send unicast message to a specific ip address
@@ -37,8 +37,8 @@ public interface NetworkInterface {
 	 * @param votemessage The votemessage which should be sent
 	 * @param destinationIPAddress The destination of the message
 	 */
-	public void sendMessage(VoteMessage votemessage, String destinationIPAddress);	
+	public boolean sendMessage(VoteMessage votemessage, String destinationIPAddress);	
 
-	public void disconnect();
+	public boolean disconnect();
 }
 

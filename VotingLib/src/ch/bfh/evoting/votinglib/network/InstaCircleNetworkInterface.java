@@ -100,7 +100,7 @@ public class InstaCircleNetworkInterface extends AbstractNetworkInterface {
 	 * @param sender The origin of the message
 	 */
 	@Override
-	public void sendMessage(VoteMessage votemessage){
+	public boolean sendMessage(VoteMessage votemessage){
 		votemessage.setSenderIPAdress(this.getMyIpAddress());
 		votemessage.setTimestamp(System.currentTimeMillis());
 		Message message = new Message(su.serialize(votemessage), Message.MSG_CONTENT, this.getMyIpAddress());
@@ -108,6 +108,7 @@ public class InstaCircleNetworkInterface extends AbstractNetworkInterface {
 		intent.putExtra("message", message);
 		intent.putExtra("broadcast", true);
 		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+		return true;
 	}
 
 	/**
@@ -119,7 +120,7 @@ public class InstaCircleNetworkInterface extends AbstractNetworkInterface {
 	 * @param destinationIPAddress The destination of the message
 	 */
 	@Override
-	public void sendMessage(VoteMessage votemessage, String destinationIPAddress){
+	public boolean sendMessage(VoteMessage votemessage, String destinationIPAddress){
 		votemessage.setSenderIPAdress(this.getMyIpAddress());
 		votemessage.setTimestamp(System.currentTimeMillis());
 		Message message = new Message(su.serialize(votemessage), Message.MSG_CONTENT, this.getMyIpAddress());
@@ -128,6 +129,7 @@ public class InstaCircleNetworkInterface extends AbstractNetworkInterface {
 		intent.putExtra("ipAddress", destinationIPAddress);
 		intent.putExtra("broadcast", false);
 		LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+		return true;
 	}
 
 	/**
@@ -190,8 +192,9 @@ public class InstaCircleNetworkInterface extends AbstractNetworkInterface {
 	}
 	
 	@Override
-	public void disconnect(){
+	public boolean disconnect(){
 		this.dbHelper.closeConversation();
+		return true;
 	}
 
 	/**
@@ -249,12 +252,13 @@ public class InstaCircleNetworkInterface extends AbstractNetworkInterface {
 	}
 	
 	@Override
-	public void joinNetwork(String networkName) {
+	public boolean joinNetwork(String networkName) {
 		Intent intent = new Intent(context, NetworkService.class);
 
 		context.stopService(intent);
 		context.startService(intent);
 		
+		return true;
 	}
 	
 }

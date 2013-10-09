@@ -35,6 +35,8 @@
     <string name="delete_poll_confirm_text">Do you really want to delete this poll? It won\'t be accessible anymore.</string>
     <string name="scroll">Please first have a look at all options</string>
     <string name="choose_one_option">Please choose one of the given options</string>
+    <string name="join_error_admin">It seems that a group with the same name already exists! Please choose another name!</string>
+    <string name="join_error_voter">No group with the given name exists. Please wait for the administrator to create the group.</string>
 
     <!-- Activity titles -->
     <string name="app_name">VotingLib</string>
@@ -43,7 +45,8 @@
     <string name="title_activity_list_terminated_polls">Poll Archives</string>
     <string name="title_activity_display_result">Poll Results</string>
     <string name="title_activity_network_informations">Network informations</string>
-
+    <string name="title_activity_create_network">Create a network</string>
+    
     <!-- Activity subtitles -->
     <string name="list_polls_title">Poll archives</string>
     <string name="display_result_title">Poll results</string>
@@ -51,7 +54,7 @@
     <string name="wait_votes">Thanks for voting!\nWaiting for votes...</string>
     <string name="title_activity_network_ready">Network connection informations</string>
     <string name="title_activity_choosenetwork">Please Choose the Network you want to use</string>
-    
+
     <!-- Hints in EditText fields -->
     <string name="hint_network_password">Network Password</string>
     <string name="hint_network_wlan_key">WLAN Key</string>

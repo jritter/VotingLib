@@ -5,6 +5,7 @@ import java.util.Map;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import ch.bfh.evoting.votinglib.AndroidApplication;
 import ch.bfh.evoting.votinglib.entities.Participant;
@@ -28,7 +29,7 @@ public abstract class AbstractNetworkInterface implements NetworkInterface {
 	
 
 	@Override
-	public abstract void joinNetwork(String networkName);
+	public abstract boolean joinNetwork(String networkName);
 	
 	@Override
 	public abstract String getNetworkName();
@@ -43,13 +44,13 @@ public abstract class AbstractNetworkInterface implements NetworkInterface {
 	public abstract Map<String, Participant> getConversationParticipants();
 
 	@Override
-	public abstract void sendMessage(VoteMessage votemessage);
+	public abstract boolean sendMessage(VoteMessage votemessage);
 
 	@Override
-	public abstract void sendMessage(VoteMessage votemessage, String destinationIPAddress);
+	public abstract boolean sendMessage(VoteMessage votemessage, String destinationIPAddress);
 	
 	@Override
-	public abstract void disconnect();
+	public abstract boolean disconnect();
 	
 	
 	/**
@@ -89,6 +90,7 @@ public abstract class AbstractNetworkInterface implements NetworkInterface {
 			messageArrivedIntent.putExtra("vote", voteMessage.getMessageContent());
 			messageArrivedIntent.putExtra("voter", voteMessage.getSenderIPAddress());
 			LocalBroadcastManager.getInstance(context).sendBroadcast(messageArrivedIntent);
+			Log.e("abstract", "vote message received");
 			break;
 		}
 	}

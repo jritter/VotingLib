@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -20,8 +21,10 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.WindowManager.BadTokenException;
+import android.widget.Toast;
 import ch.bfh.evoting.instacirclelib.service.NetworkService;
 import ch.bfh.evoting.votinglib.AndroidApplication;
+import ch.bfh.evoting.votinglib.R;
 
 /**
  * This class implements methods which are used to adjust the wifi configuration
@@ -376,6 +379,7 @@ public class AdhocWifiManager {
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
 		@Override
+		@SuppressLint("ShowToast")
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
 			d.dismiss();
@@ -387,7 +391,15 @@ public class AdhocWifiManager {
 					editor.putString("SSID", SSID);
 					editor.commit();
 					
-					AndroidApplication.getInstance().getNetworkInterface().joinNetwork(preferences.getString("password", null));
+					boolean status = AndroidApplication.getInstance().getNetworkInterface().joinNetwork(preferences.getString("password", null));
+					if(status == false){
+						String packageName = AndroidApplication.getInstance().getApplicationContext().getPackageName();
+						if(packageName.equals("ch.bfh.evoting.adminapp")){
+							Toast.makeText(context, context.getString(R.string.join_error_admin), Toast.LENGTH_LONG).show();
+						} else {
+							Toast.makeText(context, context.getString(R.string.join_error_voter), Toast.LENGTH_LONG).show();
+						}
+					}
 					
 				} else {
 
