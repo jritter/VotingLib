@@ -12,6 +12,8 @@ package ch.bfh.evoting.votinglib.network.wifi;
 
 import java.util.UUID;
 
+import org.alljoyn.bus.Status;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -19,7 +21,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -39,7 +43,7 @@ import ch.bfh.evoting.votinglib.R;
  * 
  */
 public class CreateNetworkActivity extends Activity implements OnClickListener,
-		TextWatcher {
+TextWatcher {
 
 	private WifiAPManager wifiapman;
 	private WifiManager wifiman;
@@ -88,19 +92,21 @@ public class CreateNetworkActivity extends Activity implements OnClickListener,
 			builder.setMessage("The Wifi AP already enabled. Use this connection?");
 			builder.setPositiveButton("Yes",
 					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
+				public void onClick(DialogInterface dialog, int which) {
 
-							AndroidApplication.getInstance().getNetworkInterface().joinNetwork(txtNetworkPIN.getText().toString());
 
-							CreateNetworkActivity.this.finish();
-						}
-					});
+					AndroidApplication.getInstance().getNetworkInterface().joinNetwork(txtNetworkPIN.getText().toString());
+
+
+					CreateNetworkActivity.this.finish();
+				}
+			});
 			builder.setNegativeButton("No",
 					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							return;
-						}
-					});
+				public void onClick(DialogInterface dialog, int which) {
+					return;
+				}
+			});
 			AlertDialog dialog = builder.create();
 			dialog.show();
 		}
@@ -158,15 +164,15 @@ public class CreateNetworkActivity extends Activity implements OnClickListener,
 			wificonfig.status = WifiConfiguration.Status.ENABLED;
 
 			wificonfig.allowedGroupCiphers
-					.set(WifiConfiguration.GroupCipher.TKIP);
+			.set(WifiConfiguration.GroupCipher.TKIP);
 			wificonfig.allowedGroupCiphers
-					.set(WifiConfiguration.GroupCipher.CCMP);
+			.set(WifiConfiguration.GroupCipher.CCMP);
 			wificonfig.allowedKeyManagement
-					.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+			.set(WifiConfiguration.KeyMgmt.WPA_PSK);
 			wificonfig.allowedPairwiseCiphers
-					.set(WifiConfiguration.PairwiseCipher.TKIP);
+			.set(WifiConfiguration.PairwiseCipher.TKIP);
 			wificonfig.allowedPairwiseCiphers
-					.set(WifiConfiguration.PairwiseCipher.CCMP);
+			.set(WifiConfiguration.PairwiseCipher.CCMP);
 			wificonfig.allowedProtocols.set(WifiConfiguration.Protocol.RSN);
 
 			// enabling the configuration

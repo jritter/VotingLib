@@ -19,6 +19,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.WindowManager.BadTokenException;
 import android.widget.Toast;
@@ -167,6 +168,7 @@ public class AdhocWifiManager {
 			this.startActivity = startActivity;
 
 			config = new WifiConfiguration();
+			config.SSID = ssid;
 			d = new ProgressDialog(context);
 		}
 

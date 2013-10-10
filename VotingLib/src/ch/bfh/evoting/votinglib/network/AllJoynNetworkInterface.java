@@ -99,7 +99,7 @@ public class AllJoynNetworkInterface extends AbstractNetworkInterface{
 		String packageName = AndroidApplication.getInstance().getApplicationContext().getPackageName();
 		if(packageName.equals("ch.bfh.evoting.adminapp")){
 			status2 = mBusHandler.doDestroyGroup(networkName);
-			mBusHandler.doDisconnect();
+			//mBusHandler.doDisconnect();
 		}
 		this.networkName = null;
 		if(status1 != Status.OK || status2 != Status.OK){
@@ -110,19 +110,20 @@ public class AllJoynNetworkInterface extends AbstractNetworkInterface{
 
 	@Override
 	public boolean joinNetwork(String networkName) {
+		this.networkName = networkName;
+		
 		String packageName = AndroidApplication.getInstance().getApplicationContext().getPackageName();
 		Status status;
 		boolean apOn = new WifiAPManager().isWifiAPEnabled((WifiManager) context.getSystemService(Context.WIFI_SERVICE));
 
 		if(packageName.equals("ch.bfh.evoting.adminapp") || apOn){
 			status = mBusHandler.doCreateGroup(networkName);
-			this.networkName = networkName;
 		} else {
 			status = mBusHandler.doJoinGroup(networkName);
-			this.networkName = networkName;
 		}
+		
+		Log.d(this.getClass().getSimpleName(), "Status of connection: "+ status);
 		if(status != Status.OK){
-			Log.e("ni", "satus "+ status);
 			return false;
 		} else {
 			LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("NetworkServiceStarted"));

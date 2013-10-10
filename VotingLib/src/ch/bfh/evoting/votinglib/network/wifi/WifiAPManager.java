@@ -401,9 +401,8 @@ public class WifiAPManager {
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
 			if (mode) {
-				SystemClock.sleep(500);
 				d.dismiss();
-							
+					
 				AndroidApplication.getInstance().getNetworkInterface().joinNetwork(preferences.getString("password", null));
 				
 			}
