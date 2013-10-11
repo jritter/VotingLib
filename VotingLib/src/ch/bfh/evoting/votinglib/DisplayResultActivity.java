@@ -50,6 +50,8 @@ public class DisplayResultActivity extends ListActivity {
 
 	private int pollId;
 	private boolean saveToDbNeeded;
+	
+	private BroadcastReceiver redoPollReceiver;
 
 	private float values[] = { 700, 400, 100, 500,600 };  
 
@@ -73,6 +75,16 @@ public class DisplayResultActivity extends ListActivity {
 			linearLayout.removeView(linearLayout);
 			
 			//register a listener of messages of the admin sending the electorate
+			redoPollReceiver = new BroadcastReceiver(){
+
+				@Override
+				public void onReceive(Context context, Intent intent) {
+					LocalBroadcastManager.getInstance(DisplayResultActivity.this).unregisterReceiver(this);
+					Intent i = new Intent("ch.bfh.evoting.voterapp.CheckElectorateActivity");
+					i.putExtra("participants", intent.getSerializableExtra("participants"));
+					startActivity(i);
+				}
+			};
 			LocalBroadcastManager.getInstance(this).registerReceiver(redoPollReceiver, new IntentFilter(BroadcastIntentTypes.electorate));
 		} else {
 
@@ -155,7 +167,7 @@ public class DisplayResultActivity extends ListActivity {
 		
 		if(packageName.equals("ch.bfh.evoting.voterapp") || !saveToDbNeeded){
 			LinearLayout ll = (LinearLayout)findViewById(R.id.layout_action_bar);
-			((RelativeLayout)ll.getParent()).removeView(ll);
+			((LinearLayout)ll.getParent()).removeView(ll);
 		}
 
 	}
@@ -267,14 +279,14 @@ public class DisplayResultActivity extends ListActivity {
 		}
 	}
 	
-	BroadcastReceiver redoPollReceiver = new BroadcastReceiver(){
-
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			LocalBroadcastManager.getInstance(DisplayResultActivity.this).unregisterReceiver(this);
-			Intent i = new Intent("ch.bfh.evoting.voterapp.CheckElectorateActivity");
-			i.putExtra("participants", intent.getSerializableExtra("participants"));
-			startActivity(i);
-		}
-	};
+//	BroadcastReceiver redoPollReceiver = new BroadcastReceiver(){
+//
+//		@Override
+//		public void onReceive(Context context, Intent intent) {
+//			LocalBroadcastManager.getInstance(DisplayResultActivity.this).unregisterReceiver(this);
+//			Intent i = new Intent("ch.bfh.evoting.voterapp.CheckElectorateActivity");
+//			i.putExtra("participants", intent.getSerializableExtra("participants"));
+//			startActivity(i);
+//		}
+//	};
 }

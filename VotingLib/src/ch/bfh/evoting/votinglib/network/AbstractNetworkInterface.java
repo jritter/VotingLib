@@ -15,9 +15,6 @@ import ch.bfh.evoting.votinglib.util.SerializationUtil;
 
 public abstract class AbstractNetworkInterface implements NetworkInterface {
 
-	
-
-
 	protected Context context;
 	protected final SerializationUtil su;
 

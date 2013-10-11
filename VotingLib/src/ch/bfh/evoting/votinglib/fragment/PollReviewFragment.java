@@ -2,6 +2,7 @@ package ch.bfh.evoting.votinglib.fragment;
 
 import java.io.Serializable;
 
+import ch.bfh.evoting.votinglib.AndroidApplication;
 import ch.bfh.evoting.votinglib.R;
 import ch.bfh.evoting.votinglib.VoteActivity;
 import ch.bfh.evoting.votinglib.entities.Option;
@@ -9,9 +10,11 @@ import ch.bfh.evoting.votinglib.entities.Participant;
 import ch.bfh.evoting.votinglib.entities.Poll;
 import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -40,6 +43,9 @@ public class PollReviewFragment extends ListFragment {
 	private View footer;
 	private LayoutInflater inflater;
 	private Context ctx;
+
+	private BroadcastReceiver pollReceiver;
+	private BroadcastReceiver reviewAcceptsReceiver;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -79,44 +85,67 @@ public class PollReviewFragment extends ListFragment {
 
 		String packageName = getActivity().getApplication().getApplicationContext().getPackageName();
 		if(!packageName.equals("ch.bfh.evoting.adminapp")){
+			//register the startvote signal receiver
 			LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(new BroadcastReceiver() {
 
 				@Override
 				public void onReceive(Context context, Intent intent) {
 
-					Intent i = new Intent(PollReviewFragment.this.getActivity(), VoteActivity.class);
-					poll.setStartTime(System.currentTimeMillis());
-					i.putExtra("poll", (Serializable) poll);
-					startActivity(i);
-					LocalBroadcastManager.getInstance(PollReviewFragment.this.getActivity()).unregisterReceiver(this);
-
+					if(isContainedInParticipants(AndroidApplication.getInstance().getNetworkInterface().getMyIpAddress())){
+						Intent i = new Intent(PollReviewFragment.this.getActivity(), VoteActivity.class);
+						poll.setStartTime(System.currentTimeMillis());
+						i.putExtra("poll", (Serializable) poll);
+						startActivity(i);
+						LocalBroadcastManager.getInstance(PollReviewFragment.this.getActivity()).unregisterReceiver(this);
+						LocalBroadcastManager.getInstance(PollReviewFragment.this.getActivity()).unregisterReceiver(pollReceiver);
+					} else {
+						AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+						// Add the buttons
+						builder.setNeutralButton(R.string.ok, new DialogInterface.OnClickListener() {
+						           public void onClick(DialogInterface dialog, int id) {
+						               AndroidApplication.getInstance().getNetworkInterface().disconnect();
+						        	   startActivity(new Intent("ch.bfh.evoting.voterapp.VoterAppMainActivity"));
+						           }
+						       });
+						
+						builder.setTitle(R.string.not_included_title);
+						builder.setMessage(R.string.not_included);
+						
+						// Create the AlertDialog
+						AlertDialog dialog = builder.create();
+						dialog.show();
+					}
 				}
 			}, new IntentFilter(BroadcastIntentTypes.startVote));
+
+			//broadcast receiving the poll if it was modified
+			pollReceiver = new BroadcastReceiver() {
+
+				@Override
+				public void onReceive(Context context, Intent intent) {
+
+					poll = (Poll)intent.getSerializableExtra("poll");
+					//Poll is not in the DB, so reset the id
+					poll.setId(-1);
+					String sender = intent.getStringExtra("sender");
+					Log.e("PollReviewFragment", sender);
+					poll.getParticipants().get(sender).setHasAcceptedReview(true);
+					updateView();
+				}
+			};
+			LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(pollReceiver, new IntentFilter(BroadcastIntentTypes.pollToReview));
 		}
 
-		//broadcast receiving the poll if it was modified
-		LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(new BroadcastReceiver() {
 
-			@Override
-			public void onReceive(Context context, Intent intent) {
-
-				poll = (Poll)intent.getSerializableExtra("poll");
-				//Poll is not in the DB, so reset the id
-				poll.setId(-1);
-				String sender = intent.getStringExtra("sender");
-				Log.e("PollReviewFragment", sender);
-				poll.getParticipants().get(sender).setHasAcceptedReview(true);
-				updateView();
-			}
-		}, new IntentFilter(BroadcastIntentTypes.pollToReview));
 
 		//broadcast receiving the poll review acceptations
-		BroadcastReceiver reviewAcceptsReceiver = new BroadcastReceiver() {
+		reviewAcceptsReceiver = new BroadcastReceiver() {
 
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				String participantAccept = intent.getStringExtra("participant");
-				poll.getParticipants().get(participantAccept).setHasAcceptedReview(true);
+				if(poll.getParticipants().get(participantAccept)!=null)
+					poll.getParticipants().get(participantAccept).setHasAcceptedReview(true);
 				updateView();
 			}
 		};
@@ -158,10 +187,10 @@ public class PollReviewFragment extends ListFragment {
 			View vItemParticipant = inflater.inflate(R.layout.list_item_participant_poll, null);
 			TextView tv_participant = (TextView)vItemParticipant.findViewById(R.id.textview_participant_identification);
 			tv_participant.setText(part.getIdentification());
-			
+
 			ImageView ivAcceptImage = (ImageView)vItemParticipant.findViewById(R.id.imageview_accepted_img);
 			ProgressBar pgWaitForAccept = (ProgressBar)vItemParticipant.findViewById(R.id.progress_bar_waitforaccept);
-			
+
 			//set the correct image
 			if(part.hasAcceptedReview()){
 				pgWaitForAccept.setVisibility(View.GONE);
@@ -176,5 +205,20 @@ public class PollReviewFragment extends ListFragment {
 
 			participantsTable.addView(tableRow);
 		}
+	}
+
+	@Override
+	public void onDestroy() {
+		LocalBroadcastManager.getInstance(PollReviewFragment.this.getActivity()).unregisterReceiver(reviewAcceptsReceiver);
+		super.onDestroy();
+	}
+
+	private boolean isContainedInParticipants(String ipAddress){
+		for(Participant p : poll.getParticipants().values()){
+			if(p.getIpAddress().equals(ipAddress)){
+				return true;
+			}
+		}
+		return false;
 	}
 }

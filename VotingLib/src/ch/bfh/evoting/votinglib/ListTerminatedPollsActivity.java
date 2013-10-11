@@ -51,21 +51,6 @@ public class ListTerminatedPollsActivity extends Activity {
 			}                 
 		});
 
-		//		Button btnBackHome = (Button) findViewById(R.id.button_back_to_home);
-		//		btnBackHome.setOnClickListener(new OnClickListener() {
-		//
-		//			@Override
-		//			public void onClick(View v) {
-		//				String packageName = getApplication().getApplicationContext().getPackageName();
-		//				if(packageName.equals("ch.bfh.evoting.voterapp")){
-		//					Intent i = new Intent("ch.bfh.evoting.voterapp.VoterAppMainActivity");
-		//					startActivity(i);
-		//				} else if (packageName.equals("ch.bfh.evoting.adminapp")){
-		//					Intent i = new Intent("ch.bfh.evoting.adminapp.AdminAppMainActivity");
-		//					startActivity(i);
-		//				}
-		//			}
-		//		});
 	}
 
 	/**

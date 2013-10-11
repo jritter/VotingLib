@@ -41,7 +41,9 @@
     <string name="join_error_admin">It seems that a group with the same name already exists! Please choose another name!</string>
     <string name="join_error_voter">No group with the given name exists. Please wait for the administrator to create the group.</string>
     <string name="redo_impossible">An error occurred while trying to restart the poll.</string>
-
+    <string name="not_included_title">Your are not in the electorate</string>
+        <string name="not_included">You were not included in the electorate. So, you cannot participate to the poll. You will be redirected to the main screen.</string>
+    
     <!-- Activity titles -->
     <string name="app_name">VotingLib</string>
     <string name="title_activity_wait_for_votes">Waiting...</string>
