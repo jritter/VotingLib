@@ -81,30 +81,8 @@ public class WaitForVotesFragment extends ListFragment {
 		tvCastVotes.setText(getString(R.string.cast_votes, 0, participants.size()));
 
 		//TODO for demo only
-		votesReceived += intent.getIntExtra("votesReceived", 0);
+		votesReceived = 0;
 		
-//		//Register a BroadcastReceiver on new incoming vote events
-//		voteReceiver = new BroadcastReceiver(){
-//
-//			@Override
-//			public void onReceive(Context arg0, Intent intent) {
-//				Option vote = (Option)intent.getSerializableExtra("vote");
-//				for(Option op : poll.getOptions()){
-//					if(op.equals(vote)){
-//						op.setVotes(op.getVotes()+1);
-//					}
-//				}
-//				String voter = intent.getStringExtra("voter");
-//				if(participants.containsKey(voter)){
-//					votesReceived++;
-//					participants.get(voter).setHasVoted(true);
-//				}
-//				updateStatus(votesReceived, false);
-//			}
-//
-//		};
-//		LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(voteReceiver, new IntentFilter(BroadcastIntentTypes.newVote));
-
 		//Register a BroadcastReceiver on new incoming vote events
 		//TODO see if needed after simulation
 		updateVoteReceiver = new BroadcastReceiver(){

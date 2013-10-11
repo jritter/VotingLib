@@ -20,7 +20,8 @@
     <string name="not_connected">No network set up</string>
     <string name="help">Help</string>
     <string name="networks">Networks</string>
-    
+    <string name="empty_vote">Empty vote</string>
+
     <!--
          <string name="display_result_close">Close</string>
         <string name="home">Home</string>
@@ -31,7 +32,7 @@
 
     <string name="delete_poll">Delete poll</string>
     <string name="redo_poll">Repeat poll</string>
-    
+
     <!-- Toasts / Dialogs -->
     <string name="delete_poll_confirm_title">Delete the poll?</string>
     <string name="delete_poll_confirm_text">Do you really want to delete this poll? It won\'t be accessible anymore.</string>
@@ -40,7 +41,7 @@
     <string name="join_error_admin">It seems that a group with the same name already exists! Please choose another name!</string>
     <string name="join_error_voter">No group with the given name exists. Please wait for the administrator to create the group.</string>
     <string name="redo_impossible">An error occurred while trying to restart the poll.</string>
-    
+
     <!-- Activity titles -->
     <string name="app_name">VotingLib</string>
     <string name="title_activity_wait_for_votes">Waiting...</string>
@@ -49,7 +50,7 @@
     <string name="title_activity_display_result">Poll Results</string>
     <string name="title_activity_network_informations">Network Information</string>
     <string name="title_activity_create_network">Create a network</string>
-    
+
     <!-- Activity subtitles -->
     <string name="list_polls_title">Poll archives</string>
     <string name="display_result_title">Poll results</string>
@@ -68,6 +69,7 @@
     <string name="participant_state">Participant state</string>
     <string name="tick">Tick</string>
     <string name="poll_image">Poll image</string>
+    <string name="accepted">Review accepted</string>
 
     <!-- Image descriptions -->
     <string name="description_poll">Poll</string>

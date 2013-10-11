@@ -35,6 +35,11 @@ public class NetworkInformationsActivity extends Activity {
 	}
 
 	@Override
+	public void onBackPressed() {
+		//do nothing because we don't want that people access to an anterior activity
+	}
+	
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.network_informations, menu);

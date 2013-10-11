@@ -16,11 +16,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -69,6 +72,8 @@ public class PollReviewFragment extends ListFragment {
 		lv.setAdapter(new SimpleCursorAdapter(this.getActivity(), android.R.layout.simple_list_item_1, null, array, toViews, 0));
 
 		poll = (Poll)getActivity().getIntent().getSerializableExtra("poll");
+		String sender = getActivity().getIntent().getStringExtra("sender");
+		poll.getParticipants().get(sender).setHasAcceptedReview(true);
 
 		updateView();
 
@@ -98,9 +103,24 @@ public class PollReviewFragment extends ListFragment {
 				poll = (Poll)intent.getSerializableExtra("poll");
 				//Poll is not in the DB, so reset the id
 				poll.setId(-1);
+				String sender = intent.getStringExtra("sender");
+				Log.e("PollReviewFragment", sender);
+				poll.getParticipants().get(sender).setHasAcceptedReview(true);
 				updateView();
 			}
 		}, new IntentFilter(BroadcastIntentTypes.pollToReview));
+
+		//broadcast receiving the poll review acceptations
+		BroadcastReceiver reviewAcceptsReceiver = new BroadcastReceiver() {
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				String participantAccept = intent.getStringExtra("participant");
+				poll.getParticipants().get(participantAccept).setHasAcceptedReview(true);
+				updateView();
+			}
+		};
+		LocalBroadcastManager.getInstance(this.getActivity()).registerReceiver(reviewAcceptsReceiver, new IntentFilter(BroadcastIntentTypes.acceptReview));
 
 		return v;
 	}
@@ -130,14 +150,26 @@ public class PollReviewFragment extends ListFragment {
 		//Create participants table
 		TableLayout participantsTable = (TableLayout)footer.findViewById(R.id.layout_participants);
 		participantsTable.removeAllViews();
-		
+
 		for(Participant part : poll.getParticipants().values()){
 			TableRow tableRow= new TableRow(ctx);
 			tableRow.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
 			View vItemParticipant = inflater.inflate(R.layout.list_item_participant_poll, null);
-			TextView tv_option = (TextView)vItemParticipant.findViewById(R.id.textview_participant_identification);
-			tv_option.setText(part.getIdentification());
+			TextView tv_participant = (TextView)vItemParticipant.findViewById(R.id.textview_participant_identification);
+			tv_participant.setText(part.getIdentification());
+			
+			ImageView ivAcceptImage = (ImageView)vItemParticipant.findViewById(R.id.imageview_accepted_img);
+			ProgressBar pgWaitForAccept = (ProgressBar)vItemParticipant.findViewById(R.id.progress_bar_waitforaccept);
+			
+			//set the correct image
+			if(part.hasAcceptedReview()){
+				pgWaitForAccept.setVisibility(View.GONE);
+				ivAcceptImage.setVisibility(View.VISIBLE);
+			} else {
+				pgWaitForAccept.setVisibility(View.VISIBLE);
+				ivAcceptImage.setVisibility(View.GONE);
+			}
 
 			tableRow.addView(vItemParticipant);
 			tableRow.setBackgroundResource(R.drawable.borders);

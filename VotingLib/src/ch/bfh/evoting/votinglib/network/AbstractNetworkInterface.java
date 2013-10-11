@@ -72,6 +72,13 @@ public abstract class AbstractNetworkInterface implements NetworkInterface {
 			// notify the UI that new message has arrived
 			messageArrivedIntent = new Intent(BroadcastIntentTypes.pollToReview);
 			messageArrivedIntent.putExtra("poll", voteMessage.getMessageContent());
+			messageArrivedIntent.putExtra("sender", voteMessage.getSenderIPAddress());
+			LocalBroadcastManager.getInstance(context).sendBroadcast(messageArrivedIntent);
+			break;
+		case VOTE_MESSAGE_ACCEPT_REVIEW:
+			// notify the UI that new message has arrived
+			messageArrivedIntent = new Intent(BroadcastIntentTypes.acceptReview);
+			messageArrivedIntent.putExtra("participant", voteMessage.getSenderIPAddress());
 			LocalBroadcastManager.getInstance(context).sendBroadcast(messageArrivedIntent);
 			break;
 		case VOTE_MESSAGE_START_POLL:

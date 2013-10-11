@@ -123,12 +123,20 @@ public class AllJoynNetworkInterface extends AbstractNetworkInterface{
 		}
 		
 		Log.d(this.getClass().getSimpleName(), "Status of connection: "+ status);
-		if(status != Status.OK){
-			return false;
-		} else {
+		switch(status){
+		case OK:
 			LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("NetworkServiceStarted"));
 			return true;
+		case ALLJOYN_JOINSESSION_REPLY_ALREADY_JOINED:
+			LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("NetworkServiceStarted"));
+			return true;
+		case BUS_REPLY_IS_ERROR_MESSAGE:
+			//TODO multicast not supported => switch to instacircle
+			return false;
+		default:
+			return false;
 		}
+		
 	}
 
 	/**
