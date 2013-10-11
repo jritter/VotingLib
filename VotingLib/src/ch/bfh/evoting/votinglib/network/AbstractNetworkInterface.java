@@ -90,7 +90,6 @@ public abstract class AbstractNetworkInterface implements NetworkInterface {
 			messageArrivedIntent.putExtra("vote", voteMessage.getMessageContent());
 			messageArrivedIntent.putExtra("voter", voteMessage.getSenderIPAddress());
 			LocalBroadcastManager.getInstance(context).sendBroadcast(messageArrivedIntent);
-			Log.e("abstract", "vote message received");
 			break;
 		}
 	}
