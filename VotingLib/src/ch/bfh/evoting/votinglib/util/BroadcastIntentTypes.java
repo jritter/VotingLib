@@ -19,9 +19,16 @@ public class BroadcastIntentTypes {
 	 */
 	public static final String electorate = "electorate";
 	/**
+	 * Intent type sent when a participant sends his acknowledgement for the review
+	 * Extras:
+	 * - "participant": ip of participant that has accepted the review
+	 */
+	public static final String acceptReview = "acceptReview";
+	/**
 	 * Intent type sent when the admin sends the participants present in the network
 	 * Extras:
 	 * - "poll": Poll object containing all data of the poll
+	 * - "sender": String of the identification of the sender of the poll to review
 	 */
 	public static final String pollToReview = "pollToReview";
 	/**

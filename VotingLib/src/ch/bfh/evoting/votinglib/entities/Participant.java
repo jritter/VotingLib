@@ -8,12 +8,13 @@ import java.io.Serializable;
  *
  */
 public class Participant implements Serializable{
-	
+
 	private static final long serialVersionUID = 1L;
 	private String identification;
 	private String ipAddress;
 	private boolean hasVoted;
 	private boolean isSelected;
+	private boolean hasAcceptedReview;
 	
 	/**
 	 * Construct a Participant object
@@ -91,6 +92,14 @@ public class Participant implements Serializable{
 	 */
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
+	}
+	
+	public boolean hasAcceptedReview() {
+		return hasAcceptedReview;
+	}
+
+	public void setHasAcceptedReview(boolean hasAcceptedReview) {
+		this.hasAcceptedReview = hasAcceptedReview;
 	}
 	
 	@Override

@@ -49,7 +49,6 @@ public class VoteActivity extends Activity {
 	
 	private ListView lvChoices;
 
-	static private int votesReceived = 0;
 	static Context ctx;
 
 
@@ -57,7 +56,7 @@ public class VoteActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_vote);
-
+		
 		ctx=this;
 		
 		lvChoices = (ListView)findViewById(R.id.listview_choices);
@@ -168,14 +167,10 @@ public class VoteActivity extends Activity {
 		if(packageName.equals("ch.bfh.evoting.adminapp")){
 			Intent i = new Intent("ch.bfh.evoting.adminapp.AdminWaitForVotesActivity");
 			i.putExtra("poll", (Serializable)poll);
-			//TODO remove, for demo only
-			i.putExtra("votesReceived", votesReceived);
 			startActivity(i);
 		} else {
 			Intent intent = new Intent(this, WaitForVotesActivity.class);
 			intent.putExtra("poll", (Serializable)poll);
-			//TODO remove, for demo only
-			intent.putExtra("votesReceived", votesReceived);
 			startActivity(intent);
 		}
 	}
@@ -208,11 +203,16 @@ public class VoteActivity extends Activity {
 
 		boolean doWork = true;
 		BroadcastReceiver voteReceiver;
+		AsyncTask<Object, Object, Object> sendVotesTask;
+		private int votesReceived = 0;
+
 		
 		@Override
 		public void onDestroy() {
-			doWork = false;
 			LocalBroadcastManager.getInstance(ctx).unregisterReceiver(voteReceiver);
+			votesReceived = 0;
+			doWork=false;
+			sendVotesTask.cancel(true);
 			super.onDestroy();
 		}
 
@@ -229,23 +229,16 @@ public class VoteActivity extends Activity {
 						}
 					}
 					String voter = intent.getStringExtra("voter");
-					Log.e("Voteactivity", "voter "+voter);
-					for(String s : poll.getParticipants().keySet()){
-						Log.e("Voteactivity", "key "+s);
-						Log.e("Voteactivity", "participant ip "+poll.getParticipants().get(s).getIpAddress());
-					}
-					Log.e("Voteactivity", "is contained "+poll.getParticipants().containsKey(voter));
 					if(poll.getParticipants().containsKey(voter)){
 						votesReceived++;
 						poll.getParticipants().get(voter).setHasVoted(true);
 					}
 					
-					new AsyncTask(){
+					sendVotesTask = new AsyncTask<Object, Object, Object>(){
 
 						@Override
 						protected Object doInBackground(Object... arg0) {
 							while(doWork){
-								Log.e("VoteActivity Async task", "sending "+votesReceived);
 								Intent i = new Intent("UpdateNewVotes");
 								i.putExtra("votes", votesReceived);
 								i.putExtra("options", (Serializable)poll.getOptions());
@@ -265,7 +258,6 @@ public class VoteActivity extends Activity {
 
 		@Override
 		public IBinder onBind(Intent arg0) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 	}

@@ -1,33 +1,45 @@
 package ch.bfh.evoting.votinglib;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import ch.bfh.evoting.votinglib.adapters.OptionListAdapter;
 import ch.bfh.evoting.votinglib.db.PollDbHelper;
 import ch.bfh.evoting.votinglib.entities.DatabaseException;
+import ch.bfh.evoting.votinglib.entities.Option;
 import ch.bfh.evoting.votinglib.entities.Poll;
+import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
 import ch.bfh.evoting.votinglib.util.HelpDialogFragment;
 import ch.bfh.evoting.votinglib.util.OptionsComparator;
 import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.ListActivity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Activity displaying the results of a poll
@@ -38,6 +50,10 @@ public class DisplayResultActivity extends ListActivity {
 
 	private int pollId;
 	private boolean saveToDbNeeded;
+	
+	private BroadcastReceiver redoPollReceiver;
+
+	private float values[] = { 700, 400, 100, 500,600 };  
 
 	@SuppressLint("SimpleDateFormat")
 	@Override
@@ -53,10 +69,65 @@ public class DisplayResultActivity extends ListActivity {
 		
 		lv.addHeaderView(header);
 
-		AndroidApplication.getInstance().getNetworkInterface().disconnect();
+		final Poll poll = (Poll)this.getIntent().getSerializableExtra("poll");
+
+		String packageName = getApplication().getApplicationContext().getPackageName();
+		if(!packageName.equals("ch.bfh.evoting.adminapp")){
+			LinearLayout linearLayout = (LinearLayout)findViewById(R.id.layout_action_bar);
+			linearLayout.removeView(linearLayout);
+			
+			//register a listener of messages of the admin sending the electorate
+			redoPollReceiver = new BroadcastReceiver(){
+
+				@Override
+				public void onReceive(Context context, Intent intent) {
+					LocalBroadcastManager.getInstance(DisplayResultActivity.this).unregisterReceiver(this);
+					Intent i = new Intent("ch.bfh.evoting.voterapp.CheckElectorateActivity");
+					i.putExtra("participants", intent.getSerializableExtra("participants"));
+					startActivity(i);
+				}
+			};
+			LocalBroadcastManager.getInstance(this).registerReceiver(redoPollReceiver, new IntentFilter(BroadcastIntentTypes.electorate));
+		} else {
+
+			//Set a listener on the redo button
+			Button btnRedo = (Button)findViewById(R.id.button_redo_poll);
+			btnRedo.setOnClickListener(new OnClickListener(){
+				@Override
+				public void onClick(View v) {
+					Poll newPoll = new Poll();
+					newPoll.setQuestion(poll.getQuestion());
+					List<Option> newOptions = new ArrayList<Option>();
+					for(Option op : poll.getOptions()){
+						Option newOp = new Option();
+						newOp.setText(op.getText());
+						newOptions.add(newOp);
+					}
+					newPoll.setOptions(newOptions);
+
+					PollDbHelper pollDbHelper = PollDbHelper.getInstance(DisplayResultActivity.this);
+					try {
+						int pollId = (int)pollDbHelper.savePoll(newPoll);
+						Intent i = new Intent("ch.bfh.evoting.adminapp.PollDetailActivity");
+						i.putExtra("pollid", pollId);
+						startActivity(i);
+					} catch (DatabaseException e) {
+						Toast.makeText(DisplayResultActivity.this, getString(R.string.redo_impossible), Toast.LENGTH_LONG).show();
+						e.printStackTrace();
+					}
+				}
+			});
+		}
+
+		// Displaying the graph
+		LinearLayout layoutGraph = (LinearLayout) header.findViewById(R.id.layout_graph);
+		values = calculateData(values);  
+		MyGraphview graphview = new MyGraphview(this, values);  
+		layoutGraph.addView(graphview);  
+
+		lv.addHeaderView(header);
 
 		//Get the data in the intent
-		Poll poll = (Poll)this.getIntent().getSerializableExtra("poll");
 		saveToDbNeeded = this.getIntent().getBooleanExtra("saveToDb", false);
 		if(poll.getId()>=0){
 			pollId = poll.getId();
@@ -93,7 +164,12 @@ public class DisplayResultActivity extends ListActivity {
 				Log.e(this.getClass().getSimpleName(), "DB error: "+e.getMessage());
 				e.printStackTrace();
 			}
-		}  
+		}
+		
+		if(packageName.equals("ch.bfh.evoting.voterapp") || !saveToDbNeeded){
+			LinearLayout ll = (LinearLayout)findViewById(R.id.layout_action_bar);
+			((LinearLayout)ll.getParent()).removeView(ll);
+		}
 
 	}
 
@@ -124,29 +200,8 @@ public class DisplayResultActivity extends ListActivity {
 
 		final Context ctx = this.getApplicationContext();
 
-		//Delete option of the menu
-		//		if(item.getItemId()==R.id.action_delete) {
-		//			if(this.pollId!=-1){
-		//				//Confirmation dialog
-		//				AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-		//				alertDialog.setTitle(R.string.delete_poll_confirm_title);
-		//				alertDialog.setMessage(getString(R.string.delete_poll_confirm_text));
-		//				alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",new DialogInterface.OnClickListener() {
-		//					public void onClick(DialogInterface dialog,	int which) {
-		//						PollDbHelper.getInstance(ctx).deletePoll(pollId);
-		//						dialog.dismiss();
-		//						startActivity(new Intent(ctx, ListTerminatedPollsActivity.class));
-		//					}
-		//				});
-		//				alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No", new DialogInterface.OnClickListener() {
-		//					public void onClick(DialogInterface dialog,	int which) {
-		//						dialog.dismiss();
-		//					}
-		//				});
-		//				alertDialog.show();
-		//			}
-
 		if (item.getItemId() == android.R.id.home){
+			AndroidApplication.getInstance().getNetworkInterface().disconnect();
 			String packageName = getApplication().getApplicationContext().getPackageName();
 			//if ending a poll
 			if(saveToDbNeeded){
@@ -174,13 +229,75 @@ public class DisplayResultActivity extends ListActivity {
 			return true;
 		} else if (item.getItemId() == R.id.help){
 			HelpDialogFragment hdf = HelpDialogFragment.newInstance( getString(R.string.help_title_display_results), getString(R.string.help_text_display_results) );
-	        hdf.show( getFragmentManager( ), "help" );
-	        return true;
+			hdf.show( getFragmentManager( ), "help" );
+			return true;
 		}
 		return true;
 	}
+
+	private float[] calculateData(float[] data) {
+		float total = 0;
+		for (int i = 0; i < data.length; i++) {
+			total += data[i];
+		}
+		for (int i = 0; i < data.length; i++) {
+			data[i] = 360 * (data[i] / total);
+		}
+		return data;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.display_results, menu);
+		return true;
+	}
+
+	public class MyGraphview extends View {
+		private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+		private float[] value_degree;
+		RectF rectf = new RectF(120, 120, 380, 380);
+		float temp = 0;
+
+		public MyGraphview(Context context, float[] values) {
+			super(context);
+			value_degree = new float[values.length];
+			for (int i = 0; i < values.length; i++) {
+				value_degree[i] = values[i];
+			}
+		}
+
+		@Override
+		protected void onDraw(Canvas canvas) {
+			super.onDraw(canvas);
+			Random r;
+			for (int i = 0; i < value_degree.length; i++) {
+				if (i == 0) {
+					r = new Random();
+					int color = Color.argb(100, r.nextInt(256), r.nextInt(256),
+							r.nextInt(256));
+					paint.setColor(color);
+					canvas.drawArc(rectf, 0, value_degree[i], true, paint);
+				} else {
+					temp += value_degree[i - 1];
+					r = new Random();
+					int color = Color.argb(255, r.nextInt(256), r.nextInt(256),
+							r.nextInt(256));
+					paint.setColor(color);
+					canvas.drawArc(rectf, temp, value_degree[i], true, paint);
+				}
+			}
+		}
+	}
 	
-	
-	
-	
+//	BroadcastReceiver redoPollReceiver = new BroadcastReceiver(){
+//
+//		@Override
+//		public void onReceive(Context context, Intent intent) {
+//			LocalBroadcastManager.getInstance(DisplayResultActivity.this).unregisterReceiver(this);
+//			Intent i = new Intent("ch.bfh.evoting.voterapp.CheckElectorateActivity");
+//			i.putExtra("participants", intent.getSerializableExtra("participants"));
+//			startActivity(i);
+//		}
+//	};
 }
