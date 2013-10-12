@@ -76,7 +76,7 @@ public class WifiAPManager {
 
 		boolean wifiApIsOn = getWifiAPState() == WIFI_AP_STATE_ENABLED
 				|| getWifiAPState() == WIFI_AP_STATE_ENABLING;
-		new SetWifiAPTask(!wifiApIsOn, context).execute();
+		new SetWifiAPTask(!wifiApIsOn, context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class WifiAPManager {
 		editor.putString("SSID", config.SSID);
 		editor.commit();
 
-		new SetWifiAPTask(true, context).execute();
+		new SetWifiAPTask(true, context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
 
 	/**
@@ -161,7 +161,7 @@ public class WifiAPManager {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            new SetWifiAPTask(false, context).execute();
+            new SetWifiAPTask(false, context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 	}
 

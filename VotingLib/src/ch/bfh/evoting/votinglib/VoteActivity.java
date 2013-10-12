@@ -46,8 +46,9 @@ public class VoteActivity extends Activity {
 	private VoteOptionListAdapter volAdapter;
 	private boolean scrolled = false;
 	private boolean demoScrollDone = false;
-	
+
 	private ListView lvChoices;
+	private BroadcastReceiver stopReceiver;
 
 	static Context ctx;
 
@@ -56,9 +57,9 @@ public class VoteActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_vote);
-		
+
 		ctx=this;
-		
+
 		lvChoices = (ListView)findViewById(R.id.listview_choices);
 
 		//Get the data in the intent
@@ -72,7 +73,7 @@ public class VoteActivity extends Activity {
 		tvQuestion.setText(question);
 
 
-		
+
 
 		//create the list of vote options
 		volAdapter = new VoteOptionListAdapter(this, R.layout.list_item_vote, options);
@@ -95,7 +96,7 @@ public class VoteActivity extends Activity {
 
 
 		});
-		
+
 		//animate scroll
 		new AsyncTask<Object, Object, Object>(){
 
@@ -119,9 +120,9 @@ public class VoteActivity extends Activity {
 				}
 			}
 
-		}.execute();
-		
-		
+		}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+
 		//Set a listener on the cast button
 		Button btnCast = (Button)findViewById(R.id.button_castvote);
 		btnCast.setOnClickListener(new OnClickListener(){
@@ -136,6 +137,39 @@ public class VoteActivity extends Activity {
 				}
 			}
 		});
+
+		//Register a BroadcastReceiver on stop poll order events
+		stopReceiver = new BroadcastReceiver(){
+
+			private int numberOfVotes = 0;
+			@Override
+			public void onReceive(Context arg0, Intent intent) {
+				stopService(new Intent(VoteActivity.this, VoteService.class));
+				//go through compute result and set percentage result
+				List<Option> options = poll.getOptions();
+				for(Option option : options){
+					numberOfVotes += option.getVotes();	
+				}
+				for(Option option : options){
+					if(numberOfVotes!=0){
+						option.setPercentage(option.getVotes()*100/numberOfVotes);
+					} else {
+						option.setPercentage(0);
+					}
+				}
+				
+				poll.setTerminated(true);
+
+				//start to result activity
+				Intent i = new Intent(VoteActivity.this, DisplayResultActivity.class);
+				i.putExtra("poll", (Serializable)poll);
+				i.putExtra("saveToDb", true);
+				startActivity(i);
+				LocalBroadcastManager.getInstance(VoteActivity.this).unregisterReceiver(this);
+			}
+		};
+		LocalBroadcastManager.getInstance(this).registerReceiver(stopReceiver, new IntentFilter(BroadcastIntentTypes.stopVote));
+
 
 		this.startService(new Intent(this, VoteService.class));
 	}
@@ -197,7 +231,7 @@ public class VoteActivity extends Activity {
 		getMenuInflater().inflate(R.menu.vote, menu);
 		return true;
 	}
-	
+
 	//TODO remove: only for simulation
 	public static class VoteService extends Service{
 
@@ -206,7 +240,7 @@ public class VoteActivity extends Activity {
 		AsyncTask<Object, Object, Object> sendVotesTask;
 		private int votesReceived = 0;
 
-		
+
 		@Override
 		public void onDestroy() {
 			LocalBroadcastManager.getInstance(ctx).unregisterReceiver(voteReceiver);
@@ -233,7 +267,7 @@ public class VoteActivity extends Activity {
 						votesReceived++;
 						poll.getParticipants().get(voter).setHasVoted(true);
 					}
-					
+
 					sendVotesTask = new AsyncTask<Object, Object, Object>(){
 
 						@Override
@@ -248,8 +282,8 @@ public class VoteActivity extends Activity {
 							}
 							return null;
 						}
-						
-					}.execute();
+
+					}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 				}
 			};
 			LocalBroadcastManager.getInstance(ctx).registerReceiver(voteReceiver, new IntentFilter(BroadcastIntentTypes.newVote));
@@ -260,5 +294,6 @@ public class VoteActivity extends Activity {
 		public IBinder onBind(Intent arg0) {
 			return null;
 		}
+		
 	}
 }

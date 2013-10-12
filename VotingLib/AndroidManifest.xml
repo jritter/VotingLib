@@ -13,18 +13,16 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Votebartheme" >
-        
         <service
             android:name="ch.bfh.evoting.instacirclelib.service.NetworkService"
             android:enabled="true"
             android:exported="true" >
         </service>
-        
         <service android:name="ch.bfh.evoting.instacirclelib.service.ProcessUnicastMessageIntentService" />
         <service android:name="ch.bfh.evoting.instacirclelib.service.ProcessBroadcastMessageIntentService" />
         <service android:name="ch.bfh.evoting.instacirclelib.service.SendBroadcastIntentService" />
         <service android:name="ch.bfh.evoting.instacirclelib.service.SendUnicastIntentService" />
-        
+
         <activity
             android:name="ch.bfh.evoting.votinglib.ListTerminatedPollsActivity"
             android:label="@string/title_activity_list_terminated_polls" >
@@ -45,7 +43,6 @@
             android:name="ch.bfh.evoting.votinglib.network.wifi.CreateNetworkActivity"
             android:label="@string/title_activity_create_network" >
         </activity>
-        
     </application>
 
 </manifest>
