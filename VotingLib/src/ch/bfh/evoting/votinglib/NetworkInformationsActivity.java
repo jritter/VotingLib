@@ -134,11 +134,11 @@ public class NetworkInformationsActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	private static final int WHITE = 0xFFFFFFFF;
-	private static final int BLACK = 0xFF000000;
-	
 	private Bitmap qrCode2Bitmap(BitMatrix qrcode) {
-
+		
+		final int WHITE = 0x00EAEAEA;
+		final int BLACK = 0xFF000000;
+		
 		int width = qrcode.getWidth();
 		int height = qrcode.getHeight();
 		int[] pixels = new int[width * height];
