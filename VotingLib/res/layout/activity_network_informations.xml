@@ -83,6 +83,15 @@
             android:textSize="20sp"
             android:textStyle="" >
         </TextView>
+
+        <ImageView
+            android:id="@+id/imageview_qrcode"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/textview_network_password"
+            android:layout_centerHorizontal="true"
+            />
+
     </RelativeLayout>
 
 </RelativeLayout>
