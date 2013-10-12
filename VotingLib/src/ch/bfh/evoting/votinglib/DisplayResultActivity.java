@@ -38,8 +38,6 @@ public class DisplayResultActivity extends ListActivity {
 
 	private int pollId;
 	private boolean saveToDbNeeded;
-	
-	private float values[] = { 700, 400, 100, 500,600 };  
 
 	@SuppressLint("SimpleDateFormat")
 	@Override
@@ -52,14 +50,6 @@ public class DisplayResultActivity extends ListActivity {
 		LayoutInflater inflater = this.getLayoutInflater();
 
 		View header = inflater.inflate(R.layout.result_header, null, false);
-		
-		
-		// Displaying the graph
-		LinearLayout layoutGraph = (LinearLayout) header.findViewById(R.id.layout_graph);
-		values = calculateData(values);  
-		MyGraphview graphview = new MyGraphview(this, values);  
-		layoutGraph.addView(graphview);  
-		
 		
 		lv.addHeaderView(header);
 
@@ -162,11 +152,21 @@ public class DisplayResultActivity extends ListActivity {
 			if(saveToDbNeeded){
 				if(packageName.equals("ch.bfh.evoting.voterapp")){
 					Intent i = new Intent("ch.bfh.evoting.voterapp.VoterAppMainActivity");
+					i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+		                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+		                    Intent.FLAG_ACTIVITY_NEW_TASK);
+
 					startActivity(i);
 				} else if (packageName.equals("ch.bfh.evoting.adminapp")){
 					Intent i = new Intent("ch.bfh.evoting.adminapp.AdminAppMainActivity");
+					i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+		                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+		                    Intent.FLAG_ACTIVITY_NEW_TASK);
+
 					startActivity(i);
 				}
+				
+				
 			} else {
 				//if consulting an archive
 				startActivity(new Intent(this, ListTerminatedPollsActivity.class));
@@ -180,58 +180,7 @@ public class DisplayResultActivity extends ListActivity {
 		return true;
 	}
 	
-	private float[] calculateData(float[] data) {
-		float total = 0;
-		for (int i = 0; i < data.length; i++) {
-			total += data[i];
-		}
-		for (int i = 0; i < data.length; i++) {
-			data[i] = 360 * (data[i] / total);
-		}
-		return data;
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.display_results, menu);
-		return true;
-	}
 	
-	public class MyGraphview extends View {
-		private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		private float[] value_degree;
-		RectF rectf = new RectF(120, 120, 380, 380);
-		float temp = 0;
-
-		public MyGraphview(Context context, float[] values) {
-			super(context);
-			value_degree = new float[values.length];
-			for (int i = 0; i < values.length; i++) {
-				value_degree[i] = values[i];
-			}
-		}
-
-		@Override
-		protected void onDraw(Canvas canvas) {
-			super.onDraw(canvas);
-			Random r;
-			for (int i = 0; i < value_degree.length; i++) {
-				if (i == 0) {
-					r = new Random();
-					int color = Color.argb(100, r.nextInt(256), r.nextInt(256),
-							r.nextInt(256));
-					paint.setColor(color);
-					canvas.drawArc(rectf, 0, value_degree[i], true, paint);
-				} else {
-					temp += value_degree[i - 1];
-					r = new Random();
-					int color = Color.argb(255, r.nextInt(256), r.nextInt(256),
-							r.nextInt(256));
-					paint.setColor(color);
-					canvas.drawArc(rectf, temp, value_degree[i], true, paint);
-				}
-			}
-		}
-	}
+	
+	
 }
