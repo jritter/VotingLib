@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.ListFragment;
 import android.content.BroadcastReceiver;
@@ -63,6 +64,8 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 	public static final int DIALOG_FRAGMENT = 1;
 	
 	private boolean hideCreateNetwork = false;
+	
+	private AlertDialog waitWifiResutsdialog;
 
 	public interface Callbacks {
 		public void onItemSelected(String id);
@@ -77,6 +80,10 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		hideCreateNetwork = getActivity().getIntent().getBooleanExtra("hideCreateNetwork", false);
+		
+		
+
+		
 	}
 
 	/*
@@ -105,6 +112,14 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 				Context.WIFI_SERVICE);
 		wifi.startScan();
 		adhoc = new AdhocWifiManager(wifi);
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
+		builder.setMessage(R.string.dialog_wait_wifi);
+		waitWifiResutsdialog = builder.create();
+
+		if(wifi.getWifiState()==WifiManager.WIFI_STATE_ENABLED){
+			waitWifiResutsdialog.show();
+		}
 
 		
 		adapter = new NetworkArrayAdapter(getActivity(),
@@ -126,6 +141,8 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 
 			@Override
 			public void onReceive(Context c, Intent intent) {
+
+				waitWifiResutsdialog.dismiss();
 				results = wifi.getScanResults();
 				configuredNetworks = wifi.getConfiguredNetworks();
 				arraylist.clear();
@@ -276,7 +293,7 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 		switch(requestCode){
 		
 		case DIALOG_FRAGMENT:
-
+			
             if (resultCode == Activity.RESULT_OK) {
             	if (selectedNetId != -1) {
         			adhoc.connectToNetwork(selectedNetId, getActivity());

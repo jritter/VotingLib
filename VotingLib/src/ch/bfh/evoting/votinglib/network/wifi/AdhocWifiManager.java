@@ -63,7 +63,7 @@ public class AdhocWifiManager {
 	 *            the android context from which this functionality is used
 	 */
 	public void connectToNetwork(WifiConfiguration config, Context context) {
-		new ConnectWifiTask(config, context).execute();
+		new ConnectWifiTask(config, context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class AdhocWifiManager {
 	public void connectToNetwork(final String ssid, final String password,
 			final Context context, final boolean startActivity) {
 		Log.d(TAG, "connect using SSID...");
-		new ConnectWifiTask(ssid, password, context, startActivity).execute();
+		new ConnectWifiTask(ssid, password, context, startActivity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
 
 	/**
@@ -113,7 +113,7 @@ public class AdhocWifiManager {
 	 */
 	public void connectToNetwork(final int networkId, final Context context) {
 		Log.d(TAG, "Connect using netid... " + networkId);
-		new ConnectWifiTask(networkId, context).execute();
+		new ConnectWifiTask(networkId, context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class AdhocWifiManager {
 	 *            the android context from which this functionality is used
 	 */
 	public void restoreWifiConfiguration(Context context) {
-		new RestoreWifiConfigurationTask(context).execute();
+		new RestoreWifiConfigurationTask(context).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 	}
 
 	/**

@@ -21,7 +21,7 @@
     <string name="help">Help</string>
     <string name="networks">Networks</string>
     <string name="empty_vote">Empty vote</string>
-
+    <string name="dialog_wait_wifi">Please wait...</string>
     <!--
          <string name="display_result_close">Close</string>
         <string name="home">Home</string>
