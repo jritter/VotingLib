@@ -67,9 +67,15 @@ public class ListTerminatedPollsActivity extends Activity {
 			String packageName = getApplication().getApplicationContext().getPackageName();
 			if(packageName.equals("ch.bfh.evoting.voterapp")){
 				Intent i = new Intent("ch.bfh.evoting.voterapp.VoterAppMainActivity");
+				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+	                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+	                    Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(i);
 			} else if (packageName.equals("ch.bfh.evoting.adminapp")){
 				Intent i = new Intent("ch.bfh.evoting.adminapp.AdminAppMainActivity");
+				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | 
+	                    Intent.FLAG_ACTIVITY_CLEAR_TASK |
+	                    Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(i);
 			}
 			return true;

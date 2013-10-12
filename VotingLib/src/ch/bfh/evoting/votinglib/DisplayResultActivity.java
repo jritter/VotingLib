@@ -5,28 +5,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
-import ch.bfh.evoting.votinglib.adapters.OptionListAdapter;
-import ch.bfh.evoting.votinglib.db.PollDbHelper;
-import ch.bfh.evoting.votinglib.entities.DatabaseException;
-import ch.bfh.evoting.votinglib.entities.Option;
-import ch.bfh.evoting.votinglib.entities.Poll;
-import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
-import ch.bfh.evoting.votinglib.util.HelpDialogFragment;
-import ch.bfh.evoting.votinglib.util.OptionsComparator;
-import android.os.Bundle;
 import android.annotation.SuppressLint;
 import android.app.ListActivity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.BitmapFactory.Options;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,9 +23,16 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import ch.bfh.evoting.votinglib.adapters.OptionListAdapter;
+import ch.bfh.evoting.votinglib.db.PollDbHelper;
+import ch.bfh.evoting.votinglib.entities.DatabaseException;
+import ch.bfh.evoting.votinglib.entities.Option;
+import ch.bfh.evoting.votinglib.entities.Poll;
+import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
+import ch.bfh.evoting.votinglib.util.HelpDialogFragment;
+import ch.bfh.evoting.votinglib.util.OptionsComparator;
 
 /**
  * Activity displaying the results of a poll
@@ -52,8 +45,6 @@ public class DisplayResultActivity extends ListActivity {
 	private boolean saveToDbNeeded;
 	
 	private BroadcastReceiver redoPollReceiver;
-
-	private float values[] = { 700, 400, 100, 500,600 };  
 
 	@SuppressLint("SimpleDateFormat")
 	@Override
@@ -119,12 +110,6 @@ public class DisplayResultActivity extends ListActivity {
 			});
 		}
 
-		// Displaying the graph
-		LinearLayout layoutGraph = (LinearLayout) header.findViewById(R.id.layout_graph);
-		values = calculateData(values);  
-		MyGraphview graphview = new MyGraphview(this, values);  
-		layoutGraph.addView(graphview);  
-
 		lv.addHeaderView(header);
 
 		//Get the data in the intent
@@ -144,7 +129,8 @@ public class DisplayResultActivity extends ListActivity {
 
 		TextView tvPollTime = (TextView)header.findViewById(R.id.textview_poll_start_time);
 		tvPollTime.setText(getString(R.string.poll_start_time) + ": " + sdf.format(resultdate));
-
+		
+		
 		//Order the options in descending order
 		Collections.sort(poll.getOptions(), new OptionsComparator());
 		//Create the list
@@ -198,8 +184,6 @@ public class DisplayResultActivity extends ListActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 
-		final Context ctx = this.getApplicationContext();
-
 		if (item.getItemId() == android.R.id.home){
 			AndroidApplication.getInstance().getNetworkInterface().disconnect();
 			String packageName = getApplication().getApplicationContext().getPackageName();
@@ -235,16 +219,6 @@ public class DisplayResultActivity extends ListActivity {
 		return true;
 	}
 
-	private float[] calculateData(float[] data) {
-		float total = 0;
-		for (int i = 0; i < data.length; i++) {
-			total += data[i];
-		}
-		for (int i = 0; i < data.length; i++) {
-			data[i] = 360 * (data[i] / total);
-		}
-		return data;
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -253,42 +227,6 @@ public class DisplayResultActivity extends ListActivity {
 		return true;
 	}
 
-	public class MyGraphview extends View {
-		private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		private float[] value_degree;
-		RectF rectf = new RectF(120, 120, 380, 380);
-		float temp = 0;
-
-		public MyGraphview(Context context, float[] values) {
-			super(context);
-			value_degree = new float[values.length];
-			for (int i = 0; i < values.length; i++) {
-				value_degree[i] = values[i];
-			}
-		}
-
-		@Override
-		protected void onDraw(Canvas canvas) {
-			super.onDraw(canvas);
-			Random r;
-			for (int i = 0; i < value_degree.length; i++) {
-				if (i == 0) {
-					r = new Random();
-					int color = Color.argb(100, r.nextInt(256), r.nextInt(256),
-							r.nextInt(256));
-					paint.setColor(color);
-					canvas.drawArc(rectf, 0, value_degree[i], true, paint);
-				} else {
-					temp += value_degree[i - 1];
-					r = new Random();
-					int color = Color.argb(255, r.nextInt(256), r.nextInt(256),
-							r.nextInt(256));
-					paint.setColor(color);
-					canvas.drawArc(rectf, temp, value_degree[i], true, paint);
-				}
-			}
-		}
-	}
 	
 //	BroadcastReceiver redoPollReceiver = new BroadcastReceiver(){
 //

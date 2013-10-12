@@ -3,21 +3,19 @@
  */
 package ch.bfh.evoting.votinglib.fragment;
 
-import java.util.Random;
 
-import ch.bfh.evoting.votinglib.R;
+import org.achartengine.GraphicalView;
+
 import android.app.Fragment;
-import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import ch.bfh.evoting.votinglib.R;
+import ch.bfh.evoting.votinglib.entities.Poll;
+import ch.bfh.evoting.votinglib.util.PieChartView;
 
 /**
  * @author tgdriju1
@@ -25,10 +23,17 @@ import android.widget.LinearLayout;
  */
 public class ResultChartFragment extends Fragment {
 	
-	private float values[] = { 700, 400, 100, 500, 600 };  
+	String [] labels;
+	float [] values;
+	
+	private Poll poll;
+	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		
+		poll = (Poll) getActivity().getIntent().getSerializableExtra("poll");
+		
 		super.onCreate(savedInstanceState);
 	}
 
@@ -40,9 +45,21 @@ public class ResultChartFragment extends Fragment {
 		
 		// Displaying the graph
 		LinearLayout layoutGraph = (LinearLayout) v.findViewById(R.id.layout_result_chart);
-		values = calculateData(values);
-		MyGraphView graphview = new MyGraphView(getActivity(), values);
-		layoutGraph.addView(graphview);
+		//values = calculateData(values);
+		GraphicalView chartView = PieChartView.getNewInstance(getActivity(), poll);
+		chartView.setClickable(true);
+		
+		
+		chartView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				ResultChartDialogFragment.newInstance().show(getFragmentManager(), "resultChartDialog");
+			}
+			
+		});
+		
+		layoutGraph.addView(chartView);
 		
 		return v;
 	}
@@ -58,43 +75,5 @@ public class ResultChartFragment extends Fragment {
 		return data;
 	}
 	
-	public class MyGraphView extends View {
-		private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		private float[] value_degree;
-		RectF rectf = new RectF(0, 0, 200, 200);
-		float temp = 0;
-
-		public MyGraphView(Context context, float[] values) {
-			super(context);
-			this.setMinimumHeight(200);
-			this.setMinimumWidth(200);
-			
-			value_degree = new float[values.length];
-			for (int i = 0; i < values.length; i++) {
-				value_degree[i] = values[i];
-			}
-		}
-
-		@Override
-		protected void onDraw(Canvas canvas) {
-			super.onDraw(canvas);
-			Random r;
-			for (int i = 0; i < value_degree.length; i++) {
-				if (i == 0) {
-					r = new Random();
-					int color = Color.argb(100, r.nextInt(256), r.nextInt(256),
-							r.nextInt(256));
-					paint.setColor(color);
-					canvas.drawArc(rectf, 0, value_degree[i], true, paint);
-				} else {
-					temp += value_degree[i - 1];
-					r = new Random();
-					int color = Color.argb(255, r.nextInt(256), r.nextInt(256),
-							r.nextInt(256));
-					paint.setColor(color);
-					canvas.drawArc(rectf, temp, value_degree[i], true, paint);
-				}
-			}
-		}
-	}
+	
 }

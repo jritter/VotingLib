@@ -39,7 +39,7 @@
 	
 	    <ImageButton
 	        android:id="@+id/button_deleteoption"
-	        style="?android:attr/buttonBarButtonStyle"
+	        style="@style/BorderLessButton"
 	        android:layout_width="48dp"
 	        android:layout_height="48dp"
 	        android:contentDescription="@string/description_delete_poll"
