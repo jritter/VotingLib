@@ -64,16 +64,4 @@ public class ResultChartFragment extends Fragment {
 		return v;
 	}
 
-	private float[] calculateData(float[] data) {
-		float total = 0;
-		for (int i = 0; i < data.length; i++) {
-			total += data[i];
-		}
-		for (int i = 0; i < data.length; i++) {
-			data[i] = 360 * (data[i] / total);
-		}
-		return data;
-	}
-	
-	
 }
