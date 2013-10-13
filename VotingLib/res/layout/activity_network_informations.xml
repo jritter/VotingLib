@@ -1,14 +1,13 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NetworkInformationsActivity" >
+    android:orientation="vertical" >
 
     <TextView
         android:id="@+id/textview_network_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
         android:gravity="center_vertical|center_horizontal"
         android:minHeight="70dp"
         android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -16,30 +15,28 @@
         android:text="@string/title_activity_network_ready"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/textview_network_info"
+        android:layout_height="0dp"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin" >
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:orientation="vertical"
+        android:layout_weight="1" >
 
         <TextView
             android:id="@+id/textview_network_name_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:text="@string/network_name"
-            android:textAllCaps="true">
+            android:textAllCaps="true" >
         </TextView>
 
         <View
             android:id="@+id/separator_1"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/textview_network_name_desc"
             android:layout_marginBottom="5dp"
             android:background="@color/theme_color"
             android:gravity="center_vertical" />
@@ -48,7 +45,6 @@
             android:id="@+id/textview_network_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/separator_1"
             android:gravity="center"
             android:textSize="20sp"
             android:textStyle="" >
@@ -58,9 +54,8 @@
             android:id="@+id/textview_network_password_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/textview_network_name"
-            android:text="@string/network_password_desc"
             android:layout_marginTop="10dp"
+            android:text="@string/network_password_desc"
             android:textAllCaps="true" >
         </TextView>
 
@@ -68,8 +63,6 @@
             android:id="@+id/separator_2"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/textview_network_password_desc"
             android:layout_marginBottom="5dp"
             android:background="@color/theme_color"
             android:gravity="center_vertical" />
@@ -78,7 +71,6 @@
             android:id="@+id/textview_network_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/separator_2"
             android:gravity="center"
             android:textSize="20sp"
             android:textStyle="" >
@@ -88,10 +80,30 @@
             android:id="@+id/imageview_qrcode"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_below="@+id/textview_network_password"
-            android:layout_centerHorizontal="true"
-            />
+            android:contentDescription="@string/description_qrcode" />
+    </LinearLayout>
 
-    </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/layout_bottom_action_bar"
+        style="@style/ActionBar.Solid.Votebartheme"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:divider="?android:dividerVertical"
+        android:dividerPadding="8dp"
+        android:orientation="horizontal"
+        android:showDividers="middle"
+        android:visibility="gone" >
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/button_write_nfc_tag"
+            style="@style/BottomBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.18"
+            android:drawableLeft="@drawable/ic_action_labels"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/write_nfc_tag" />
+    </LinearLayout>
+
+</LinearLayout>

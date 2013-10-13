@@ -1,13 +1,32 @@
 package ch.bfh.evoting.votinglib;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.Ndef;
+import android.nfc.tech.NdefFormatable;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import ch.bfh.evoting.votinglib.util.HelpDialogFragment;
@@ -17,18 +36,34 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
-public class NetworkInformationsActivity extends Activity {
+public class NetworkInformationsActivity extends Activity implements OnClickListener {
 
 	private boolean paramsAvailable = false;
 	private String ssid;
 	private String password;
+	private boolean nfcAvailable;
+	private Button btnWriteNfcTag;
+	
+	private NfcAdapter nfcAdapter;
+	private boolean writeNfcEnabled;
+	private PendingIntent pendingIntent;
+	private IntentFilter nfcIntentFilter;
+	private IntentFilter[] intentFiltersArray;
+	
+	private ProgressDialog writeNfcTagDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		// Is NFC available on this device?
+		nfcAvailable = this.getPackageManager().hasSystemFeature(
+				PackageManager.FEATURE_NFC);
+		
+		
 		setContentView(R.layout.activity_network_informations);
 		setupActionBar();
-
+		
 		ssid = AndroidApplication.getInstance().getNetworkInterface()
 				.getNetworkName();
 		password = AndroidApplication.getInstance().getNetworkInterface()
@@ -40,6 +75,17 @@ public class NetworkInformationsActivity extends Activity {
 		} else {
 			paramsAvailable = true;
 		}
+		
+		if (nfcAvailable && paramsAvailable){
+			
+			nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+			
+			findViewById(R.id.layout_bottom_action_bar).setVisibility(View.VISIBLE);
+			btnWriteNfcTag = (Button) findViewById(R.id.button_write_nfc_tag);
+			btnWriteNfcTag.setOnClickListener(this);
+		}
+
+
 
 		TextView tv_network_name = (TextView) findViewById(R.id.textview_network_name);
 		tv_network_name.setText(ssid);
@@ -47,7 +93,6 @@ public class NetworkInformationsActivity extends Activity {
 		TextView tv_network_password = (TextView) findViewById(R.id.textview_network_password);
 		tv_network_password.setText(password);
 
-		// TODO QR-code and NFC
 		if (paramsAvailable) {
 
 			final ImageView ivQrCode = (ImageView) findViewById(R.id.imageview_qrcode);
@@ -85,6 +130,26 @@ public class NetworkInformationsActivity extends Activity {
 						}
 
 					});
+			
+			// only set up the NFC stuff if NFC is also available
+			if (nfcAvailable) {
+				nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+				if (nfcAdapter.isEnabled()) {
+
+					// Setting up a pending intent that is invoked when an NFC tag
+					// is tapped on the back
+					pendingIntent = PendingIntent.getActivity(this, 0, new Intent(
+							this, getClass())
+							.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+
+					nfcIntentFilter = new IntentFilter();
+					nfcIntentFilter.addAction(NfcAdapter.ACTION_NDEF_DISCOVERED);
+					nfcIntentFilter.addAction(NfcAdapter.ACTION_TAG_DISCOVERED);
+					intentFiltersArray = new IntentFilter[] { nfcIntentFilter };
+				} else {
+					nfcAvailable = false;
+				}
+			}
 		}
 	}
 
@@ -154,5 +219,220 @@ public class NetworkInformationsActivity extends Activity {
 		bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
 		return bitmap;
 	}
+	
+	@Override
+	public void onClick(View view) {
+		
+		if (view == btnWriteNfcTag){
+			if (!nfcAdapter.isEnabled()) {
+	
+				// if nfc is available but deactivated ask the user whether he
+				// wants to enable it. If yes, redirect to the settings.
+				AlertDialog alertDialog = new AlertDialog.Builder(this)
+						.create();
+				alertDialog.setTitle("InstaCircle - NFC needs to be enabled");
+				alertDialog
+						.setMessage("In order to use this feature, NFC must be enabled. Enable now?");
+				alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								dialog.dismiss();
+								startActivity(new Intent(
+										android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+							}
+						});
+				alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								dialog.dismiss();
+							}
+						});
+				alertDialog.show();
+			} else {
+				// display a progress dialog waiting for the NFC tag to be
+				// tapped
+				writeNfcEnabled = true;
+				writeNfcTagDialog = new ProgressDialog(this);
+				writeNfcTagDialog
+						.setTitle("InstaCircle - Share Networkconfiguration with NFC Tag");
+				writeNfcTagDialog
+						.setMessage("Please tap a writeable NFC Tag on the back of your device...");
+				writeNfcTagDialog.setCancelable(false);
+				writeNfcTagDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
+						"Cancel", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog,
+									int which) {
+								writeNfcEnabled = false;
+								dialog.dismiss();
+							}
+						});
+	
+				writeNfcTagDialog.show();
+			}
+		}	
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onNewIntent(android.content.Intent)
+	 */
+	@Override
+	public void onNewIntent(Intent intent) {
+		if (writeNfcEnabled) {
+			// Handle the NFC part...
 
+			String text = ssid + "||" + password;
+
+			// create a new NdefRecord
+			NdefRecord record = createMimeRecord(
+					"application/ch.bfh.evoting.voterapp", text.getBytes());
+
+			// create a new Android Application Record
+			NdefRecord aar = NdefRecord
+					.createApplicationRecord(getPackageName());
+
+			// create a ndef message
+			NdefMessage message = new NdefMessage(new NdefRecord[] { record,
+					aar });
+
+			// extract tag from the intent
+			Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+
+			// write the tag
+			writeTag(tag, message);
+
+			// close the dialog
+			writeNfcEnabled = false;
+			writeNfcTagDialog.dismiss();
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.support.v4.app.FragmentActivity#onPause()
+	 */
+	@Override
+	protected void onPause() {
+		super.onPause();
+		if (nfcAvailable) {
+			nfcAdapter.disableForegroundDispatch(this);
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.support.v4.app.FragmentActivity#onResume()
+	 */
+	@Override
+	protected void onResume() {
+
+		super.onResume();
+
+		if (nfcAdapter != null && nfcAdapter.isEnabled()) {
+			nfcAvailable = true;
+		}
+
+		// make sure that this activity is the first one which can handle the
+		// NFC tags
+		if (nfcAvailable) {
+			nfcAdapter.enableForegroundDispatch(this, pendingIntent,
+					intentFiltersArray, null);
+		}
+
+	}
+
+	/**
+	 * Writes an NFC Tag
+	 * 
+	 * @param tag
+	 *            The reference to the tag
+	 * @param message
+	 *            the message which should be writen on the message
+	 * @return true if successful, false otherwise
+	 */
+	public boolean writeTag(Tag tag, NdefMessage message) {
+
+		AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+		alertDialog.setTitle("InstaCircle - write NFC Tag failed");
+		alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+		try {
+			// see if tag is already NDEF formatted
+			Ndef ndef = Ndef.get(tag);
+			if (ndef != null) {
+				ndef.connect();
+				if (!ndef.isWritable()) {
+					Log.d(this.getClass().getSimpleName(), "This tag is read only.");
+					alertDialog.setMessage("This tag is read only.");
+					alertDialog.show();
+					return false;
+				}
+
+				// work out how much space we need for the data
+				int size = message.toByteArray().length;
+				if (ndef.getMaxSize() < size) {
+					Log.d(this.getClass().getSimpleName(), "Tag doesn't have enough free space.");
+					alertDialog
+							.setMessage("Tag doesn't have enough free space.");
+					alertDialog.show();
+					return false;
+				}
+
+				ndef.writeNdefMessage(message);
+				Log.d(this.getClass().getSimpleName(), "Tag written successfully.");
+
+			} else {
+				// attempt to format tag
+				NdefFormatable format = NdefFormatable.get(tag);
+				if (format != null) {
+					try {
+						format.connect();
+						format.format(message);
+						Log.d(this.getClass().getSimpleName(), "Tag written successfully!");
+					} catch (IOException e) {
+						alertDialog.setMessage("Unable to format tag to NDEF.");
+						alertDialog.show();
+						Log.d(this.getClass().getSimpleName(), "Unable to format tag to NDEF.");
+						return false;
+
+					}
+				} else {
+					Log.d(this.getClass().getSimpleName(), "Tag doesn't appear to support NDEF format.");
+					alertDialog
+							.setMessage("Tag doesn't appear to support NDEF format.");
+					alertDialog.show();
+					return false;
+				}
+			}
+		} catch (Exception e) {
+			Log.d(this.getClass().getSimpleName(), "Failed to write tag");
+			return false;
+		}
+		alertDialog.setTitle("InstaCircle");
+		alertDialog.setMessage("NFC Tag written successfully.");
+		alertDialog.show();
+		return true;
+	}
+	
+	/**
+	 * Creates a custom MIME type encapsulated in an NDEF record
+	 * 
+	 * @param mimeType
+	 *            The string with the mime type name
+	 */
+	public NdefRecord createMimeRecord(String mimeType, byte[] payload) {
+		byte[] mimeBytes = mimeType.getBytes(Charset.forName("US-ASCII"));
+		NdefRecord mimeRecord = new NdefRecord(NdefRecord.TNF_MIME_MEDIA,
+				mimeBytes, new byte[0], payload);
+		return mimeRecord;
+	}
 }
