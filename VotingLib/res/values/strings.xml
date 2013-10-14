@@ -44,6 +44,9 @@
     <string name="redo_impossible">An error occurred while trying to restart the poll.</string>
     <string name="not_included_title">Your are not in the electorate</string>
     <string name="not_included">You were not included in the electorate. So, you cannot participate to the poll. You will be redirected to the main screen.</string>
+    <string name="dialog_title_network_lost">Group connection lost!</string>
+    <string name="dialog_network_lost">The network connection has been lost. The poll will be interrupted.</string>
+    <string name="taost_password_letter">The password must start with a letter.</string>
     
     <!-- Activity titles -->
     <string name="app_name">VotingLib</string>

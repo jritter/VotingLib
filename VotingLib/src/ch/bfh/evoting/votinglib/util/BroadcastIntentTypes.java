@@ -52,6 +52,7 @@ public class BroadcastIntentTypes {
 	public static final String newVote = "newVote";
 	
 	
+	public static final String networkGroupDestroyedEvent = "networkGroupDestroyedEvent";
 	
 	
 

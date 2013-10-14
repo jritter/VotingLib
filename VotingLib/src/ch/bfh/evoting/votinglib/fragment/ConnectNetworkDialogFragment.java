@@ -20,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * Fragment which is included in the the Dialog which is shown after clicking on
@@ -30,7 +31,7 @@ import android.widget.EditText;
  */
 @SuppressLint("ValidFragment")
 public class ConnectNetworkDialogFragment extends DialogFragment implements
-		OnClickListener, TextWatcher {
+OnClickListener, TextWatcher {
 
 	/*
 	 * The activity that creates an instance of this dialog fragment must
@@ -52,7 +53,7 @@ public class ConnectNetworkDialogFragment extends DialogFragment implements
 	private boolean showNetworkKeyField;
 
 	private AlertDialog dialog;
-	
+
 	private static final String PREFS_NAME = "network_preferences";
 
 
@@ -97,35 +98,39 @@ public class ConnectNetworkDialogFragment extends DialogFragment implements
 		// Add action buttons
 		builder.setPositiveButton(R.string.join,
 				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						password = txtPassword.getText().toString();
-						networkKey = txtNetworkKey.getText().toString();
-						SharedPreferences preferences = getActivity().getSharedPreferences(PREFS_NAME, 0);
-						SharedPreferences.Editor editor = preferences.edit();
-//						editor.putString("SSID", selectedResult.SSID);
-						editor.putString("password",password);
-//								((ConnectNetworkDialogFragment) dialog).getPassword());
-						editor.commit();
-						getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
-					}
-				});
+			public void onClick(DialogInterface dialog, int which) {
+				password = txtPassword.getText().toString();
+				networkKey = txtNetworkKey.getText().toString();
+				if(Character.isLetter(password.charAt(0))){
+					SharedPreferences preferences = getActivity().getSharedPreferences(PREFS_NAME, 0);
+					SharedPreferences.Editor editor = preferences.edit();
+					//						editor.putString("SSID", selectedResult.SSID);
+					editor.putString("password",password);
+					//								((ConnectNetworkDialogFragment) dialog).getPassword());
+					editor.commit();
+					getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, getActivity().getIntent());
+				} else {
+					Toast.makeText(ConnectNetworkDialogFragment.this.getActivity(), R.string.taost_password_letter, Toast.LENGTH_LONG).show();
+				}
+			}
+		});
 
 		builder.setNegativeButton("Cancel",
 				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						password = txtPassword.getText().toString();
-						networkKey = txtNetworkKey.getText().toString();
-						getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
-					}
-				});
+			public void onClick(DialogInterface dialog, int id) {
+				password = txtPassword.getText().toString();
+				networkKey = txtNetworkKey.getText().toString();
+				getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_CANCELED, getActivity().getIntent());
+			}
+		});
 
 		builder.setTitle("InstaCircle - Network Password");
-		
-		
+
+
 
 		dialog = builder.create();
-		
-		
+
+
 
 		// always disable the Join button since the key is always empty and
 		// therefore we are not ready to connect yet
@@ -133,7 +138,7 @@ public class ConnectNetworkDialogFragment extends DialogFragment implements
 
 			public void onShow(DialogInterface dialog) {
 				((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE)
-						.setEnabled(false);
+				.setEnabled(false);
 			}
 		});
 
@@ -149,15 +154,15 @@ public class ConnectNetworkDialogFragment extends DialogFragment implements
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		// Verify that the host activity implements the callback interface
-//		try {
-//			// Instantiate the NoticeDialogListener so we can send events to the
-//			// host
-//			mListener = (NoticeDialogListener) activity;
-//		} catch (ClassCastException e) {
-//			// The activity doesn't implement the interface, throw exception
-//			throw new ClassCastException(activity.toString()
-//					+ " must implement NoticeDialogListener");
-//		}
+		//		try {
+		//			// Instantiate the NoticeDialogListener so we can send events to the
+		//			// host
+		//			mListener = (NoticeDialogListener) activity;
+		//		} catch (ClassCastException e) {
+		//			// The activity doesn't implement the interface, throw exception
+		//			throw new ClassCastException(activity.toString()
+		//					+ " must implement NoticeDialogListener");
+		//		}
 	}
 
 	/**

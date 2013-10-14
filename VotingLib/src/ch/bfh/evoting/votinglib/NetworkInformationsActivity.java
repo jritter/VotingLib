@@ -55,6 +55,8 @@ public class NetworkInformationsActivity extends Activity implements OnClickList
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		AndroidApplication.getInstance().setCurrentActivity(this);
+
 
 		// Is NFC available on this device?
 		nfcAvailable = this.getPackageManager().hasSystemFeature(
@@ -318,6 +320,7 @@ public class NetworkInformationsActivity extends Activity implements OnClickList
 	@Override
 	protected void onPause() {
 		super.onPause();
+		AndroidApplication.getInstance().setCurrentActivity(null);
 		if (nfcAvailable) {
 			nfcAdapter.disableForegroundDispatch(this);
 		}
@@ -332,6 +335,7 @@ public class NetworkInformationsActivity extends Activity implements OnClickList
 	protected void onResume() {
 
 		super.onResume();
+		AndroidApplication.getInstance().setCurrentActivity(this);
 
 		if (nfcAdapter != null && nfcAdapter.isEnabled()) {
 			nfcAvailable = true;
@@ -434,5 +438,10 @@ public class NetworkInformationsActivity extends Activity implements OnClickList
 		NdefRecord mimeRecord = new NdefRecord(NdefRecord.TNF_MIME_MEDIA,
 				mimeBytes, new byte[0], payload);
 		return mimeRecord;
+	}
+	
+	protected void onDestroy() {        
+		AndroidApplication.getInstance().setCurrentActivity(null);
+		super.onDestroy();
 	}
 }

@@ -8,6 +8,7 @@ import ch.bfh.evoting.votinglib.VoteActivity;
 import ch.bfh.evoting.votinglib.entities.Option;
 import ch.bfh.evoting.votinglib.entities.Participant;
 import ch.bfh.evoting.votinglib.entities.Poll;
+import ch.bfh.evoting.votinglib.entities.VoteMessage;
 import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,8 +24,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleCursorAdapter;
@@ -190,14 +194,30 @@ public class PollReviewFragment extends ListFragment {
 
 			ImageView ivAcceptImage = (ImageView)vItemParticipant.findViewById(R.id.imageview_accepted_img);
 			ProgressBar pgWaitForAccept = (ProgressBar)vItemParticipant.findViewById(R.id.progress_bar_waitforaccept);
+			ImageView btnValidateReview = (ImageView)vItemParticipant.findViewById(R.id.button_validate_review);
 
+			
 			//set the correct image
 			if(part.hasAcceptedReview()){
 				pgWaitForAccept.setVisibility(View.GONE);
 				ivAcceptImage.setVisibility(View.VISIBLE);
+				btnValidateReview.setVisibility(View.GONE);
 			} else {
-				pgWaitForAccept.setVisibility(View.VISIBLE);
-				ivAcceptImage.setVisibility(View.GONE);
+				if(part.getIpAddress().equals(AndroidApplication.getInstance().getNetworkInterface().getMyIpAddress())){
+					pgWaitForAccept.setVisibility(View.GONE);
+					ivAcceptImage.setVisibility(View.GONE);
+					btnValidateReview.setVisibility(View.VISIBLE);
+					btnValidateReview.setOnClickListener(new OnClickListener(){
+						@Override
+						public void onClick(View v) {
+							AndroidApplication.getInstance().getNetworkInterface().sendMessage(new VoteMessage(VoteMessage.Type.VOTE_MESSAGE_ACCEPT_REVIEW, ""));
+						}
+					});
+				} else {
+					pgWaitForAccept.setVisibility(View.VISIBLE);
+					ivAcceptImage.setVisibility(View.GONE);
+					btnValidateReview.setVisibility(View.GONE);
+				}
 			}
 
 			tableRow.addView(vItemParticipant);

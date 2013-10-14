@@ -33,8 +33,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import ch.bfh.evoting.votinglib.AndroidApplication;
 import ch.bfh.evoting.votinglib.R;
+import ch.bfh.evoting.votinglib.fragment.ConnectNetworkDialogFragment;
 
 /**
  * Activity which provides functionality to set up a new Wifi access point
@@ -160,6 +162,10 @@ TextWatcher {
 			WifiConfiguration wificonfig = new WifiConfiguration();
 			wificonfig.SSID = txtNetworkName.getText().toString();
 			wificonfig.preSharedKey = txtNetworkPIN.getText().toString();
+			if(!Character.isLetter(wificonfig.preSharedKey.charAt(0))){
+				Toast.makeText(this, R.string.taost_password_letter, Toast.LENGTH_LONG).show();
+				return;
+			}
 			wificonfig.hiddenSSID = false;
 			wificonfig.status = WifiConfiguration.Status.ENABLED;
 

@@ -56,6 +56,8 @@ public class VoteActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		AndroidApplication.getInstance().setCurrentActivity(this);
+
 		setContentView(R.layout.activity_vote);
 
 		ctx=this;
@@ -201,10 +203,12 @@ public class VoteActivity extends Activity {
 		if(packageName.equals("ch.bfh.evoting.adminapp")){
 			Intent i = new Intent("ch.bfh.evoting.adminapp.AdminWaitForVotesActivity");
 			i.putExtra("poll", (Serializable)poll);
+			i.putExtra("votes", VoteService.getInstance().getVotes());
 			startActivity(i);
 		} else {
 			Intent intent = new Intent(this, WaitForVotesActivity.class);
 			intent.putExtra("poll", (Serializable)poll);
+			intent.putExtra("votes", VoteService.getInstance().getVotes());
 			startActivity(intent);
 		}
 	}
@@ -235,11 +239,18 @@ public class VoteActivity extends Activity {
 	//TODO remove: only for simulation
 	public static class VoteService extends Service{
 
+		
 		boolean doWork = true;
 		BroadcastReceiver voteReceiver;
 		AsyncTask<Object, Object, Object> sendVotesTask;
 		private int votesReceived = 0;
-
+		private static VoteService instance;
+		
+		@Override
+		public void onCreate() {
+			instance = this;
+			super.onCreate();
+		}
 
 		@Override
 		public void onDestroy() {
@@ -295,5 +306,26 @@ public class VoteActivity extends Activity {
 			return null;
 		}
 		
+		public static VoteService getInstance(){
+			return instance;
+		}
+		
+		public int getVotes(){
+			return this.votesReceived;
+		}
+		
+	}
+	
+	protected void onResume() {
+		super.onResume();
+		AndroidApplication.getInstance().setCurrentActivity(this);
+	}
+	protected void onPause() {
+		AndroidApplication.getInstance().setCurrentActivity(null);
+		super.onPause();
+	}
+	protected void onDestroy() {        
+		AndroidApplication.getInstance().setCurrentActivity(null);
+		super.onDestroy();
 	}
 }
