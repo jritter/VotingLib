@@ -5,6 +5,7 @@ import java.util.List;
 import ch.bfh.evoting.votinglib.R;
 import ch.bfh.evoting.votinglib.db.PollDbHelper;
 import ch.bfh.evoting.votinglib.entities.Poll;
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +13,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * List adapter showing a list of the options with the corresponding result
+ * List adapter showing a list of the open polls
  * 
  * @author von Bergen Philémon
  */
@@ -61,15 +64,24 @@ public class PollAdapter extends ArrayAdapter<Poll> {
 		ImageButton btnDelete = (ImageButton) view
 				.findViewById(R.id.button_deleteoption);
 
-		btnDelete.setOnClickListener(new OnClickListener() {
+		if(btnDelete!=null){
+			btnDelete.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				PollDbHelper.getInstance(context).deletePoll(values.get(position).getId());
-				values.remove(position);
-				notifyDataSetChanged();
-			}
-		});
+				@Override
+				public void onClick(View v) {
+					PollDbHelper.getInstance(context).deletePoll(values.get(position).getId());
+					values.remove(position);
+					notifyDataSetChanged();
+				}
+			});
+		}
+
+		if(position==values.size()-1){
+			ImageView ivIcon = (ImageView)view.findViewById(R.id.imageview_icon);
+			if(ivIcon!=null)((LinearLayout)ivIcon.getParent()).removeView(ivIcon);
+			view.setBackgroundColor(context.getResources().getColor(R.color.theme_color_light));
+			if(btnDelete!=null)((LinearLayout)btnDelete.getParent()).removeView(btnDelete);
+		}
 		return view;
 	}
 }

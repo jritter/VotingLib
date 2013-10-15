@@ -104,7 +104,7 @@ OnClickListener, TextWatcher {
 				if(Character.isLetter(password.charAt(0))){
 					SharedPreferences preferences = getActivity().getSharedPreferences(PREFS_NAME, 0);
 					SharedPreferences.Editor editor = preferences.edit();
-					//						editor.putString("SSID", selectedResult.SSID);
+//											editor.putString("SSID", selectedResult.SSID);
 					editor.putString("password",password);
 					//								((ConnectNetworkDialogFragment) dialog).getPassword());
 					editor.commit();
@@ -115,7 +115,7 @@ OnClickListener, TextWatcher {
 			}
 		});
 
-		builder.setNegativeButton("Cancel",
+		builder.setNegativeButton(R.string.cancel,
 				new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				password = txtPassword.getText().toString();
@@ -124,7 +124,7 @@ OnClickListener, TextWatcher {
 			}
 		});
 
-		builder.setTitle("InstaCircle - Network Password");
+		builder.setTitle(R.string.network_password);
 
 
 

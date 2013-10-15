@@ -92,7 +92,9 @@ public class AllJoynNetworkInterface extends AbstractNetworkInterface{
 		data.putString("groupName", this.networkName);
 		data.putString("pingString", string);
 		msg.setData(data);
-		return mBusHandler.sendMessage(msg);
+		boolean status = mBusHandler.sendMessage(msg);
+		
+		return status;
 	}
 
 	@Override

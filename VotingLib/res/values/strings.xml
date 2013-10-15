@@ -19,10 +19,16 @@
     <string name="network_password_desc">Network password</string>
     <string name="not_connected">No network set up</string>
     <string name="help">Help</string>
-    <string name="networks">Networks</string>
+    <string name="networks">Network connection</string>
     <string name="empty_vote">Empty vote</string>
     <string name="dialog_wait_wifi">Please wait...</string>
+    <string name="button_use_actual_ssid">Use currently connected wireless network</string>
+    <string name="button_scan_nfc">Scan NFC tag</string>
+    <string name="advance_network_config">Advanced network configuration</string>
     <string name="write_nfc_tag">Write NFC tag</string>
+    <string name="scan_qrcode">Scan QR code</string>
+    <string name="put_nfc">Put an NFC tag in proximity of your device...</string>
+    
     <!--
          <string name="display_result_close">Close</string>
         <string name="home">Home</string>
@@ -47,7 +53,9 @@
     <string name="dialog_title_network_lost">Group connection lost!</string>
     <string name="dialog_network_lost">The network connection has been lost. The poll will be interrupted.</string>
     <string name="taost_password_letter">The password must start with a letter.</string>
-    
+    <string name="dialog_title_confirm_vote">Confirm your vote.</string>
+    <string name="dialog_confirm_vote">You have selected the following option:\n\n%1$s\n\nDo you want to confirm your choice and send your vote?</string>
+
     <!-- Activity titles -->
     <string name="app_name">VotingLib</string>
     <string name="title_activity_wait_for_votes">Waiting...</string>
@@ -93,12 +101,14 @@
     <string name="help_title_wait">Help for poll state</string>
     <string name="help_title_display_results">Help for results</string>
     <string name="help_title_archive">Help for archive</string>
-
+    <string name="help_title_network_config">Help for network configuration</string>
+    
     <!-- Help dialog texts -->
     <string name="help_text_network_info">network information</string>
     <string name="help_text_vote">vote</string>
     <string name="help_text_wait">poll state</string>
     <string name="help_text_display_results">display resutls</string>
     <string name="help_text_archive">archive</string>
-
+    <string name="help_text_network_config">network configuration</string>
+    
 </resources>

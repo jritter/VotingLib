@@ -170,11 +170,10 @@ public class PollReviewFragment extends ListFragment {
 			TableRow tableRow= new TableRow(ctx);
 			tableRow.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
-			View vItemOption = inflater.inflate(R.layout.list_item_option_poll, null);
+			View vItemOption = inflater.inflate(R.layout.list_item_option_poll, tableRow);
 			TextView tv_option = (TextView)vItemOption.findViewById(R.id.textview_poll_option_review);
 			tv_option.setText(op.getText());
 
-			tableRow.addView(vItemOption);
 			tableRow.setBackgroundResource(R.drawable.borders);
 
 			optionsTable.addView(tableRow);
@@ -188,7 +187,7 @@ public class PollReviewFragment extends ListFragment {
 			TableRow tableRow= new TableRow(ctx);
 			tableRow.setLayoutParams(new ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
-			View vItemParticipant = inflater.inflate(R.layout.list_item_participant_poll, null);
+			View vItemParticipant = inflater.inflate(R.layout.list_item_participant_poll, tableRow);
 			TextView tv_participant = (TextView)vItemParticipant.findViewById(R.id.textview_participant_identification);
 			tv_participant.setText(part.getIdentification());
 
@@ -220,7 +219,6 @@ public class PollReviewFragment extends ListFragment {
 				}
 			}
 
-			tableRow.addView(vItemParticipant);
 			tableRow.setBackgroundResource(R.drawable.borders);
 
 			participantsTable.addView(tableRow);

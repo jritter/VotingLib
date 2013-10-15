@@ -81,9 +81,6 @@ public class NetworkListFragment extends ListFragment implements OnItemClickList
 		super.onCreate(savedInstanceState);
 		hideCreateNetwork = getActivity().getIntent().getBooleanExtra("hideCreateNetwork", false);
 		
-		
-
-		
 	}
 
 	/*

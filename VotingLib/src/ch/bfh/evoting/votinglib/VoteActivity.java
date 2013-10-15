@@ -14,9 +14,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
@@ -27,6 +30,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -49,6 +54,8 @@ public class VoteActivity extends Activity {
 
 	private ListView lvChoices;
 	private BroadcastReceiver stopReceiver;
+	
+	private Dialog dialogConfirmVote = null;
 
 	static Context ctx;
 
@@ -125,20 +132,20 @@ public class VoteActivity extends Activity {
 		}.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 
-		//Set a listener on the cast button
-		Button btnCast = (Button)findViewById(R.id.button_castvote);
-		btnCast.setOnClickListener(new OnClickListener(){
-			@Override
-			public void onClick(View v) {
-				if(!scrolled){
-					Toast.makeText(VoteActivity.this, getString(R.string.scroll), Toast.LENGTH_SHORT).show();
-				} else if (volAdapter.getSelectedPosition() == -1){
-					Toast.makeText(VoteActivity.this, getString(R.string.choose_one_option), Toast.LENGTH_SHORT).show();
-				} else {
-					castBallot();
-				}
-			}
-		});
+//		//Set a listener on the cast button
+//		Button btnCast = (Button)findViewById(R.id.button_castvote);
+//		btnCast.setOnClickListener(new OnClickListener(){
+//			@Override
+//			public void onClick(View v) {
+//				if(!scrolled){
+//					Toast.makeText(VoteActivity.this, getString(R.string.scroll), Toast.LENGTH_SHORT).show();
+//				} else if (volAdapter.getSelectedPosition() == -1){
+//					Toast.makeText(VoteActivity.this, getString(R.string.choose_one_option), Toast.LENGTH_SHORT).show();
+//				} else {
+//					castBallot();
+//				}
+//			}
+//		});
 
 		//Register a BroadcastReceiver on stop poll order events
 		stopReceiver = new BroadcastReceiver(){
@@ -159,7 +166,7 @@ public class VoteActivity extends Activity {
 						option.setPercentage(0);
 					}
 				}
-				
+
 				poll.setTerminated(true);
 
 				//start to result activity
@@ -185,7 +192,7 @@ public class VoteActivity extends Activity {
 	/**
 	 * Method called when cast button is clicked
 	 */
-	private void castBallot(){
+	public void castBallot(){
 
 		Option selectedOption = volAdapter.getItemSelected();
 
@@ -213,6 +220,10 @@ public class VoteActivity extends Activity {
 		}
 	}
 
+	public boolean getScrolled(){
+		return scrolled;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -239,13 +250,13 @@ public class VoteActivity extends Activity {
 	//TODO remove: only for simulation
 	public static class VoteService extends Service{
 
-		
+
 		boolean doWork = true;
 		BroadcastReceiver voteReceiver;
 		AsyncTask<Object, Object, Object> sendVotesTask;
 		private int votesReceived = 0;
 		private static VoteService instance;
-		
+
 		@Override
 		public void onCreate() {
 			instance = this;
@@ -305,17 +316,17 @@ public class VoteActivity extends Activity {
 		public IBinder onBind(Intent arg0) {
 			return null;
 		}
-		
+
 		public static VoteService getInstance(){
 			return instance;
 		}
-		
+
 		public int getVotes(){
 			return this.votesReceived;
 		}
-		
+
 	}
-	
+
 	protected void onResume() {
 		super.onResume();
 		AndroidApplication.getInstance().setCurrentActivity(this);

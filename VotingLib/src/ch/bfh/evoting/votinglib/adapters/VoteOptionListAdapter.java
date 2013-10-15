@@ -2,7 +2,10 @@ package ch.bfh.evoting.votinglib.adapters;
 
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,7 +13,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 import ch.bfh.evoting.votinglib.R;
+import ch.bfh.evoting.votinglib.VoteActivity;
 import ch.bfh.evoting.votinglib.entities.Option;
 
 /**
@@ -24,6 +29,9 @@ public class VoteOptionListAdapter extends ArrayAdapter<Option> {
 	private Context context;
 	private List<Option> values;
 	private int selected = -1;
+
+	private Dialog dialogConfirmVote = null;
+
 
 	/**
 	 * Create an adapter object
@@ -68,6 +76,37 @@ public class VoteOptionListAdapter extends ArrayAdapter<Option> {
 			public void onClick(View v) {
 				selected = position;
 				VoteOptionListAdapter.this.notifyDataSetChanged();
+
+				final VoteActivity activity = (VoteActivity)context;
+				
+				if(!activity.getScrolled()){
+					Toast.makeText(context, context.getString(R.string.scroll), Toast.LENGTH_SHORT).show();
+				} else if (getSelectedPosition() == -1){
+					Toast.makeText(context, context.getString(R.string.choose_one_option), Toast.LENGTH_SHORT).show();
+				} else {
+					AlertDialog.Builder builder = new AlertDialog.Builder(context);
+					// Add the buttons
+					builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							activity.castBallot();
+							dialogConfirmVote.dismiss();
+						}
+					});
+					builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							dialogConfirmVote.dismiss();
+						}
+					});
+
+					Option op = getItemSelected();
+
+					builder.setTitle(R.string.dialog_title_confirm_vote);
+					builder.setMessage(context.getString(R.string.dialog_confirm_vote, op.getText()));
+
+					// Create the AlertDialog
+					dialogConfirmVote = builder.create();
+					dialogConfirmVote.show();
+				}
 			}
 		};
 
@@ -86,7 +125,7 @@ public class VoteOptionListAdapter extends ArrayAdapter<Option> {
 	public Option getItemSelected(){
 		return this.values.get(selected);
 	}
-	
+
 	public int getSelectedPosition () {
 		return selected;
 	}
