@@ -22,7 +22,7 @@ import android.widget.TextView;
  * 
  * @author von Bergen Philémon
  */
-public class PollAdapter extends ArrayAdapter<Poll> {
+public class PollArchiveAdapter extends ArrayAdapter<Poll> {
 
 	private Context context;
 	private List<Poll> values;
@@ -37,7 +37,7 @@ public class PollAdapter extends ArrayAdapter<Poll> {
 	 * @param objects
 	 *            list of options that have to be listed
 	 */
-	public PollAdapter(Context context, int textViewResourceId,
+	public PollArchiveAdapter(Context context, int textViewResourceId,
 			List<Poll> objects) {
 		super(context, textViewResourceId, objects);
 		this.context = context;
@@ -49,7 +49,7 @@ public class PollAdapter extends ArrayAdapter<Poll> {
 		LayoutInflater inflater = LayoutInflater.from(context);
 
 		View view;
-		if (null == convertView || position!=values.size()-1) {
+		if (null == convertView) {
 			view = inflater.inflate(R.layout.list_item_poll, parent,
 					false);
 		} else {
@@ -64,24 +64,16 @@ public class PollAdapter extends ArrayAdapter<Poll> {
 		ImageButton btnDelete = (ImageButton) view
 				.findViewById(R.id.button_deleteoption);
 
-		if(btnDelete!=null){
-			btnDelete.setOnClickListener(new OnClickListener() {
+		btnDelete.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					PollDbHelper.getInstance(context).deletePoll(values.get(position).getId());
-					values.remove(position);
-					notifyDataSetChanged();
-				}
-			});
-		}
+			@Override
+			public void onClick(View v) {
+				PollDbHelper.getInstance(context).deletePoll(values.get(position).getId());
+				values.remove(position);
+				notifyDataSetChanged();
+			}
+		});
 
-		if(position==values.size()-1){
-			ImageView ivIcon = (ImageView)view.findViewById(R.id.imageview_icon);
-			if(ivIcon!=null)((LinearLayout)ivIcon.getParent()).removeView(ivIcon);
-			view.setBackgroundColor(context.getResources().getColor(R.color.theme_color_light));
-			if(btnDelete!=null)((LinearLayout)btnDelete.getParent()).removeView(btnDelete);
-		}
 		return view;
 	}
 }

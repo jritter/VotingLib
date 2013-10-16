@@ -3,6 +3,7 @@ package ch.bfh.evoting.votinglib;
 import java.util.List;
 
 import ch.bfh.evoting.votinglib.adapters.PollAdapter;
+import ch.bfh.evoting.votinglib.adapters.PollArchiveAdapter;
 import ch.bfh.evoting.votinglib.db.PollDbHelper;
 import ch.bfh.evoting.votinglib.entities.Poll;
 import ch.bfh.evoting.votinglib.util.HelpDialogFragment;
@@ -36,7 +37,7 @@ public class ListTerminatedPollsActivity extends Activity {
 		List<Poll> polls = PollDbHelper.getInstance(this).getAllTerminatedPolls();
 
 		lvPolls = (ListView) findViewById(R.id.listview_polls);
-		lvPolls.setAdapter(new PollAdapter(this, R.layout.list_item_poll, polls));
+		lvPolls.setAdapter(new PollArchiveAdapter(this, R.layout.list_item_poll, polls));
 
 		//create a listener on each line
 		final Context ctx = this;
