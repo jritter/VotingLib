@@ -132,7 +132,8 @@ public class DisplayResultActivity extends ListActivity {
 		
 		// Do some statistics
 		
-		int numberVoters = poll.getParticipants().size();
+		int numberParticipants = poll.getNumberOfParticipants();
+		Log.d(this.getClass().getSimpleName(), "Number Voters: " + numberParticipants);
 		
 		int numberCastVotes = 0;
 		
@@ -140,19 +141,19 @@ public class DisplayResultActivity extends ListActivity {
 			numberCastVotes += option.getVotes();
 		}
 		
-		double participation = numberVoters / numberCastVotes * 100;
+		double participation = (double)numberCastVotes / (double)numberParticipants * 100;
 		
 		TextView tvPollTime = (TextView)header.findViewById(R.id.textview_poll_start_time);
 		tvPollTime.setText(getString(R.string.poll_start_time) + ": " + sdf.format(resultdate));
 		
 		TextView tvNumberVoters = (TextView)footer.findViewById(R.id.textview_number_voters);
-		tvNumberVoters.setText(getString(R.string.number_voters) + ": " + numberVoters);
+		tvNumberVoters.setText(getString(R.string.number_voters) + ": " + numberParticipants);
 		
 		TextView tvNumberCastVotes = (TextView)footer.findViewById(R.id.textview_number_cast_votes);
 		tvNumberCastVotes.setText(getString(R.string.number_cast_votes) + ": " + numberCastVotes);
 		
 		TextView tvParticipation = (TextView)footer.findViewById(R.id.textview_vote_participation);
-		tvParticipation.setText(getString(R.string.participation) + ": " + participation);
+		tvParticipation.setText(getString(R.string.participation) + ": " + participation + "%");
 		
 		
 		//Order the options in descending order

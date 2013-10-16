@@ -125,7 +125,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 			poll.setQuestion(c1.getString(c1.getColumnIndex(POLL_QUESTION)));
 			poll.setStartTime(c1.getLong(c1.getColumnIndex(POLL_START_TIME)));
 			poll.setTerminated(c1.getInt(c1.getColumnIndex(POLL_IS_TERMINATED)) == 1);
-			poll.setNumberOfParticipants(c1.getColumnIndex(POLL_NUMBER_PARTICIPANTS));
+			poll.setNumberOfParticipants(c1.getInt(c1.getColumnIndex(POLL_NUMBER_PARTICIPANTS)));
 			String sql2 = "SELECT * FROM " + TABLE_NAME_OPTIONS + " WHERE " + OPTION_POLL_ID + "=" + c1.getInt(c1.getColumnIndex(POLL_ID)) + " ORDER BY ID ASC;";
 			Cursor c2 = db.rawQuery(sql2, null);
 
@@ -174,7 +174,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 			poll.setQuestion(c1.getString(c1.getColumnIndex(POLL_QUESTION)));
 			poll.setStartTime(c1.getLong(c1.getColumnIndex(POLL_START_TIME)));
 			poll.setTerminated(c1.getInt(c1.getColumnIndex(POLL_IS_TERMINATED)) == 1);
-			poll.setNumberOfParticipants(c1.getColumnIndex(POLL_NUMBER_PARTICIPANTS));
+			poll.setNumberOfParticipants(c1.getInt(c1.getColumnIndex(POLL_NUMBER_PARTICIPANTS)));
 
 			String sql2 = "SELECT * FROM " + TABLE_NAME_OPTIONS + " WHERE " + OPTION_POLL_ID + "=" + c1.getInt(c1.getColumnIndex(POLL_ID)) + " ORDER BY ID ASC;";
 			Cursor c2 = db.rawQuery(sql2, null);
@@ -224,7 +224,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 			poll.setQuestion(c1.getString(c1.getColumnIndex(POLL_QUESTION)));
 			poll.setStartTime(c1.getLong(c1.getColumnIndex(POLL_START_TIME)));
 			poll.setTerminated(c1.getInt(c1.getColumnIndex(POLL_IS_TERMINATED)) == 1);
-			poll.setNumberOfParticipants(c1.getColumnIndex(POLL_NUMBER_PARTICIPANTS));
+			poll.setNumberOfParticipants(c1.getInt(c1.getColumnIndex(POLL_NUMBER_PARTICIPANTS)));
 
 			String sql2 = "SELECT * FROM " + TABLE_NAME_OPTIONS + " WHERE " + OPTION_POLL_ID + "=" + c1.getInt(c1.getColumnIndex(POLL_ID)) + " ORDER BY ID ASC;";
 			Cursor c2 = db.rawQuery(sql2, null);
@@ -274,7 +274,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 			poll.setQuestion(c1.getString(c1.getColumnIndex(POLL_QUESTION)));
 			poll.setStartTime(c1.getLong(c1.getColumnIndex(POLL_START_TIME)));
 			poll.setTerminated(c1.getInt(c1.getColumnIndex(POLL_IS_TERMINATED)) == 1);
-			poll.setNumberOfParticipants(c1.getColumnIndex(POLL_NUMBER_PARTICIPANTS));
+			poll.setNumberOfParticipants(c1.getInt(c1.getColumnIndex(POLL_NUMBER_PARTICIPANTS)));
 
 			String sql2 = "SELECT * FROM " + TABLE_NAME_OPTIONS + " WHERE " + OPTION_POLL_ID + "=" + c1.getInt(c1.getColumnIndex(POLL_ID)) + " ORDER BY ID ASC;";
 			Cursor c2 = db.rawQuery(sql2, null);
@@ -356,6 +356,7 @@ public class PollDbHelper extends SQLiteOpenHelper {
 		db.update(TABLE_NAME_POLLS, valuesPoll, strFilter, null);
 		
 		Log.d(TAG, "I have " + poll.getOptions().size() + " Options in the update.");
+		Log.d(TAG, "I have " + poll.getNumberOfParticipants() + " Participants in the update.");
 		
 		//Delete actual options and put the new options
 		db.delete(TABLE_NAME_OPTIONS, OPTION_POLL_ID + "=" + pollId, null);
