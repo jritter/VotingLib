@@ -11,6 +11,7 @@ import ch.bfh.evoting.votinglib.entities.Option;
 import ch.bfh.evoting.votinglib.entities.Poll;
 import android.content.Context;
 import android.graphics.Color;
+
 /**
  * This is a content class which has hard coded values for color and value
  * variables that make up the slices in a pie chart. At the moment this is only
@@ -22,12 +23,13 @@ import android.graphics.Color;
 public class PieChartView extends GraphicalView {
 
 	private static int BASE_COLOR;
-	
+
 	private static int BASE_COLOR_RED;
 	private static int BASE_COLOR_GREEN;
 	private static int BASE_COLOR_BLUE;
 
 	private static int LABEL_COLOR;
+
 	/**
 	 * 
 	 * http://danielkvist.net/code/piechart-with-achartengine-in-android
@@ -56,16 +58,17 @@ public class PieChartView extends GraphicalView {
 	 * @return a GraphicalView object as a pie chart
 	 */
 	public static GraphicalView getNewInstance(Context context, Poll poll) {
-		
-		BASE_COLOR = context.getResources().getColor(android.R.color.holo_orange_dark);
+
+		BASE_COLOR = context.getResources().getColor(
+				android.R.color.holo_orange_dark);
 		BASE_COLOR_RED = Color.red(BASE_COLOR);
 		BASE_COLOR_GREEN = Color.green(BASE_COLOR);
 		BASE_COLOR_BLUE = Color.blue(BASE_COLOR);
-		
+
 		LABEL_COLOR = context.getResources().getColor(android.R.color.black);
-		
-		return ChartFactory.getPieChartView(context,
-				getDataSet(context, poll), getRenderer(poll));
+
+		return ChartFactory.getPieChartView(context, getDataSet(context, poll),
+				getRenderer(poll));
 	}
 
 	/**
@@ -78,26 +81,31 @@ public class PieChartView extends GraphicalView {
 
 		int alpha = 255;
 		DefaultRenderer defaultRenderer = new DefaultRenderer();
-		for (int i = 0; i < poll.getOptions().size(); i++){
-			SimpleSeriesRenderer simpleRenderer = new SimpleSeriesRenderer();
-			simpleRenderer.setColor(Color.argb(alpha, BASE_COLOR_RED, BASE_COLOR_GREEN, BASE_COLOR_BLUE));
-			defaultRenderer.addSeriesRenderer(simpleRenderer);
-			
-			alpha = alpha - (255 / poll.getOptions().size());
+
+		for (Option option : poll.getOptions()) {
+			if (option.getPercentage() > 0) {
+				SimpleSeriesRenderer simpleRenderer = new SimpleSeriesRenderer();
+				simpleRenderer.setColor(Color.argb(alpha, BASE_COLOR_RED,
+						BASE_COLOR_GREEN, BASE_COLOR_BLUE));
+				defaultRenderer.addSeriesRenderer(simpleRenderer);
+
+				alpha = alpha - (255 / poll.getOptions().size());
+			}
 		}
+
 		defaultRenderer.setLabelsColor(LABEL_COLOR);
 		defaultRenderer.setLabelsTextSize(20);
 		defaultRenderer.setShowLabels(true);
 		defaultRenderer.setShowLegend(false);
-		
+
 		// Start at the 12 o clock position with drawing the slices
 		defaultRenderer.setStartAngle(270);
 		defaultRenderer.setAntialiasing(true);
-		
+
 		// Disable pan and zoom
 		defaultRenderer.setPanEnabled(false);
 		defaultRenderer.setZoomEnabled(false);
-		
+
 		defaultRenderer.setClickEnabled(true);
 		return defaultRenderer;
 	}
@@ -117,11 +125,13 @@ public class PieChartView extends GraphicalView {
 	 */
 	private static CategorySeries getDataSet(Context context, Poll poll) {
 		CategorySeries series = new CategorySeries("Chart");
-		
-		for (Option option : poll.getOptions()){
-			series.add(option.getText(), option.getPercentage());
+
+		for (Option option : poll.getOptions()) {
+			if (option.getPercentage() > 0) {
+				series.add(option.getText(), option.getPercentage());
+			}
 		}
-		
+
 		return series;
 	}
 }

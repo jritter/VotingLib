@@ -362,6 +362,10 @@ public class AdhocWifiManager {
 				i++;
 			}
 
+			Log.d(TAG, "given SSID " + ssid);
+			Log.d(TAG, "SSID from wifiman: " + wifi.getConnectionInfo().getSSID());
+			Log.d(TAG, "Equals: " + ssid.equals(wifi.getConnectionInfo().getSSID()));
+			
 			// check whether we have been successful
 			if (!(nInfo.getDetailedState() == NetworkInfo.DetailedState.CONNECTED
 					&& nInfo.getState() == NetworkInfo.State.CONNECTED && getBroadcastAddress() != null)) {

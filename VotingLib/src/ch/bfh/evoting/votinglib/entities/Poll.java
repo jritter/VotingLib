@@ -16,6 +16,7 @@ public class Poll implements Serializable {
 	private String question;
 	private List<Option> options;
 	private Map<String,Participant> participants;
+	private int numberParticipants;
 	private long startTime;
 	private boolean isTerminated;
 	
@@ -105,6 +106,22 @@ public class Poll implements Serializable {
 	 */
 	public void setParticipants(Map<String,Participant> participants) {
 		this.participants = participants;
+	}
+	
+	/**
+	 * Get the number of participants of the poll
+	 * @return the number of participants of the poll
+	 */
+	public int getNumberOfParticipants() {
+		return numberParticipants;
+	}
+
+	/**
+	 * Set the number of participants of the poll
+	 * @param numberParticipants the number of participants of the poll
+	 */
+	public void setNumberOfParticipants(int numberParticipants) {
+		this.numberParticipants = numberParticipants;
 	}
 
 	/**
