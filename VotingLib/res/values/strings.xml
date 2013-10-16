@@ -29,6 +29,9 @@
     <string name="scan_qrcode">Scan QR code</string>
     <string name="put_nfc">Put an NFC tag in proximity of your device...</string>
     
+    <string name="number_voters">Eligible voters</string>
+    <string name="number_cast_votes">Cast votes</string>
+    <string name="participation">Participation</string>
     <!--
          <string name="display_result_close">Close</string>
         <string name="home">Home</string>
