@@ -79,7 +79,7 @@ public class AllJoynNetworkInterface extends AbstractNetworkInterface{
 	}
 
 	@Override
-	public boolean sendMessage(VoteMessage votemessage) {
+	public void sendMessage(VoteMessage votemessage) {
 		votemessage.setSenderIPAdress(getMyIpAddress());
 		SerializationUtil su = AndroidApplication.getInstance().getSerializationUtil();
 		String string = su.serialize(votemessage);
@@ -92,65 +92,51 @@ public class AllJoynNetworkInterface extends AbstractNetworkInterface{
 		data.putString("groupName", this.networkName);
 		data.putString("pingString", string);
 		msg.setData(data);
-		boolean status = mBusHandler.sendMessage(msg);
+		mBusHandler.sendMessage(msg);
 		
-		return status;
 	}
 
 	@Override
-	public boolean sendMessage(VoteMessage votemessage, String destinationIPAddress) {
+	public void sendMessage(VoteMessage votemessage, String destinationIPAddress) {
 		throw new UnsupportedOperationException("Unicast is not supported with AllJoyn Network interface");
 	}
 
 	@Override
-	public boolean disconnect() {
-		Status status1 = null, status2 = Status.OK;
-		status1 = mBusHandler.doLeaveGroup(networkName);
+	public void disconnect() {
+		
+		//leave actual group
+		Message msg1 = mBusHandler.obtainMessage(BusHandler.LEAVE_GROUP, this.networkName);
+		mBusHandler.sendMessage(msg1);
+		
 		String packageName = AndroidApplication.getInstance().getApplicationContext().getPackageName();
 		if(packageName.equals("ch.bfh.evoting.adminapp")){
-			status2 = mBusHandler.doDestroyGroup(networkName);
+			Message msg2 = mBusHandler.obtainMessage(BusHandler.DESTROY_GROUP, this.networkName);
+			mBusHandler.sendMessage(msg2);
 			this.networkName = null;
-			//mBusHandler.doDisconnect();
 		}
 		this.networkName = null;
-		if(status1 != Status.OK || status2 != Status.OK){
-			return false;
-		}
-		return true;
+		
 	}
 
 	@Override
-	public boolean joinNetwork(String networkName) {
+	public void joinNetwork(String networkName) {
 		String oldNetworkName = this.networkName;
 		this.networkName = networkName;
 
 		String packageName = AndroidApplication.getInstance().getApplicationContext().getPackageName();
-		Status status;
 		boolean apOn = new WifiAPManager().isWifiAPEnabled((WifiManager) context.getSystemService(Context.WIFI_SERVICE));
 
 		if(packageName.equals("ch.bfh.evoting.adminapp") || apOn){
 			if(oldNetworkName!=null && oldNetworkName!=""){
-				mBusHandler.doDestroyGroup(oldNetworkName);
+				Message msg1 = mBusHandler.obtainMessage(BusHandler.DESTROY_GROUP, oldNetworkName);
+				mBusHandler.sendMessage(msg1);
 			}
-			status = mBusHandler.doCreateGroup(networkName);
+			Message msg2 = mBusHandler.obtainMessage(BusHandler.CREATE_GROUP, this.networkName);
+			mBusHandler.sendMessage(msg2);
 		} else {
-			status = mBusHandler.doJoinGroup(networkName);
-		}
-
-		Log.d(this.getClass().getSimpleName(), "Status of connection: "+ status);
-		switch(status){
-		case OK:
-			LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("NetworkServiceStarted"));
-			return true;
-		case ALLJOYN_JOINSESSION_REPLY_ALREADY_JOINED:
-			LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("NetworkServiceStarted"));
-			return true;
-		case BUS_REPLY_IS_ERROR_MESSAGE:
-			//TODO multicast not supported => switch to instacircle
-			return false;
-		default:
-			return false;
-		}
+			Message msg3 = mBusHandler.obtainMessage(BusHandler.JOIN_GROUP, this.networkName);
+			mBusHandler.sendMessage(msg3);
+		}		
 
 	}
 

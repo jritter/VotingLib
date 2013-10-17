@@ -26,7 +26,7 @@ public abstract class AbstractNetworkInterface implements NetworkInterface {
 	
 
 	@Override
-	public abstract boolean joinNetwork(String networkName);
+	public abstract void joinNetwork(String networkName);
 	
 	@Override
 	public abstract String getNetworkName();
@@ -41,13 +41,13 @@ public abstract class AbstractNetworkInterface implements NetworkInterface {
 	public abstract Map<String, Participant> getConversationParticipants();
 
 	@Override
-	public abstract boolean sendMessage(VoteMessage votemessage);
+	public abstract void sendMessage(VoteMessage votemessage);
 
 	@Override
-	public abstract boolean sendMessage(VoteMessage votemessage, String destinationIPAddress);
+	public abstract void sendMessage(VoteMessage votemessage, String destinationIPAddress);
 	
 	@Override
-	public abstract boolean disconnect();
+	public abstract void disconnect();
 	
 	
 	/**

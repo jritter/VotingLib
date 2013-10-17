@@ -51,9 +51,23 @@ public class BroadcastIntentTypes {
 	 */
 	public static final String newVote = "newVote";
 	
-	
+	/**
+	 * Intent type sent when a the network group was destroyed
+	 * Extras:
+	 * - nothing
+	 */
 	public static final String networkGroupDestroyedEvent = "networkGroupDestroyedEvent";
 	
-	
+	/**
+	 * Intent type sent when connection to network was successful
+	 * Extras:
+	 * - nothing
+	 */
+	public static final String networkConnectionSuccessful = "NetworkServiceStarted";
 
+	/**
+	 * Intent type sent when connection to network failed
+	 * Extras:
+	 */
+	public static final String networkConnectionFailed = "networkConnectionFailed";
 }

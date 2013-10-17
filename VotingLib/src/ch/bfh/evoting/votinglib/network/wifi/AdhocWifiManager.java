@@ -8,9 +8,11 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.DhcpInfo;
@@ -20,12 +22,14 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.SystemClock;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.WindowManager.BadTokenException;
 import android.widget.Toast;
 import ch.bfh.evoting.instacirclelib.service.NetworkService;
 import ch.bfh.evoting.votinglib.AndroidApplication;
 import ch.bfh.evoting.votinglib.R;
+import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
 
 /**
  * This class implements methods which are used to adjust the wifi configuration
@@ -302,29 +306,29 @@ public class AdhocWifiManager {
 							config.preSharedKey = "\"".concat(password).concat(
 									"\"");
 							config.allowedGroupCiphers
-									.set(WifiConfiguration.GroupCipher.TKIP);
+							.set(WifiConfiguration.GroupCipher.TKIP);
 							config.allowedGroupCiphers
-									.set(WifiConfiguration.GroupCipher.CCMP);
+							.set(WifiConfiguration.GroupCipher.CCMP);
 							config.allowedKeyManagement
-									.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+							.set(WifiConfiguration.KeyMgmt.WPA_PSK);
 							config.allowedPairwiseCiphers
-									.set(WifiConfiguration.PairwiseCipher.TKIP);
+							.set(WifiConfiguration.PairwiseCipher.TKIP);
 							config.allowedPairwiseCiphers
-									.set(WifiConfiguration.PairwiseCipher.CCMP);
+							.set(WifiConfiguration.PairwiseCipher.CCMP);
 							config.allowedProtocols
-									.set(WifiConfiguration.Protocol.RSN);
+							.set(WifiConfiguration.Protocol.RSN);
 							config.allowedProtocols
-									.set(WifiConfiguration.Protocol.WPA);
+							.set(WifiConfiguration.Protocol.WPA);
 						} else if (result.capabilities.contains("WEP")) {
 							config.wepKeys[0] = "\"" + password + "\"";
 							config.wepTxKeyIndex = 0;
 							config.allowedKeyManagement
-									.set(WifiConfiguration.KeyMgmt.NONE);
+							.set(WifiConfiguration.KeyMgmt.NONE);
 							config.allowedGroupCiphers
-									.set(WifiConfiguration.GroupCipher.WEP40);
+							.set(WifiConfiguration.GroupCipher.WEP40);
 						} else {
 							config.allowedKeyManagement
-									.set(WifiConfiguration.KeyMgmt.NONE);
+							.set(WifiConfiguration.KeyMgmt.NONE);
 						}
 						config.status = WifiConfiguration.Status.ENABLED;
 						break;
@@ -384,7 +388,6 @@ public class AdhocWifiManager {
 		@SuppressLint("ShowToast")
 		protected void onPostExecute(Void result) {
 			super.onPostExecute(result);
-			d.dismiss();
 			if (startActivity) {
 				if (success) {
 					// start the service if we were successful
@@ -392,19 +395,32 @@ public class AdhocWifiManager {
 					editor = preferences.edit();
 					editor.putString("SSID", SSID);
 					editor.commit();
-					
-					boolean status = AndroidApplication.getInstance().getNetworkInterface().joinNetwork(preferences.getString("password", null));
-					if(status == false){
-						String packageName = AndroidApplication.getInstance().getApplicationContext().getPackageName();
-						if(packageName.equals("ch.bfh.evoting.adminapp")){
-							Toast.makeText(context, context.getString(R.string.join_error_admin), Toast.LENGTH_LONG).show();
-						} else {
-							Toast.makeText(context, context.getString(R.string.join_error_voter), Toast.LENGTH_LONG).show();
-						}
-					}
-					
-				} else {
 
+					AndroidApplication.getInstance().getNetworkInterface().joinNetwork(preferences.getString("password", null));
+
+					LocalBroadcastManager.getInstance(context).registerReceiver(new BroadcastReceiver() {
+
+						@Override
+						public void onReceive(Context arg0, Intent arg1) {
+							d.dismiss();
+							String packageName = AndroidApplication.getInstance().getApplicationContext().getPackageName();
+							if(packageName.equals("ch.bfh.evoting.adminapp")){
+								Toast.makeText(context, context.getString(R.string.join_error_admin), Toast.LENGTH_LONG).show();
+							} else {
+								Toast.makeText(context, context.getString(R.string.join_error_voter), Toast.LENGTH_LONG).show();
+							}
+						}
+					}, new IntentFilter(BroadcastIntentTypes.networkConnectionFailed));
+					LocalBroadcastManager.getInstance(context).registerReceiver(new BroadcastReceiver() {
+
+						@Override
+						public void onReceive(Context arg0, Intent arg1) {
+							d.dismiss();
+						}
+					}, new IntentFilter(BroadcastIntentTypes.networkConnectionSuccessful));
+
+				} else {
+					d.dismiss();
 					// display a dialog if the connection was not successful
 					AlertDialog.Builder builder = new AlertDialog.Builder(
 							context);
@@ -412,12 +428,12 @@ public class AdhocWifiManager {
 					builder.setMessage("The attempt to connect to the network failed.");
 					builder.setPositiveButton("OK",
 							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int which) {
-									dialog.dismiss();
-									return;
-								}
-							});
+						public void onClick(DialogInterface dialog,
+								int which) {
+							dialog.dismiss();
+							return;
+						}
+					});
 					AlertDialog dialog = builder.create();
 					try{
 						dialog.show();

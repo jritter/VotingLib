@@ -3,6 +3,7 @@ package ch.bfh.evoting.votinglib;
 import java.io.Serializable;
 
 import ch.bfh.evoting.votinglib.AndroidApplication;
+import ch.bfh.evoting.votinglib.util.BroadcastIntentTypes;
 import ch.bfh.evoting.votinglib.util.HelpDialogFragment;
 import ch.bfh.evoting.votinglib.VoteActivity.VoteService;
 import ch.bfh.evoting.votinglib.fragment.NetworkOptionsFragment;
@@ -110,7 +111,7 @@ public class NetworkConfigActivity extends Activity implements TextWatcher,
 		};
 		LocalBroadcastManager.getInstance(this).registerReceiver(
 				serviceStartedListener,
-				new IntentFilter("NetworkServiceStarted"));
+				new IntentFilter(BroadcastIntentTypes.networkConnectionSuccessful));
 
 		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		adhoc = new AdhocWifiManager(wifi);
