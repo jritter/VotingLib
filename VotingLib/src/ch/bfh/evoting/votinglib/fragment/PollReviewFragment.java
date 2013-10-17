@@ -98,6 +98,7 @@ public class PollReviewFragment extends ListFragment {
 					if(isContainedInParticipants(AndroidApplication.getInstance().getNetworkInterface().getMyIpAddress())){
 						Intent i = new Intent(PollReviewFragment.this.getActivity(), VoteActivity.class);
 						poll.setStartTime(System.currentTimeMillis());
+						poll.setNumberOfParticipants(poll.getParticipants().values().size());
 						i.putExtra("poll", (Serializable) poll);
 						startActivity(i);
 						LocalBroadcastManager.getInstance(PollReviewFragment.this.getActivity()).unregisterReceiver(this);

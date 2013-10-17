@@ -57,8 +57,10 @@ public class DisplayResultActivity extends ListActivity {
 		LayoutInflater inflater = this.getLayoutInflater();
 
 		View header = inflater.inflate(R.layout.result_header, null, false);
+		View footer = inflater.inflate(R.layout.result_footer, null, false);
 		
 		lv.addHeaderView(header);
+		lv.addFooterView(footer);
 
 		final Poll poll = (Poll)this.getIntent().getSerializableExtra("poll");
 
@@ -127,8 +129,31 @@ public class DisplayResultActivity extends ListActivity {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		Date resultdate = new Date(poll.getStartTime());
 
+		
+		// Do some statistics
+		
+		int numberParticipants = poll.getNumberOfParticipants();
+		Log.d(this.getClass().getSimpleName(), "Number Voters: " + numberParticipants);
+		
+		int numberCastVotes = 0;
+		
+		for (Option option : poll.getOptions()){
+			numberCastVotes += option.getVotes();
+		}
+		
+		double participation = (double)numberCastVotes / (double)numberParticipants * 100;
+		
 		TextView tvPollTime = (TextView)header.findViewById(R.id.textview_poll_start_time);
 		tvPollTime.setText(getString(R.string.poll_start_time) + ": " + sdf.format(resultdate));
+		
+		TextView tvNumberVoters = (TextView)footer.findViewById(R.id.textview_number_voters);
+		tvNumberVoters.setText(getString(R.string.number_voters) + ": " + numberParticipants);
+		
+		TextView tvNumberCastVotes = (TextView)footer.findViewById(R.id.textview_number_cast_votes);
+		tvNumberCastVotes.setText(getString(R.string.number_cast_votes) + ": " + numberCastVotes);
+		
+		TextView tvParticipation = (TextView)footer.findViewById(R.id.textview_vote_participation);
+		tvParticipation.setText(getString(R.string.participation) + ": " + participation + "%");
 		
 		
 		//Order the options in descending order
